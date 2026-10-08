@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<meta name="description" content="DocAnkh D&D Tools: dice, coin flips, and saved character sheets.">
+<title>D&D Tools · DocAnkh Apps</title>
+<style>
+:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#121212;color:#f4f5f6;--panel:#202426;--line:#3b4547;--accent:#91e1df;--muted:#b9c6c7;--gold:#e6c887}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+header{background:#1e2122;border-bottom:1px solid #383e40;padding:19px 16px}
+.header-inner,.wrap{max-width:1020px;margin:auto}
+.back{font-size:.88rem;text-decoration:none;color:var(--muted)}
+h1{margin:14px 0 4px;font-size:clamp(1.85rem,5vw,2.45rem);letter-spacing:-.04em}
+.lead{color:var(--muted);font-size:.94rem;line-height:1.5;margin:0}
+.wrap{padding:20px 16px 90px}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:20px}
+.tab{background:#292f31;border:1px solid #485256;color:#dce5e5;border-radius:13px;padding:13px 5px;min-height:58px;font-weight:750;font-size:.93rem}
+.tab[aria-selected="true"]{background:var(--accent);color:#122326;border-color:var(--accent)}
+.panel[hidden]{display:none}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:19px;margin-bottom:17px}
+h2{font-size:1.32rem;margin:0 0 7px}
+h3{font-size:1.08rem;margin:0 0 12px}
+p{line-height:1.52}
+.muted{color:var(--muted)}
+.intro{color:var(--muted);font-size:.91rem;margin:0 0 20px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:.88rem;font-weight:650}
+input:not([type=checkbox]):not([type=file]),select,textarea{width:100%;min-width:0;background:#111719;border:1px solid #515e62;color:#fff;border-radius:10px;min-height:46px;padding:11px}
+textarea{resize:vertical;min-height:104px;line-height:1.5}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #c2ffff;outline-offset:2px}
+button.primary,.btn{border-radius:10px;padding:11px 16px;min-height:44px;font-weight:750;color:#102628;background:var(--accent);border:1px solid var(--accent)}
+button.secondary,.btn.secondary{background:#2b393c;color:#d9ebeb;border-color:#537074}
+button.ghost{background:transparent;border:1px solid #536466;border-radius:10px;padding:10px 13px;min-height:42px;color:#e6eeee}
+button.danger{border-color:#985d5d;color:#ffc4be}
+button:disabled{opacity:.5;cursor:not-allowed}
+.dice-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:18px}
+.die{border:1px solid #536264;background:#283032;color:#e5eeee;border-radius:11px;min-height:58px;font-size:1rem;font-weight:800}
+.die[aria-pressed=true]{background:var(--gold);border-color:var(--gold);color:#2f2615}
+.large-result{border-radius:15px;background:#172f31;border:1px solid #366466;padding:17px;margin-top:17px}
+.large-result strong{display:block;font-size:clamp(2rem,6vw,3rem);font-variant-numeric:tabular-nums;color:#9cf3ee;line-height:1.2}
+.large-result .sub{color:#c8dadb;font-size:.9rem;overflow-wrap:anywhere}
+.history{padding-left:22px;margin:12px 0 0;max-height:285px;overflow-y:auto}
+.history li{color:#d1dbdd;padding:6px 0;border-bottom:1px solid #344145;font-size:.88rem}
+.footnote{font-size:.82rem;color:#b7c3c5;margin-top:14px}
+.coin-face{display:flex;align-items:center;justify-content:center;margin:17px auto;width:152px;height:152px;border-radius:50%;border:7px double #b8954e;background:radial-gradient(circle at 32% 24%,#f7e0a3,#bc8a38 70%,#75511f);box-shadow:0 9px 25px #0007;color:#36250f;font-size:2rem;font-weight:900;letter-spacing:-.04em;transition:transform .4s}
+.coin-face.flipping{transform:rotateY(360deg)}
+.counter{background:#272f30;border:1px solid #445557;border-radius:12px;padding:14px;text-align:center;flex:1;min-width:90px}
+.counter strong{display:block;color:var(--gold);font-size:1.6rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:14px 0 18px}
+.toolbar .field{min-width:210px;flex:1}
+.status{min-height:1.4em;font-size:.85rem;color:#addfdc;margin:9px 0}
+.status.error{color:#ffb6ab}
+.stat-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.stat{padding:13px 6px;border:1px solid #526568;border-radius:12px;text-align:center;background:#1a292b}
+.stat label{display:block;font-weight:800;font-size:.86rem;margin-bottom:8px}
+.stat input{max-width:76px;text-align:center;font-size:1.14rem;font-weight:800;margin:0 auto 8px}
+.stat .mod{display:block;font-size:1.22rem;color:var(--accent);font-weight:800}
+.stat button{background:none;border:1px solid #567477;border-radius:7px;color:#d5e9eb;font-size:.78rem;padding:5px 7px;margin-top:6px}
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.check-row{display:flex;align-items:center;gap:9px;justify-content:space-between;padding:8px 0;border-bottom:1px solid #394447}
+.check-row span{flex:1;font-size:.89rem}
+.check-row input[type=checkbox]{width:20px;height:20px;accent-color:#91e1df}
+.check-row button{background:#303c3e;border:1px solid #5a7475;border-radius:8px;padding:6px 10px;color:#f2f6f6;min-width:62px}
+.skill-row{display:grid;grid-template-columns:minmax(0,1fr) 110px 48px 62px;gap:7px;align-items:center;padding:7px 0;border-bottom:1px solid #394447}
+.skill-row .skill-name{font-size:.86rem}
+.skill-row select{min-height:36px;padding:6px;font-size:.76rem}
+.skill-row .bonus{font-variant-numeric:tabular-nums;text-align:right;font-weight:700;color:#a8edec}
+.skill-row button{padding:7px 4px;min-height:36px;border:1px solid #547274;background:#2c3e40;border-radius:8px;color:#e5f7f7;font-size:.76rem}
+.section-head{color:var(--gold);font-size:.92rem;letter-spacing:.025em;margin:19px 0 13px;font-weight:800}
+.sheet-result{padding:11px 14px;background:#112e30;border:1px solid #3e7778;border-radius:11px;color:#dcf8f6;margin:12px 0;font-size:.91rem;min-height:45px}
+.hp-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.badge{font-size:.76rem;color:#bde9ea;background:#203b3e;border:1px solid #42686a;border-radius:99px;padding:6px 9px;white-space:nowrap}
+.small{font-size:.82rem}
+footer{text-align:center;color:#96a6a9;font-size:.8rem;line-height:1.5;margin-top:22px}
+@media(max-width:700px){.stat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.two-col{grid-template-columns:1fr}}
+@media(max-width:490px){.box{padding:15px}.dice-row{grid-template-columns:repeat(4,minmax(0,1fr))}.grid3,.hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-row{grid-template-columns:minmax(0,1fr) 92px 39px 48px;gap:5px}.skill-row select{font-size:.71rem}.skill-row button{font-size:.7rem}.row>.primary{flex:1}}
+@media print{body{background:#fff;color:#000}header,.tabs,#dice,#coin,.toolbar,.status,.sheet-result,.footnote,footer,.stat button,.check-row button,.skill-row button,.back{display:none!important}.wrap{max-width:none;padding:0}.box{border:1px solid #888;background:#fff;break-inside:avoid}.panel[hidden]{display:none!important}#characters{display:block!important}input:not([type=checkbox]),select,textarea{color:#000!important;background:#fff!important;border:1px solid #aaa!important}.stat,.counter,.large-result{background:#fff;color:#000}.mod,.bonus{color:#000!important}h1,h2,h3,p,label{color:#000!important}.two-col{grid-template-columns:repeat(2,1fr)}.sheet-result{display:none!important}}
+</style>
+</head>
+<body>
+<header><div class="header-inner">
+<a class="back" href="../">← Back to DocAnkh Apps</a>
+<h1>🎲 D&amp;D Tools</h1>
+<p class="lead">Dice, chance, and your party's character sheets · Built for mobile</p>
+</div></header>
+<main class="wrap">
+<nav class="tabs" aria-label="D&D tools" role="tablist">
+ <button class="tab" type="button" role="tab" data-tab="dice" aria-selected="true" aria-controls="dice">🎲 Dice Roller</button>
+ <button class="tab" type="button" role="tab" data-tab="coin" aria-selected="false" aria-controls="coin">🪙 Coin Flip</button>
+ <button class="tab" type="button" role="tab" data-tab="characters" aria-selected="false" aria-controls="characters">📜 Characters</button>
+</nav>
+<section class="panel" id="dice" role="tabpanel">
+ <div class="box">
+  <h2>Dice Roller</h2><p class="intro">Roll tabletop dice using your phone. Choose a die, a quantity, and a bonus.</p>
+  <div class="dice-row" role="group" aria-label="Choose die type">
+   <button class="die" type="button" data-die="4" aria-pressed="false">d4</button><button class="die" type="button" data-die="6" aria-pressed="false">d6</button><button class="die" type="button" data-die="8" aria-pressed="false">d8</button><button class="die" type="button" data-die="10" aria-pressed="false">d10</button><button class="die" type="button" data-die="12" aria-pressed="false">d12</button><button class="die" type="button" data-die="20" aria-pressed="true">d20</button><button class="die" type="button" data-die="100" aria-pressed="false">d100</button>
+  </div>
+  <div class="grid3">
+   <div class="field"><label for="diceCount">Number of dice</label><input id="diceCount" type="number" min="1" max="30" step="1" value="1" inputmode="numeric"></div>
+   <div class="field"><label for="diceBonus">Modifier (+/-)</label><input id="diceBonus" type="number" min="-1000" max="1000" step="1" value="0" inputmode="numeric"></div>
+   <div class="field"><label for="diceMode">d20 mode</label><select id="diceMode"><option value="normal">Normal</option><option value="advantage">Advantage</option><option value="disadvantage">Disadvantage</option></select></div>
+  </div>
+  <p class="footnote">Advantage and disadvantage require one d20.</p>
+  <button id="rollBtn" class="primary" type="button" style="width:100%;margin-top:5px">🎲 Roll Dice</button>
+  <p id="diceStatus" class="status" role="status"></p>
+  <div class="large-result" aria-live="polite"><span class="small muted">LATEST ROLL</span><strong id="rollTotal">—</strong><span class="sub" id="rollDetails">Select your dice and tap Roll.</span></div>
+ </div>
+ <div class="box"><div class="row" style="justify-content:space-between"><h3 style="margin:0">Roll History</h3><button class="ghost" id="clearRolls" type="button">Clear</button></div><ol class="history" id="rollHistory"><li>No rolls yet.</li></ol></div>
+</section>
+<section class="panel" id="coin" role="tabpanel" hidden>
+ <div class="box" style="text-align:center">
+  <h2>Coin Flip</h2><p class="intro">Settle a tie, pick a direction, or tempt fate.</p>
+  <div id="coinFace" class="coin-face" aria-hidden="true">?</div>
+  <div class="large-result" aria-live="polite" style="margin-top:8px"><span class="small muted">LATEST FLIP</span><strong id="coinResult">—</strong><span class="sub" id="coinMessage">The gods of chance await.</span></div>
+  <button id="flipBtn" class="primary" type="button" style="width:100%;margin:15px 0">🪙 Flip Coin</button>
+  <div class="row"><div class="counter"><span class="small">Heads</span><strong id="headsCount">0</strong></div><div class="counter"><span class="small">Tails</span><strong id="tailsCount">0</strong></div><div class="counter"><span class="small">Total</span><strong id="flipsCount">0</strong></div></div>
+  <button class="ghost" type="button" id="resetFlips" style="margin-top:16px">Reset flip counter</button>
+ </div>
+</section>
+<section class="panel" id="characters" role="tabpanel" hidden>
+ <div class="box">
+  <div class="row" style="justify-content:space-between;align-items:flex-start"><div><h2>Character Sheets</h2><p class="intro" style="margin:0">Fillable 5e-style sheets saved on this device.</p></div><span class="badge" id="saveBadge">Saved locally</span></div>
+  <div class="toolbar"><div class="field"><label for="characterSelect">Choose a character</label><select id="characterSelect"></select></div><button id="newCharacter" class="primary" type="button">+ New</button><button id="duplicateCharacter" class="secondary btn" type="button">Duplicate</button><button id="deleteCharacter" class="ghost danger" type="button">Delete</button></div>
+  <div class="row"><button id="exportCharacter" class="ghost" type="button">↓ Export JSON</button><button id="importCharacter" class="ghost" type="button">↑ Import JSON</button><button id="printCharacter" class="ghost" type="button">Print / Save PDF</button><input id="importFile" type="file" accept=".json,application/json" hidden></div>
+  <p class="status" id="sheetStatus" role="status"></p>
+  <div class="section-head">IDENTITY</div>
+  <div class="grid3">
+   <div class="field"><label for="cName">Character name</label><input id="cName" data-char="name" maxlength="100" placeholder="e.g. Dravos Darkwing"></div>
+   <div class="field"><label for="cClass">Class</label><input id="cClass" data-char="className" maxlength="100" placeholder="Sorcerer"></div>
+   <div class="field"><label for="cLevel">Level (1–20)</label><input id="cLevel" data-char="level" type="number" inputmode="numeric" min="1" max="20" step="1"></div>
+   <div class="field"><label for="cSpecies">Species / ancestry</label><input id="cSpecies" data-char="species" maxlength="100"></div>
+   <div class="field"><label for="cBackground">Background</label><input id="cBackground" data-char="background" maxlength="100"></div>
+   <div class="field"><label for="cAlignment">Alignment</label><input id="cAlignment" data-char="alignment" maxlength="100"></div>
+  </div>
+  <div class="section-head">COMBAT</div>
+  <div class="hp-grid">
+   <div class="field"><label for="cAC">Armor Class</label><input id="cAC" data-char="ac" type="number" inputmode="numeric"></div>
+   <div class="field"><label for="cHPMax">HP Max</label><input id="cHPMax" data-char="hpMax" type="number" inputmode="numeric"></div>
+   <div class="field"><label for="cHP">HP Current</label><input id="cHP" data-char="hp" type="number" inputmode="numeric"></div>
+   <div class="field"><label for="cTempHP">Temp HP</label><input id="cTempHP" data-char="tempHp" type="number" inputmode="numeric"></div>
+   <div class="field"><label for="cSpeed">Speed (ft)</label><input id="cSpeed" data-char="speed" type="number" inputmode="numeric"></div>
+   <div class="field"><label for="cInitiative">Extra initiative bonus</label><input id="cInitiative" data-char="initiativeExtra" type="number" inputmode="numeric"></div>
+   <div class="field"><label for="cHitDice">Hit Dice</label><input id="cHitDice" data-char="hitDice" placeholder="e.g. 5d8" maxlength="30"></div>
+   <div class="field"><label>Proficiency bonus</label><div class="large-result" style="margin:0;padding:9px 12px;min-height:46px"><strong id="profBonus" style="font-size:1.3rem">+2</strong></div></div>
+  </div>
+  <p class="small muted" style="margin:12px 0 0">Initiative: <strong id="initiativeValue">+0</strong> · Passive Perception: <strong id="passivePerception">10</strong> · Ability modifiers update as you edit scores.</p>
+  <div class="section-head">ABILITY SCORES</div>
+  <div class="stat-grid" id="abilityGrid"></div>
+  <div class="sheet-result" id="checkResult" aria-live="polite">Tap an ability, save, or skill Roll button to make a d20 check.</div>
+  <div class="two-col">
+   <div><div class="section-head">SAVING THROWS</div><div class="box" style="margin:0;padding:12px" id="savesList"></div></div>
+   <div><div class="section-head">SKILLS</div><div class="box" style="margin:0;padding:12px"><p class="small muted" style="margin:0 0 10px">Proficiency: — none · P proficient · E expertise</p><div id="skillsList"></div></div></div>
+  </div>
+  <div class="section-head">EQUIPMENT, SPELLS &amp; NOTES</div>
+  <div class="grid">
+   <div class="field"><label for="cAttacks">Attacks &amp; spellcasting</label><textarea id="cAttacks" data-char="attacks" placeholder="Attack bonus, damage, spells, spell slots..."></textarea></div>
+   <div class="field"><label for="cEquipment">Equipment &amp; treasure</label><textarea id="cEquipment" data-char="equipment" placeholder="Inventory, weapons, coins..."></textarea></div>
+   <div class="field"><label for="cFeatures">Features &amp; traits</label><textarea id="cFeatures" data-char="features" placeholder="Class features, abilities..."></textarea></div>
+   <div class="field"><label for="cNotes">Character &amp; campaign notes</label><textarea id="cNotes" data-char="notes" placeholder="Backstory, contacts, quests..."></textarea></div>
+  </div>
+  <p class="footnote">Character sheets autosave in this browser using local storage. Data does not sync across devices. Export JSON regularly as a backup; private browsing or clearing website data can erase local copies. The sheet uses common 5e ability, skill, and proficiency conventions, not every class rule.</p>
+ </div>
+</section>
+<footer>DocAnkh Apps · D&amp;D Tools v1.0 · Rolls use browser-generated random values · Works without an account</footer>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const asInt=(v,def=0,min=-100000,max=100000)=>{const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.trunc(n))):def;};
+const plus=n=>(n>=0?'+':'')+n;
+function randomInt(max){
+ if(window.crypto&&window.crypto.getRandomValues){const values=new Uint32Array(1),limit=4294967296-(4294967296%max);do{window.crypto.getRandomValues(values);}while(values[0]>=limit);return values[0]%max;}
+ return Math.floor(Math.random()*max);
+}
+const rollDie=sides=>randomInt(sides)+1;
+function tabTo(name){document.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.tab===name;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;});document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==name);}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>tabTo(b.dataset.tab)));
+let sides=20, history=[];
+function renderRollHistory(){const list=$('rollHistory');list.replaceChildren();if(!history.length){const li=document.createElement('li');li.textContent='No rolls yet.';list.append(li);return;}history.forEach(entry=>{const li=document.createElement('li');li.textContent=entry;list.append(li);});}
+function doRoll(count,die,bonus,mode='normal',label=''){
+ if(!Number.isInteger(count)||count<1||count>30||!Number.isInteger(die)||die<2||!Number.isInteger(bonus)||Math.abs(bonus)>1000)return null;
+ if(mode!=='normal'&&(die!==20||count!==1))return null;
+ let rolls=[],detail='',subtotal;
+ if(mode==='normal'){rolls=Array.from({length:count},()=>rollDie(die));subtotal=rolls.reduce((a,b)=>a+b,0);detail=rolls.join(' + ');}else{rolls=[rollDie(20),rollDie(20)];subtotal=mode==='advantage'?Math.max(...rolls):Math.min(...rolls);detail=`${rolls[0]} / ${rolls[1]} → keep ${subtotal}`;}
+ const total=subtotal+bonus;const tag=`${label?label+' · ':''}${mode==='normal'?count+'d'+die:mode+' d20'} ${bonus===0?'':(bonus>0?'+ ':'− ')+Math.abs(bonus)}`.trim();
+ $('rollTotal').textContent=total;
+ $('rollDetails').textContent=`${tag} | ${detail}${bonus?` ${plus(bonus)}`:''}`;
+ const crit=(die===20&&count===1&&subtotal===20)?' · NAT 20':(die===20&&count===1&&subtotal===1)?' · NAT 1':'';
+ history.unshift(`${tag} → ${total}${crit}`);history=history.slice(0,20);renderRollHistory();
+ return {total,detail,tag,crit};
+}
+document.querySelectorAll('[data-die]').forEach(btn=>btn.addEventListener('click',()=>{sides=Number(btn.dataset.die);document.querySelectorAll('[data-die]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));if(sides!==20)$('diceMode').value='normal';}));
+$('rollBtn').addEventListener('click',()=>{const count=Number($('diceCount').value),bonus=Number($('diceBonus').value),mode=$('diceMode').value;if(!Number.isInteger(count)||count<1||count>30||!Number.isInteger(bonus)||Math.abs(bonus)>1000){$('diceStatus').textContent='Use 1–30 dice and a whole-number modifier between −1000 and 1000.';$('diceStatus').classList.add('error');return;}const res=doRoll(count,sides,bonus,mode);if(!res){$('diceStatus').textContent='Advantage/disadvantage works with exactly one d20.';$('diceStatus').classList.add('error');return;}$('diceStatus').textContent='';$('diceStatus').classList.remove('error');});
+$('clearRolls').addEventListener('click',()=>{history=[];renderRollHistory();$('rollTotal').textContent='—';$('rollDetails').textContent='Select your dice and tap Roll.';});
+let heads=0,tails=0;
+$('flipBtn').addEventListener('click',()=>{const head=rollDie(2)===1;head?heads++:tails++;$('coinFace').textContent=head?'H':'T';$('coinFace').classList.remove('flipping');void $('coinFace').offsetWidth;$('coinFace').classList.add('flipping');$('coinResult').textContent=head?'HEADS':'TAILS';$('coinMessage').textContent=head?'Fortune favours heads.':'The coin lands tails up.';$('headsCount').textContent=heads;$('tailsCount').textContent=tails;$('flipsCount').textContent=heads+tails;});
+$('resetFlips').addEventListener('click',()=>{heads=0;tails=0;['headsCount','tailsCount','flipsCount'].forEach(id=>$(id).textContent='0');$('coinResult').textContent='—';$('coinMessage').textContent='The gods of chance await.';$('coinFace').textContent='?';});
+const abilities=[['str','STR','Strength'],['dex','DEX','Dexterity'],['con','CON','Constitution'],['int','INT','Intelligence'],['wis','WIS','Wisdom'],['cha','CHA','Charisma']];
+const skills=[['acrobatics','Acrobatics','dex'],['animalHandling','Animal Handling','wis'],['arcana','Arcana','int'],['athletics','Athletics','str'],['deception','Deception','cha'],['history','History','int'],['insight','Insight','wis'],['intimidation','Intimidation','cha'],['investigation','Investigation','int'],['medicine','Medicine','wis'],['nature','Nature','int'],['perception','Perception','wis'],['performance','Performance','cha'],['persuasion','Persuasion','cha'],['religion','Religion','int'],['sleightOfHand','Sleight of Hand','dex'],['stealth','Stealth','dex'],['survival','Survival','wis']];
+const plainFields=['name','className','level','species','background','alignment','ac','hpMax','hp','tempHp','speed','initiativeExtra','hitDice','attacks','equipment','features','notes'];
+const defaultChar=()=>({id:createId(),name:'New adventurer',className:'',level:1,species:'',background:'',alignment:'',ac:10,hpMax:10,hp:10,tempHp:0,speed:30,initiativeExtra:0,hitDice:'',attacks:'',equipment:'',features:'',notes:'',scores:Object.fromEntries(abilities.map(a=>[a[0],10])),saves:{},skills:{}});
+function createId(){return(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():'c'+Date.now()+'-'+Math.random().toString(36).slice(2);}
+function normalize(raw){if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Not a character sheet.');const out=defaultChar();for(const key of plainFields){if(Object.prototype.hasOwnProperty.call(raw,key)){if(['level','ac','hpMax','hp','tempHp','speed','initiativeExtra'].includes(key))out[key]=asInt(raw[key],out[key],-10000,10000);else out[key]=String(raw[key]??'').slice(0,['attacks','equipment','features','notes'].includes(key)?40000:200);}}out.level=asInt(out.level,1,1,20);abilities.forEach(([key])=>{out.scores[key]=asInt(raw.scores?.[key],10,1,30);out.saves[key]=!!raw.saves?.[key];});skills.forEach(([key])=>out.skills[key]=asInt(raw.skills?.[key],0,0,2));out.id=createId();return out;}
+const STORE='docankh.dnd.characters.v1';let characters=[],active='';
+try{const parsed=JSON.parse(localStorage.getItem(STORE)||'null');if(Array.isArray(parsed)&&parsed.length){characters=parsed.slice(0,30).map(normalize);active=characters[0].id;}}catch(e){$('sheetStatus').textContent='Could not read saved sheets; a new blank sheet was created.';$('sheetStatus').classList.add('error');}
+if(!characters.length){characters=[defaultChar()];active=characters[0].id;}
+const current=()=>characters.find(c=>c.id===active)||characters[0];
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(characters));$('saveBadge').textContent='Saved locally';return true;}catch(e){$('saveBadge').textContent='Not saved';$('sheetStatus').textContent='Browser storage unavailable or full. Export JSON now to keep a backup.';$('sheetStatus').classList.add('error');return false;}}
+function profBonus(){return 2+Math.floor((asInt(current().level,1,1,20)-1)/4);}
+const abilityMod=key=>Math.floor((asInt(current().scores[key],10,1,30)-10)/2);
+const skillMod=key=>{const s=skills.find(x=>x[0]===key);return abilityMod(s[2])+profBonus()*asInt(current().skills[key],0,0,2);};
+function rebuildCharacterList(){const select=$('characterSelect');select.replaceChildren();characters.forEach(c=>{const opt=document.createElement('option');opt.value=c.id;opt.textContent=(c.name||'Unnamed character')+' · Lv '+c.level;select.appendChild(opt);});select.value=active;}
+function buildScoreRows(){const grid=$('abilityGrid');grid.replaceChildren();abilities.forEach(([key,abbr,name])=>{const item=document.createElement('div');item.className='stat';const label=document.createElement('label');label.textContent=abbr;label.htmlFor='score_'+key;const input=document.createElement('input');input.type='number';input.id='score_'+key;input.min=1;input.max=30;input.step=1;input.inputMode='numeric';input.dataset.score=key;input.setAttribute('aria-label',name+' score');const mod=document.createElement('span');mod.className='mod';mod.id='mod_'+key;const btn=document.createElement('button');btn.type='button';btn.textContent='Roll';btn.dataset.rollAbility=key;btn.setAttribute('aria-label','Roll '+name+' check');item.append(label,input,mod,btn);grid.append(item);});
+ const saves=$('savesList');saves.replaceChildren();abilities.forEach(([key,abbr,name])=>{const row=document.createElement('div');row.className='check-row';const check=document.createElement('input');check.type='checkbox';check.dataset.save=key;check.id='save_'+key;const label=document.createElement('label');label.htmlFor='save_'+key;label.textContent=name+' ('+abbr+')';label.style.flex='1';const score=document.createElement('strong');score.id='saveBonus_'+key;const roll=document.createElement('button');roll.type='button';roll.dataset.rollSave=key;roll.textContent='Roll';row.append(check,label,score,roll);saves.append(row);});
+ const list=$('skillsList');list.replaceChildren();skills.forEach(([key,name,attr])=>{const row=document.createElement('div');row.className='skill-row';const label=document.createElement('label');label.htmlFor='skill_'+key;label.textContent=`${name} (${attr.toUpperCase()})`;label.className='skill-name';const select=document.createElement('select');select.id='skill_'+key;select.dataset.skill=key;select.setAttribute('aria-label',name+' proficiency');[['0','— None'],['1','P Proficient'],['2','E Expertise']].forEach(([val,title])=>{const opt=document.createElement('option');opt.value=val;opt.textContent=title;select.append(opt);});const score=document.createElement('span');score.className='bonus';score.id='skillBonus_'+key;const roll=document.createElement('button');roll.type='button';roll.textContent='Roll';roll.dataset.rollSkill=key;row.append(label,select,score,roll);list.append(row);});
+}
+function updateDerived(){const c=current();$('profBonus').textContent=plus(profBonus());abilities.forEach(([key])=>{$('mod_'+key).textContent=plus(abilityMod(key));$('saveBonus_'+key).textContent=plus(abilityMod(key)+(c.saves[key]?profBonus():0));});skills.forEach(([key])=>{$('skillBonus_'+key).textContent=plus(skillMod(key));});$('initiativeValue').textContent=plus(abilityMod('dex')+asInt(c.initiativeExtra));$('passivePerception').textContent=10+skillMod('perception');}
+function renderSheet(){const c=current();document.querySelectorAll('[data-char]').forEach(field=>field.value=c[field.dataset.char]??'');document.querySelectorAll('[data-score]').forEach(field=>field.value=c.scores[field.dataset.score]);document.querySelectorAll('[data-save]').forEach(field=>field.checked=!!c.saves[field.dataset.save]);document.querySelectorAll('[data-skill]').forEach(field=>field.value=String(c.skills[field.dataset.skill]||0));rebuildCharacterList();updateDerived();$('checkResult').textContent='Tap an ability, save, or skill Roll button to make a d20 check.';}
+buildScoreRows();renderSheet();persist();
+document.querySelectorAll('[data-char]').forEach(input=>input.addEventListener('input',()=>{const c=current(),key=input.dataset.char;c[key]=key==='level'?asInt(input.value,1,1,20):['ac','hpMax','hp','tempHp','speed','initiativeExtra'].includes(key)?asInt(input.value,0,-10000,10000):input.value;if(key==='level'){c.level=asInt(c.level,1,1,20);}persist();if(key==='name'||key==='level')rebuildCharacterList();updateDerived();}));
+$('abilityGrid').addEventListener('input',e=>{const key=e.target.dataset.score;if(!key)return;current().scores[key]=asInt(e.target.value,10,1,30);persist();updateDerived();});
+$('savesList').addEventListener('change',e=>{const key=e.target.dataset.save;if(!key)return;current().saves[key]=e.target.checked;persist();updateDerived();});
+$('skillsList').addEventListener('change',e=>{const key=e.target.dataset.skill;if(!key)return;current().skills[key]=asInt(e.target.value,0,0,2);persist();updateDerived();});
+function sheetRoll(label,mod){const r=doRoll(1,20,mod,'normal',label);if(r)$('checkResult').textContent=`${label}: ${r.detail}${mod?' '+plus(mod):''} = ${r.total}${r.crit}`;}
+$('abilityGrid').addEventListener('click',e=>{const key=e.target.dataset.rollAbility;if(key)sheetRoll(key.toUpperCase()+' check',abilityMod(key));});
+$('savesList').addEventListener('click',e=>{const key=e.target.dataset.rollSave;if(key)sheetRoll(key.toUpperCase()+' save',abilityMod(key)+(current().saves[key]?profBonus():0));});
+$('skillsList').addEventListener('click',e=>{const key=e.target.dataset.rollSkill;if(key)sheetRoll(skills.find(s=>s[0]===key)[1],skillMod(key));});
+$('characterSelect').addEventListener('change',e=>{active=e.target.value;renderSheet();});
+$('newCharacter').addEventListener('click',()=>{if(characters.length>=30){$('sheetStatus').textContent='Maximum 30 characters on this device. Export some before deleting.';return;}const c=defaultChar();characters.push(c);active=c.id;persist();renderSheet();$('sheetStatus').textContent='New blank character created.';});
+$('duplicateCharacter').addEventListener('click',()=>{if(characters.length>=30){$('sheetStatus').textContent='Maximum 30 characters reached.';return;}const c=normalize(current());c.name+=' (copy)';characters.push(c);active=c.id;persist();renderSheet();$('sheetStatus').textContent='Character duplicated.';});
+$('deleteCharacter').addEventListener('click',()=>{if(!confirm(`Delete ${current().name||'this character'} from this browser? Export first if you need a backup.`))return;characters=characters.filter(c=>c.id!==active);if(!characters.length)characters=[defaultChar()];active=characters[0].id;persist();renderSheet();$('sheetStatus').textContent='Character removed from this browser.';});
+$('exportCharacter').addEventListener('click',()=>{const c=current();const blob=new Blob([JSON.stringify({format:'DocAnkh DnD Character v1',character:c},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(c.name||'character').replace(/[^a-z0-9_-]+/gi,'_').slice(0,50)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);$('sheetStatus').textContent='Character backup downloaded. Keep the JSON somewhere safe.';});
+$('importCharacter').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;try{if(file.size>1500000)throw Error('File too large');const parsed=JSON.parse(await file.text());const raw=parsed&&parsed.character?parsed.character:parsed;if(characters.length>=30)throw Error('Maximum 30 characters reached');const c=normalize(raw);characters.push(c);active=c.id;persist();renderSheet();$('sheetStatus').textContent=`Imported ${c.name||'character'} as a new sheet.`;$('sheetStatus').classList.remove('error');}catch(err){$('sheetStatus').textContent='Could not import this JSON file: '+err.message;$('sheetStatus').classList.add('error');}});
+$('printCharacter').addEventListener('click',()=>window.print());
+})();
+</script>
+</body>
+</html>
