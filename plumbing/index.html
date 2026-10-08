@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#121212">
+  <meta name="description" content="Field-friendly plumbing calculators for pressure, pumps, and domestic hot water.">
+  <title>Plumbing Toolbox · DocAnkh Apps</title>
+  <style>
+    :root { color-scheme:dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; background:#121212; color:#f5f7f8; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; }
+    a { color:#8ce7ec; }
+    button, input, select { font:inherit; }
+    button { cursor:pointer; }
+    header { padding:18px max(18px, env(safe-area-inset-left)); background:#1f1f1f; border-bottom:1px solid #383838; }
+    .top { max-width:950px; margin:auto; }
+    .back { text-decoration:none; font-size:.9rem; color:#b3c4ca; }
+    h1 { margin:16px 0 5px; font-size:clamp(1.7rem,6vw,2.3rem); letter-spacing:-.035em; }
+    .subtitle { margin:0; color:#b5c1c4; font-size:.94rem; line-height:1.5; }
+    .wrap { max-width:950px; margin:0 auto; padding:22px 16px 70px; }
+    .tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:18px; }
+    .tab { border:1px solid #404649; background:#24282a; color:#d7e0e2; border-radius:13px; min-height:62px; padding:11px 5px; font-weight:700; font-size:.9rem; }
+    .tab[aria-selected="true"] { color:#101f21; border-color:#88e7e5; background:#86e5e2; }
+    .panel[hidden] { display:none; }
+    .panel { border:1px solid #353c3e; border-radius:18px; background:#1e2224; padding:20px; }
+    h2 { margin:0 0 6px; font-size:1.35rem; }
+    .intro { color:#b3bfc1; line-height:1.45; margin:0 0 22px; font-size:.94rem; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .field { display:flex; flex-direction:column; gap:7px; min-width:0; }
+    .field > label { font-weight:650; color:#e2eaeb; font-size:.88rem; }
+    .field input, .field select { width:100%; min-width:0; background:#111618; color:#f5f9f9; border:1px solid #495457; border-radius:10px; padding:12px; min-height:48px; outline-offset:2px; }
+    .field input:focus, .field select:focus { outline:2px solid #86e5e2; border-color:transparent; }
+    .full { grid-column:1 / -1; }
+    .sectiontitle { margin:24px 0 14px; font-size:1rem; color:#8ce7ec; font-weight:750; }
+    .results { margin-top:20px; border-radius:13px; background:#10282a; border:1px solid #28595b; padding:15px; }
+    .results h3 { margin:0 0 13px; font-size:1rem; }
+    .resultrow { display:flex; justify-content:space-between; align-items:baseline; gap:16px; border-top:1px solid #275052; padding:11px 0; font-size:.9rem; }
+    .resultrow:first-of-type { border-top:none; }
+    .resultrow strong { font-size:1.12rem; text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .note { background:#282b2d; border-left:3px solid #72b8bd; padding:12px 14px; border-radius:4px 10px 10px 4px; color:#c0cbcd; line-height:1.5; margin:18px 0 0; font-size:.85rem; }
+    .error { color:#ffbcae; font-weight:600; min-height:1.4em; font-size:.88rem; margin:12px 0 0; }
+    footer { color:#929fa2; line-height:1.5; font-size:.8rem; margin-top:23px; text-align:center; }
+    @media (max-width:480px) { .panel { padding:16px; } .grid { gap:12px; } .tab { font-size:.78rem; } .resultrow { font-size:.84rem; } .resultrow strong { font-size:1.03rem; } }
+    @media (max-width:350px) { .grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<header><div class="top">
+  <a class="back" href="../">← Back to DocAnkh Apps</a>
+  <h1>🔧 Plumbing Toolbox</h1>
+  <p class="subtitle">Practical field calculations · Imperial and metric · Runs entirely in your browser</p>
+</div></header>
+<main class="wrap">
+  <nav class="tabs" aria-label="Calculator selection">
+    <button class="tab" type="button" data-tab="pressure" aria-selected="true" aria-controls="pressure">💧 Pressure<br>&amp; Head</button>
+    <button class="tab" type="button" data-tab="pump" aria-selected="false" aria-controls="pump">⚙️ Pump<br>Calculations</button>
+    <button class="tab" type="button" data-tab="boiler" aria-selected="false" aria-controls="boiler">🔥 Boiler<br>&amp; DHW</button>
+  </nav>
+
+  <section class="panel" id="pressure" aria-labelledby="pressure-title">
+    <h2 id="pressure-title">Pressure &amp; Head Converter</h2>
+    <p class="intro">Enter a pressure or fluid head and choose its unit. Head changes with fluid specific gravity.</p>
+    <div class="grid">
+      <div class="field"><label for="pValue">Value</label><input id="pValue" type="number" inputmode="decimal" step="any" value="20"></div>
+      <div class="field"><label for="pUnit">Starting unit</label><select id="pUnit"><option value="psi">psi</option><option value="kpa">kPa</option><option value="ft">ft of fluid head</option><option value="m">m of fluid head</option></select></div>
+      <div class="field full"><label for="pSG">Specific gravity (relative to water)</label><input id="pSG" type="number" inputmode="decimal" step="0.01" min="0.01" value="1.00"></div>
+    </div>
+    <div class="error" id="pError" role="status"></div>
+    <div class="results" aria-live="polite"><h3>Conversions</h3>
+      <div class="resultrow"><span>Pressure</span><strong id="pPSI">—</strong></div>
+      <div class="resultrow"><span>Metric pressure</span><strong id="pKPA">—</strong></div>
+      <div class="resultrow"><span>Feet of fluid head</span><strong id="pFT">—</strong></div>
+      <div class="resultrow"><span>Metres of fluid head</span><strong id="pM">—</strong></div>
+    </div>
+    <p class="note">Formula: ft head ≈ psi × 2.30666 ÷ SG. Gauge pressure versus elevation/velocity differences matters when comparing two tapping locations. SG = 1 is a water approximation.</p>
+  </section>
+
+  <section class="panel" id="pump" aria-labelledby="pump-title" hidden>
+    <h2 id="pump-title">Pump Performance Estimate</h2>
+    <p class="intro">Use a known or measured flow and differential pressure to estimate developed head, hydraulic horsepower, and input power.</p>
+    <div class="grid">
+      <div class="field"><label for="pumpFlow">Flow rate</label><input id="pumpFlow" type="number" inputmode="decimal" step="any" min="0" value="40"></div>
+      <div class="field"><label for="pumpFlowUnit">Flow units</label><select id="pumpFlowUnit"><option value="gpm">US GPM</option><option value="lmin">L/min</option></select></div>
+      <div class="field"><label for="pumpDP">Pump differential pressure</label><input id="pumpDP" type="number" inputmode="decimal" step="any" min="0" value="12"></div>
+      <div class="field"><label for="pumpDPUnit">Pressure units</label><select id="pumpDPUnit"><option value="psi">psi</option><option value="kpa">kPa</option></select></div>
+      <div class="field"><label for="pumpSG">Specific gravity</label><input id="pumpSG" type="number" inputmode="decimal" step="0.01" min="0.01" value="1.00"></div>
+      <div class="field"><label for="pumpEff">Pump efficiency (%)</label><input id="pumpEff" type="number" inputmode="decimal" step="any" min="1" max="100" value="70"></div>
+      <div class="field full"><label for="motorEff">Motor efficiency (%)</label><input id="motorEff" type="number" inputmode="decimal" step="any" min="1" max="100" value="90"></div>
+    </div>
+    <div class="error" id="pumpError" role="status"></div>
+    <div class="results" aria-live="polite"><h3>Estimated performance</h3>
+      <div class="resultrow"><span>Developed head</span><strong id="pumpHead">—</strong></div>
+      <div class="resultrow"><span>Metric head</span><strong id="pumpHeadM">—</strong></div>
+      <div class="resultrow"><span>Hydraulic horsepower</span><strong id="pumpHyd">—</strong></div>
+      <div class="resultrow"><span>Pump shaft horsepower</span><strong id="pumpShaft">—</strong></div>
+      <div class="resultrow"><span>Motor electrical input</span><strong id="pumpKW">—</strong></div>
+    </div>
+    <p class="note">Equations: water hp ≈ (US GPM × ft head × SG) ÷ 3960; shaft hp = water hp ÷ pump efficiency; electrical kW = shaft hp × 0.7457 ÷ motor efficiency. Differential pressure alone does not tell you actual flow. Calculations assume steady incompressible flow and similar tapping elevations/velocities; verify against the manufacturer's pump curve and motor nameplate.</p>
+  </section>
+
+  <section class="panel" id="boiler" aria-labelledby="boiler-title" hidden>
+    <h2 id="boiler-title">Boiler &amp; DHW</h2>
+    <p class="intro">Two quick water-heating estimates: continuous heating load and storage tank heat-up time.</p>
+    <h3 class="sectiontitle">1. Continuous heating demand</h3>
+    <div class="grid">
+      <div class="field"><label for="heatFlow">Water flow</label><input id="heatFlow" type="number" inputmode="decimal" step="any" min="0" value="3"></div>
+      <div class="field"><label for="heatFlowUnit">Flow units</label><select id="heatFlowUnit"><option value="gpm">US GPM</option><option value="lmin">L/min</option></select></div>
+      <div class="field"><label for="heatRise">Temperature rise</label><input id="heatRise" type="number" inputmode="decimal" step="any" min="0" value="75"></div>
+      <div class="field"><label for="heatRiseUnit">Rise units</label><select id="heatRiseUnit"><option value="f">°F difference</option><option value="c">°C difference</option></select></div>
+      <div class="field full"><label for="boilerEff">Thermal efficiency (%)</label><input id="boilerEff" type="number" inputmode="decimal" step="any" min="1" max="100" value="90"></div>
+    </div>
+    <div class="error" id="heatError" role="status"></div>
+    <div class="results" aria-live="polite"><h3>Continuous demand</h3>
+      <div class="resultrow"><span>Thermal output required</span><strong id="heatBTU">—</strong></div>
+      <div class="resultrow"><span>Thermal output required</span><strong id="heatKW">—</strong></div>
+      <div class="resultrow"><span>Estimated energy input</span><strong id="heatInput">—</strong></div>
+    </div>
+    <h3 class="sectiontitle">2. Storage tank heat-up</h3>
+    <div class="grid">
+      <div class="field"><label for="tankSize">Storage tank volume</label><input id="tankSize" type="number" inputmode="decimal" step="any" min="0" value="120"></div>
+      <div class="field"><label for="tankUnit">Tank volume units</label><select id="tankUnit"><option value="gal">US gallons</option><option value="l">Litres</option></select></div>
+      <div class="field"><label for="tankCold">Starting water temperature</label><input id="tankCold" type="number" inputmode="decimal" step="any" value="55"></div>
+      <div class="field"><label for="tankHot">Target water temperature</label><input id="tankHot" type="number" inputmode="decimal" step="any" value="130"></div>
+      <div class="field"><label for="tankTempUnit">Temperature units</label><select id="tankTempUnit"><option value="f">°F</option><option value="c">°C</option></select></div>
+      <div class="field"><label for="tankOutput">Heating output (BTU/h)</label><input id="tankOutput" type="number" inputmode="decimal" step="any" min="0" value="100000"></div>
+    </div>
+    <div class="error" id="tankError" role="status"></div>
+    <div class="results" aria-live="polite"><h3>Storage estimate</h3>
+      <div class="resultrow"><span>Heat required</span><strong id="tankBTU">—</strong></div>
+      <div class="resultrow"><span>Ideal heat-up time</span><strong id="tankTime">—</strong></div>
+    </div>
+    <p class="note">Continuous demand: BTU/h ≈ 500 × US GPM × Δ°F (water). Tank energy ≈ US gal × 8.34 × Δ°F. These are quick estimates for water, not design sizing: actual recovery is affected by heat exchanger limits, distribution and standby losses, stratification, simultaneous draw, and controls. Tank output is <em>delivered thermal output</em>, not fuel input rating. Check anti-scald requirements and applicable local codes.</p>
+  </section>
+
+  <footer>DocAnkh Apps · Version 1.0 · Approximate engineering calculations, not a substitute for equipment data, site measurements, or code requirements.</footer>
+</main>
+<script>
+(function () {
+  'use strict';
+  // Constants: standard gravity and nominal water SG = 1.
+  const KPA_PER_PSI = 6.894757293;
+  const FT_PER_PSI = 2.3066587;
+  const L_PER_GAL = 3.785411784;
+  const KW_PER_HP = 0.745699872;
+  const BTUH_PER_KW = 3412.141633;
+  const M_PER_FT = 0.3048;
+  const el = id => document.getElementById(id);
+  const num = id => el(id).value.trim() === '' ? NaN : Number(el(id).value);
+  const fmt = (n, digits=2) => Number.isFinite(n) ? n.toLocaleString('en-CA',{maximumFractionDigits:digits,minimumFractionDigits:digits}) : '—';
+  const show = (id, value) => {el(id).textContent=value;};
+  function wipe(ids) { ids.forEach(id => show(id,'—')); }
+  function fail(id,msg,ids) {show(id,msg);wipe(ids);}
+  function validPercent(x) {return Number.isFinite(x) && x>0 && x<=100;}
+  function validPositive(x) {return Number.isFinite(x) && x>0;}
+  function calculatePressure() {
+    const ids=['pPSI','pKPA','pFT','pM'];
+    const v=num('pValue'),sg=num('pSG'), unit=el('pUnit').value;
+    if (!Number.isFinite(v) || !validPositive(sg)) {fail('pError','Enter a valid value and specific gravity greater than zero.',ids);return;}
+    const psi = unit==='psi' ? v : unit==='kpa' ? v/KPA_PER_PSI : unit==='ft' ? v*sg/FT_PER_PSI : v/M_PER_FT*sg/FT_PER_PSI;
+    const ft=psi*FT_PER_PSI/sg;
+    show('pError','');show('pPSI',fmt(psi,3)+' psi');show('pKPA',fmt(psi*KPA_PER_PSI,2)+' kPa');show('pFT',fmt(ft,2)+' ft');show('pM',fmt(ft*M_PER_FT,2)+' m');
+  }
+  function calculatePump() {
+    const ids=['pumpHead','pumpHeadM','pumpHyd','pumpShaft','pumpKW'];
+    let flow=num('pumpFlow'); const dp=num('pumpDP'),sg=num('pumpSG'),eff=num('pumpEff'),motor=num('motorEff');
+    if (!validPositive(flow)||!Number.isFinite(dp)||dp<0||!validPositive(sg)||!validPercent(eff)||!validPercent(motor)) {fail('pumpError','Flow and SG must be positive; ΔP ≥ 0; efficiencies from 0–100%.',ids);return;}
+    if (el('pumpFlowUnit').value==='lmin') flow/=L_PER_GAL;
+    const psi=el('pumpDPUnit').value==='kpa' ? dp/KPA_PER_PSI : dp;
+    const head=psi*FT_PER_PSI/sg;
+    const whp=flow*head*sg/3960;
+    const shp=whp/(eff/100);
+    const kw=shp*KW_PER_HP/(motor/100);
+    show('pumpError','');show('pumpHead',fmt(head,2)+' ft');show('pumpHeadM',fmt(head*M_PER_FT,2)+' m');show('pumpHyd',fmt(whp,3)+' hp');show('pumpShaft',fmt(shp,3)+' hp');show('pumpKW',fmt(kw,3)+' kW');
+  }
+  function calculateHeat() {
+    const ids=['heatBTU','heatKW','heatInput'];
+    let flow=num('heatFlow'),rise=num('heatRise');const eff=num('boilerEff');
+    if (!validPositive(flow)||!Number.isFinite(rise)||rise<0||!validPercent(eff)) {fail('heatError','Flow must be positive; temperature rise ≥ 0; efficiency from 0–100%.',ids);return;}
+    if (el('heatFlowUnit').value==='lmin')flow/=L_PER_GAL;
+    if (el('heatRiseUnit').value==='c')rise*=1.8; // Temperature DIFFERENCE, not absolute temperature.
+    const btuh=500*flow*rise;
+    show('heatError','');show('heatBTU',fmt(btuh,0)+' BTU/h');show('heatKW',fmt(btuh/BTUH_PER_KW,2)+' kW');show('heatInput',fmt(btuh/(eff/100),0)+' BTU/h');
+  }
+  function calculateTank() {
+    const ids=['tankBTU','tankTime'];
+    let volume=num('tankSize'),cold=num('tankCold'),hot=num('tankHot');const output=num('tankOutput');
+    if (!validPositive(volume)||!Number.isFinite(cold)||!Number.isFinite(hot)||hot<=cold||!validPositive(output)) {fail('tankError','Volume and output must be positive; target must exceed starting temperature.',ids);return;}
+    if (el('tankUnit').value==='l')volume/=L_PER_GAL;
+    let rise=hot-cold;
+    if (el('tankTempUnit').value==='c')rise*=1.8;
+    const energy=volume*8.34*rise;
+    const minutes=energy/output*60;
+    show('tankError','');show('tankBTU',fmt(energy,0)+' BTU');
+    show('tankTime',minutes>=60 ? fmt(minutes/60,2)+' h ('+fmt(minutes,0)+' min)' : fmt(minutes,1)+' min');
+  }
+  document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b===button)));
+    document.querySelectorAll('.panel').forEach(p=>{p.hidden=p.id!==button.dataset.tab;});
+  }));
+  document.querySelectorAll('input,select').forEach(field=>field.addEventListener('input',()=>{
+    calculatePressure();calculatePump();calculateHeat();calculateTank();
+  }));
+  calculatePressure();calculatePump();calculateHeat();calculateTank();
+})();
+</script>
+</body>
+</html>
