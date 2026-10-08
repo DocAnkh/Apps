@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<meta name="description" content="Armstrong pump curve finder and field operating-point tools for DocAnkh Plumbing Toolbox.">
+<title>Armstrong Pump Lookup · DocAnkh</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color-scheme:dark;color:#f2f7f7;background:#121212;--muted:#b4c5c7;--accent:#86e5e2;--panel:#202628;--stroke:#394649}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh}a{color:#96ebed}button,input,select,textarea{font:inherit}button{cursor:pointer}
+header{background:#1f1f1f;border-bottom:1px solid #394245;padding:19px 16px 22px}
+.header-inner,.wrap{max-width:900px;margin:auto}
+.back{color:var(--muted);font-size:.9rem;text-decoration:none}
+h1{font-size:clamp(1.7rem,6vw,2.3rem);margin:14px 0 7px;letter-spacing:-.035em}
+h2{font-size:1.3rem;margin:0 0 8px}h3{font-size:1.03rem;margin:0 0 7px}
+p{line-height:1.5}.lead,.muted{color:var(--muted)}.lead{margin:0;font-size:.95rem}
+.wrap{padding:18px 15px 70px}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #396568;color:var(--accent);font-size:.77rem;padding:6px 9px;border-radius:99px;font-weight:700}
+.box{background:var(--panel);border:1px solid var(--stroke);border-radius:17px;padding:18px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{min-width:0;display:flex;flex-direction:column;gap:7px;margin:0 0 12px}
+.field label{font-weight:650;font-size:.88rem;color:#e0ebeb}
+.field input,.field select,.field textarea{width:100%;min-width:0;min-height:46px;border:1px solid #526064;border-radius:10px;background:#121719;color:#f6fbfb;padding:11px;outline-offset:2px}
+.field input:focus,.field select:focus,.field textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--accent)}
+.field small{font-size:.78rem;line-height:1.35;color:var(--muted)}
+.action{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:45px;text-decoration:none;background:var(--accent);color:#102326;font-size:.9rem;font-weight:750;border:none;padding:11px 15px;border-radius:10px}
+.action.secondary{background:#293c40;color:#d9f2f3;border:1px solid #547076}.action.light{background:transparent;color:var(--accent);border:1px solid #548486}
+.actionrow{display:flex;flex-wrap:wrap;gap:9px}
+section+section{margin-top:15px}.note{border-left:3px solid #82ced0;background:#293236;border-radius:5px 10px 10px 5px;padding:10px 12px;font-size:.84rem;color:#d0dfe1;line-height:1.5}
+.notice{border:1px solid #756541;background:#312b22;color:#f5ddb3;border-radius:11px;padding:12px;font-size:.84rem;line-height:1.45;margin-top:13px}
+.tag{color:#afd9dc;font-size:.75rem;font-weight:650;text-transform:uppercase;letter-spacing:.035em}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.chip{font-size:.82rem;background:#2a3235;color:#d7e5e6;border:1px solid #546164;border-radius:99px;padding:8px 11px;min-height:36px}
+.chip[aria-pressed="true"]{background:#86e5e2;border-color:#86e5e2;color:#102326;font-weight:700}
+.resultcard{padding:13px 14px;border:1px solid #435254;border-radius:12px;background:#192123;margin-bottom:10px}
+.resultcard strong{font-size:1.05rem}.resultcard p{margin:6px 0 12px;font-size:.85rem;color:var(--muted)}
+.resultcard .action{min-height:37px;padding:8px 11px;font-size:.81rem}
+.inline-output{background:#12292c;border:1px solid #28696c;border-radius:12px;padding:14px;margin:10px 0}
+.inline-output strong{font-size:1.5rem;color:var(--accent);font-variant-numeric:tabular-nums}
+#chart[hidden],#chartPlaceholder[hidden]{display:none}
+#chart{display:block;width:100%;height:auto;max-height:360px;background:#111719;border:1px solid #435054;border-radius:12px;margin-top:12px}
+#chartPlaceholder{color:var(--muted);text-align:center;margin:22px 0}
+#curveStatus,#lookupStatus,#copyStatus{font-size:.85rem;min-height:1.35em;color:#d9e4e4;margin-top:9px}
+#curveStatus.error,#lookupStatus.error{color:#ffbfb5}
+.links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.links a{display:block;border:1px solid #4c6265;border-radius:11px;padding:13px;text-decoration:none;font-size:.9rem;font-weight:650;background:#1b2b2d}
+footer{color:#a7b5b7;text-align:center;font-size:.79rem;line-height:1.55;margin-top:20px}
+@media(max-width:460px){.grid,.links{grid-template-columns:1fr}.box{padding:15px}.actionrow>.action{flex:1}.field textarea{min-height:82px}}
+</style>
+</head>
+<body>
+<header><div class="header-inner">
+<a class="back" href="../">← Back to Plumbing Toolbox</a>
+<h1>⚙️ Armstrong Pump Lookup</h1>
+<p class="lead">Find manufacturer resources · Check nameplate details · Plot a supplied curve</p>
+</div></header>
+<main class="wrap">
+<div class="box">
+<span class="pill">ARMSTRONG ONLY · V1.0</span>
+<p class="lead" style="margin:11px 0 0">This tool finds official series pages and curve resources. It does <strong>not</strong> have access to Armstrong's serial-number database and does not generate a curve from a model number alone.</p>
+</div>
+<section class="box" aria-labelledby="lookup-title">
+<h2 id="lookup-title">1 · Find your pump</h2>
+<p class="muted">Enter any Armstrong model or series. Results below match known series; you can search Armstrong's full website for everything else.</p>
+<div class="grid">
+ <div class="field"><label for="model">Model / series / part number</label><input id="model" autocomplete="off" placeholder="e.g. 4380, Compass H, 1050"></div>
+ <div class="field"><label for="serial">Serial number (optional)</label><input id="serial" autocomplete="off" placeholder="From the nameplate"><small>Used only for your reference here. Not looked up online.</small></div>
+</div>
+<div class="chips" role="group" aria-label="Pump family filter">
+<button class="chip" aria-pressed="true" data-family="all">All</button><button class="chip" aria-pressed="false" data-family="commercial">Commercial</button><button class="chip" aria-pressed="false" data-family="circulator">Circulators</button><button class="chip" aria-pressed="false" data-family="booster">Booster</button><button class="chip" aria-pressed="false" data-family="fire">Fire</button><button class="chip" aria-pressed="false" data-family="legacy">Legacy</button>
+</div>
+<div class="actionrow"><button class="action" id="find" type="button">Find matching series</button><a class="action secondary" id="siteSearch" href="https://www.google.com/search?q=site%3Aarmstrongfluidtechnology.com%20pump%20performance%20curves" target="_blank" rel="noopener noreferrer">Search Armstrong site ↗</a></div>
+<p id="lookupStatus" role="status" aria-live="polite"></p>
+<div id="matches" aria-live="polite"></div>
+<div class="note">Series-page matches identify a <strong>product family, not a unique performance curve</strong>. Confirm pump size, impeller diameter/trim, speed, and product revision against the original submittal or Armstrong support.</div>
+</section>
+<section class="box" aria-labelledby="links-title">
+<h2 id="links-title">2 · Official curve resources</h2>
+<div class="links">
+<a target="_blank" rel="noopener noreferrer" href="https://armstrongfluidtechnology.com/en/resources-and-tools/planning-and-design/performance-curves">📈 Performance Curve Library ↗</a>
+<a target="_blank" rel="noopener noreferrer" href="https://armstrongfluidtechnology.com/en/resources-and-tools/tools/select-and-configure/adept">🔎 ADEPT Select ↗</a>
+<a target="_blank" rel="noopener noreferrer" href="https://armstrongfluidtechnology.com/en/products-and-services/heating-and-cooling/commercial-pumps">🏭 Commercial Pumps ↗</a>
+<a target="_blank" rel="noopener noreferrer" href="https://armstrongfluidtechnology.com/en/products-and-services/plumbing-and-water-supply/circulator-pumps">💧 Circulators ↗</a>
+<a target="_blank" rel="noopener noreferrer" href="https://armstrongfluidtechnology.com/en/products-and-services/plumbing-and-water-supply">🚰 Boosters ↗</a>
+<a target="_blank" rel="noopener noreferrer" href="https://armstrongfluidtechnology.com/en/products%20and%20services/fire%20safety/fire%20pumps">🚒 Fire Pumps ↗</a>
+</div>
+<p class="muted" style="font-size:.82rem;margin-bottom:0">Official resources open on Armstrong's site. Their curve finder may require additional pump dimensions or selection information.</p>
+</section>
+<section class="box" aria-labelledby="field-title">
+<h2 id="field-title">3 · Field operating point</h2>
+<p class="muted">Calculate pressure-based head from two gauge readings and optionally plot a measured flow point on a supplied curve.</p>
+<div class="grid">
+<div class="field"><label for="suction">Suction gauge (PSI)</label><input id="suction" type="number" inputmode="decimal" step="any" placeholder="e.g. 30"></div>
+<div class="field"><label for="discharge">Discharge gauge (PSI)</label><input id="discharge" type="number" inputmode="decimal" step="any" placeholder="e.g. 55"></div>
+<div class="field"><label for="sg">Specific gravity</label><input id="sg" type="number" inputmode="decimal" step="any" value="1.00" min="0.01"></div>
+<div class="field"><label for="flow">Measured flow (US GPM, optional)</label><input id="flow" type="number" inputmode="decimal" step="any" min="0" placeholder="e.g. 80"></div>
+</div>
+<div class="inline-output"><span class="tag">Pressure-derived differential head</span><br><strong id="headResult">—</strong><div class="muted" id="dpResult" style="margin-top:3px;font-size:.83rem">Enter suction and discharge readings.</div></div>
+<div class="notice">This is a <strong>pressure-only approximation</strong>. Total dynamic head also requires elevation and velocity-head corrections when gauge taps are at different elevations or pipe sizes. Do not infer flow from this head alone.</div>
+</section>
+<section class="box" aria-labelledby="curve-title">
+<h2 id="curve-title">4 · View a curve</h2>
+<p class="muted">Load measured/manufacturer-sourced points exported as a CSV. The chart is drawn <strong>only from your file</strong>; no estimated manufacturer curves are substituted.</p>
+<div class="grid">
+<div class="field"><label for="curveFile">Curve data CSV</label><input type="file" accept=".csv,text/csv,text/plain" id="curveFile"><small>Required headings: <code>flow_gpm,head_ft</code>. At least two numeric rows; US gallons per minute and feet of head.</small></div>
+<div class="field"><label for="source">Source document / curve number</label><input id="source" placeholder="e.g. Armstrong curve PT-..." autocomplete="off"><small>Record the source and configuration before relying on this curve.</small></div>
+</div>
+<p id="curveStatus" aria-live="polite">No curve loaded.</p>
+<div id="chartPlaceholder">Your pump curve appears here after you load a CSV.</div>
+<svg id="chart" role="img" aria-label="User-loaded pump performance curve of head versus flow" viewBox="0 0 680 365" hidden></svg>
+<div class="actionrow" style="margin-top:13px"><button id="clearCurve" class="action secondary" type="button">Clear curve</button><button id="downloadTemplate" class="action light" type="button">Get empty CSV template</button></div>
+<div class="note">The app does not validate whether your uploaded data was copied correctly from an Armstrong curve. Use the original manufacturer PDF/submittal to confirm the pump size, speed, impeller trim, curve number, and units. Curves and serials are <strong>not uploaded or stored by this page</strong>.</div>
+</section>
+<section class="box" aria-labelledby="details-title">
+<h2 id="details-title">5 · Nameplate details for support</h2>
+<div class="grid"><div class="field"><label for="impeller">Impeller diameter / trim</label><input id="impeller" placeholder='e.g. 6.5 in'></div><div class="field"><label for="rpm">Speed (RPM)</label><input id="rpm" inputmode="numeric" placeholder="e.g. 1750"></div></div>
+<div class="actionrow"><button class="action secondary" type="button" id="copyDetails">Copy pump details</button></div>
+<p id="copyStatus" role="status" aria-live="polite"></p>
+<p class="muted" style="font-size:.82rem;margin-bottom:0">You can paste the details into a service request to Armstrong or an authorized representative. This page does not contact or transmit information to Armstrong.</p>
+</section>
+<footer>DocAnkh Plumbing Toolbox · Independent field reference, not affiliated with Armstrong Fluid Technology. Verify results with original manufacturer documentation and site conditions.</footer>
+</main>
+<script>
+(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+const official={
+  commercial:'https://armstrongfluidtechnology.com/en/products-and-services/heating-and-cooling/commercial-pumps',
+  circulator:'https://armstrongfluidtechnology.com/en/products-and-services/plumbing-and-water-supply/circulator-pumps',
+  booster:'https://armstrongfluidtechnology.com/en/products-and-services/plumbing-and-water-supply',
+  fire:'https://armstrongfluidtechnology.com/en/products%20and%20services/fire%20safety/fire%20pumps'
+};
+const series=[
+  {name:'4030',family:'commercial',type:'Base-mounted end-suction',url:'https://armstrongfluidtechnology.com/armstrongindustrial/products/4030-end-suction-base-mounted-pumps'},
+  {name:'4280',family:'commercial',type:'Motor-mounted end-suction',url:'https://armstrongfluidtechnology.com/en/products/4280-motor-mounted-pumps'},
+  {name:'4300',family:'commercial',type:'Vertical in-line',url:'https://armstrongfluidtechnology.com/en/products/4300-vertical-in-line-pumps'},
+  {name:'4360',family:'commercial',type:'Vertical in-line',url:'https://armstrongfluidtechnology.com/products/4360-vertical-in-line-pumps'},
+  {name:'4380',family:'commercial',type:'Vertical in-line',url:'https://armstrongfluidtechnology.com/en/products/4380-vertical-in-line-pumps'},
+  {name:'4600',family:'commercial',type:'Horizontal split case',url:'https://armstrongfluidtechnology.com/en/products/4600-horizontal-split-case-pumps'},
+  {name:'4700',family:'commercial',type:'Vertical multistage',url:'https://armstrongfluidtechnology.com/en/products/4700-vertical-multi-stage-pumps'},
+  {name:'Compass H',family:'circulator',type:'Wet-rotor ECM circulator',url:'https://armstrongfluidtechnology.com/products/design-envelope-compass-h-circulator'},
+  {name:'Compass R',family:'circulator',type:'Dry-rotor ECM circulator',url:'https://armstrongfluidtechnology.com/en/products/design-envelope-compass-r-circulator'},
+  {name:'S&H',family:'circulator',type:'Three-piece circulators',url:'https://armstrongfluidtechnology.com/en/products/s%20and%20h%203-piece%20circulators'},
+  {name:'1050 / 1060',family:'circulator',type:'Three-piece circulators · catalog search',url:official.circulator},
+  {name:'Astro',family:'circulator',type:'Residential circulators · catalog search',url:official.circulator},
+  {name:'6800',family:'booster',type:'Vertical multistage booster systems',url:official.booster},
+  {name:'FireSet',family:'fire',type:'Fire pump families',url:official.fire},
+  {name:'Legacy 4360 / 4380',family:'legacy',type:'Older discontinued VIL configurations',url:'https://armstrongfluidtechnology.com/en/products/legacy-4360-and-4380-close-coupled-vertical-in-line'},
+  {name:'Legacy 4280',family:'legacy',type:'Older discontinued motor-mounted units',url:'https://armstrongfluidtechnology.com/en/products/legacy-4280-motor-mounted-pumps'}
+];
+let family='all', points=null;
+function safeAnchor(url,label){const a=document.createElement('a');a.className='action secondary';a.target='_blank';a.rel='noopener noreferrer';a.href=url;a.textContent=label;return a;}
+function lookup(){
+ const term=$('model').value.trim();const t=term.toLowerCase();
+ const found=series.filter(s=>(family==='all'||s.family===family)&&(!t||(s.name+' '+s.type+' '+s.family).toLowerCase().includes(t)||t.includes(s.name.toLowerCase())&&(s.name.length>=4)));
+ const out=$('matches');out.replaceChildren();
+ $('lookupStatus').textContent=found.length+' known series match'+(found.length===1?'':'es')+(term?' for “'+term+'”':'')+'.';
+ found.forEach(s=>{const d=document.createElement('div');d.className='resultcard';const line=document.createElement('div');const name=document.createElement('strong');name.textContent=s.name;line.append(name);const tag=document.createElement('span');tag.className='tag';tag.textContent=' · '+s.family;line.append(tag);const p=document.createElement('p');p.textContent=s.type+' · Manufacturer catalog page (not the exact curve)';d.append(line,p,safeAnchor(s.url,'Open official page ↗'));out.append(d);});
+ if(!found.length){const p=document.createElement('p');p.className='muted';p.textContent='No indexed series match. Use the site search or Armstrong curve library; this does not mean Armstrong has no such pump.';out.append(p);}
+ const query='site:armstrongfluidtechnology.com '+(term? 'Armstrong pump "'+term+'" curve':'Armstrong pump performance curves');
+ $('siteSearch').href='https://www.google.com/search?q='+encodeURIComponent(query);
+}
+function head(){
+ const si=$('suction').value, di=$('discharge').value, s=$('sg').value;
+ if(si.trim()===''||di.trim()===''||s.trim()===''){ $('headResult').textContent='—'; $('dpResult').textContent='Enter suction and discharge readings.'; draw();return; }
+ const ps=Number(si),pd=Number(di),sg=Number(s);
+ if(!Number.isFinite(ps)||!Number.isFinite(pd)||!Number.isFinite(sg)||sg<=0){$('headResult').textContent='—';$('dpResult').textContent='Check gauge readings and specific gravity.';draw();return;}
+ const delta=pd-ps;
+ if(delta<0){$('headResult').textContent='—';$('dpResult').textContent='Discharge pressure is below suction pressure. Recheck gauge readings.';draw();return;}
+ $('headResult').textContent=(delta*2.3066587/sg).toFixed(2)+' ft';$('dpResult').textContent='ΔP '+delta.toFixed(2)+' PSI · '+(delta*2.3066587/sg*.3048).toFixed(2)+' m';draw();
+}
+function fieldPoint(){
+ let s=$('suction').value,d=$('discharge').value,g=$('sg').value,f=$('flow').value;
+ if([s,d,g,f].some(v=>v.trim()===''))return null;
+ s=Number(s);d=Number(d);g=Number(g);f=Number(f);
+ if(![s,d,g,f].every(Number.isFinite)||g<=0||f<0||d<s)return null;
+ return {q:f,h:(d-s)*2.3066587/g};
+}
+function plotCsv(content){
+ const lines=content.replace(/^\uFEFF/,'').trim().split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+ if(lines.length<3||lines.length>4002)throw Error('Use a header and 2–4000 data rows.');
+ const headers=lines[0].toLowerCase().split(',').map(x=>x.trim());
+ if(headers.length!==2||headers[0]!=='flow_gpm'||headers[1]!=='head_ft')throw Error('CSV must start with: flow_gpm,head_ft');
+ const list=lines.slice(1).map((line,i)=>{
+ const col=line.split(',').map(x=>x.trim());
+ if(col.length!==2||col.some(v=>v===''))throw Error('Invalid two-column data on row '+(i+2));
+ const q=Number(col[0]),h=Number(col[1]);
+ if(!Number.isFinite(q)||!Number.isFinite(h)||q<0||h<0)throw Error('Invalid nonnegative numbers on row '+(i+2));
+ return {q,h};});
+ if(list.length<2)throw Error('At least 2 data rows needed.');
+ list.sort((a,b)=>a.q-b.q);
+ if(list.some((v,i)=>i&&v.q===list[i-1].q))throw Error('Duplicate flow values are not supported.');
+ return list;
+}
+function draw(){
+ const svg=$('chart');svg.replaceChildren();
+ if(!points){svg.hidden=true;$('chartPlaceholder').hidden=false;return;}
+ svg.hidden=false;$('chartPlaceholder').hidden=true;
+ const ns='http://www.w3.org/2000/svg';function el(tag,attrs={},content=''){const n=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));if(content)n.textContent=content;svg.append(n);return n;}
+ const W=680,H=365,L=63,R=20,T=24,B=51;const maxQ=Math.max(1,...points.map(p=>p.q))*1.07,maxH=Math.max(1,...points.map(p=>p.h))*1.12;
+ const x=q=>L+q/maxQ*(W-L-R),y=h=>H-B-h/maxH*(H-T-B);
+ for(let i=0;i<=4;i++){
+ const xx=L+i*(W-L-R)/4, yy=T+i*(H-T-B)/4;
+ el('line',{x1:xx,y1:T,x2:xx,y2:H-B,stroke:'#354247','stroke-width':1});
+ el('line',{x1:L,y1:yy,x2:W-R,y2:yy,stroke:'#354247','stroke-width':1});
+ el('text',{x:xx,y:H-31,fill:'#bfd1d1','font-size':12,'text-anchor':'middle'},(i*maxQ/4).toFixed(0));
+ el('text',{x:53,y:yy+4,fill:'#bfd1d1','font-size':12,'text-anchor':'end'},((4-i)*maxH/4).toFixed(0));
+ }
+ el('polyline',{points:points.map(p=>x(p.q)+','+y(p.h)).join(' '),fill:'none',stroke:'#86e5e2','stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round'});
+ el('text',{x:(L+W-R)/2,y:H-7,fill:'#e2eded','font-size':13,'text-anchor':'middle'},'Flow (US GPM)');
+ el('text',{x:15,y:17,fill:'#e2eded','font-size':13},'Head (ft)');
+ const fp=fieldPoint();if(fp){
+ const inside=fp.q<=maxQ&&fp.h<=maxH;
+ if(inside){el('line',{x1:x(fp.q),y1:T,x2:x(fp.q),y2:H-B,stroke:'#fbbf73','stroke-width':1,'stroke-dasharray':'5 5',opacity:0.65});el('circle',{cx:x(fp.q),cy:y(fp.h),r:7,fill:'#fbbf73',stroke:'#111719','stroke-width':2});}
+ }
+ const desc=document.createElementNS(ns,'desc');desc.textContent='User-loaded performance curve with '+points.length+' points.'+(fp?' Field estimate: '+fp.q.toFixed(1)+' gallons per minute, '+fp.h.toFixed(1)+' feet of head.':'');svg.append(desc);
+}
+$('find').addEventListener('click',lookup);
+$('model').addEventListener('input',lookup);
+$('model').addEventListener('keydown',e=>{if(e.key==='Enter')lookup();});
+document.querySelectorAll('[data-family]').forEach(b=>b.addEventListener('click',()=>{family=b.dataset.family;document.querySelectorAll('[data-family]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));lookup();}));
+['suction','discharge','sg','flow'].forEach(id=>$(id).addEventListener('input',head));
+$('curveFile').addEventListener('change',async e=>{
+ const file=e.target.files&&e.target.files[0];if(!file)return;
+ try{if(file.size>1024*1024)throw Error('CSV is too large (maximum 1 MB).');const candidate=plotCsv(await file.text());points=candidate;$('curveStatus').classList.remove('error');$('curveStatus').textContent='Loaded '+points.length+' data points from '+file.name+'. User-supplied data; not independently verified.';draw();}
+ catch(err){points=null;$('curveStatus').classList.add('error');$('curveStatus').textContent=err.message;draw();}
+});
+$('clearCurve').addEventListener('click',()=>{points=null;$('curveFile').value='';$('curveStatus').textContent='No curve loaded.';$('curveStatus').classList.remove('error');draw();});
+$('downloadTemplate').addEventListener('click',()=>{
+ const blob=new Blob(['flow_gpm,head_ft\n'],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='armstrong_curve_blank_template.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+$('copyDetails').addEventListener('click',async()=>{
+ const read=id=>$(id).value.trim()||'Not recorded';
+ const text=['Armstrong pump identification (unverified)','Model / series: '+read('model'),'Serial: '+read('serial'),'Impeller: '+read('impeller'),'Speed: '+read('rpm'),'Source curve / submittal: '+read('source'),'Suction gauge (PSI): '+read('suction'),'Discharge gauge (PSI): '+read('discharge'),'Specific gravity: '+read('sg'),'Measured flow (US GPM): '+read('flow'),'Pressure-derived head: '+$('headResult').textContent,'Confirm actual installed pump configuration with Armstrong.'].join('\n');
+ try{await navigator.clipboard.writeText(text);$('copyStatus').textContent='Pump details copied.';}catch(e){$('copyStatus').textContent='Copy unavailable in this browser. You can select the fields manually.';}
+});
+lookup();head();draw();
+})();
+</script>
+</body>
+</html>
