@@ -1,100 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DocAnkh Apps</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0e19">
+<title>Prism Drift — An Idle Spark Game</title>
 <style>
-body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#121212;
-    color:white;
-    text-align:center;
-}
-
-header{
-    background:#1f1f1f;
-    padding:30px;
-    font-size:36px;
-    font-weight:bold;
-}
-
-p{
-    color:#bbbbbb;
-}
-
-.container{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:20px;
-    max-width:900px;
-    margin:40px auto;
-    padding:20px;
-}
-
-.card{
-    background:#242424;
-    border-radius:18px;
-    padding:30px;
-    transition:.25s;
-    cursor:pointer;
-    text-decoration:none;
-    color:white;
-}
-
-.card:hover{
-    transform:scale(1.05);
-    background:#333333;
-}
-
-.icon{
-    font-size:48px;
-}
-
-.title{
-    font-size:22px;
-    margin-top:15px;
-}
+:root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+button{font:inherit;touch-action:manipulation;cursor:pointer}button:disabled{cursor:default;opacity:.44}button:focus-visible{outline:2px solid #b39cff;outline-offset:3px}
+.wrap{width:min(1120px,100%);margin:0 auto;padding:18px clamp(12px,3vw,28px) 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.logo{display:flex;align-items:center;gap:11px}.brand-icon{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#39346b,#133d4a);box-shadow:0 0 35px #8866ff23}.brand-icon svg{width:29px;height:29px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:var(--muted);font-size:10px;font-weight:800}.brand h1{font-size:22px;letter-spacing:-.03em;margin:0;font-weight:800}.small-btn{color:#d6d8ed;background:#222638;border:1px solid #373d53;padding:9px 12px;border-radius:11px}.small-btn:hover{background:#30364e}
+.layout{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);gap:18px;align-items:start}.board-shell,.side{background:linear-gradient(160deg,#171b2c,#111523);border:1px solid #303549;border-radius:19px;box-shadow:0 16px 55px #0005;overflow:hidden}.board-top{padding:15px 17px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}.stage-line{display:flex;align-items:baseline;gap:9px}.stage-name{font-size:12px;color:var(--muted)}.stage-number{font-size:21px;font-weight:800}.bank{font-variant-numeric:tabular-nums;text-align:right;font-size:21px;font-weight:850;color:#f1d59f}.bank small{font-size:10px;display:block;text-transform:uppercase;letter-spacing:.14em;color:#a5a7b9}.progress{height:5px;background:#2c2c42;overflow:hidden}.progress>div{background:linear-gradient(90deg,#6ae3dc,#b294fc);height:100%;width:0%;transition:width .15s}
+.canvas-wrap{position:relative;height:clamp(335px,57vh,610px);min-height:335px;overflow:hidden;background:#0e1422;touch-action:manipulation}.canvas-wrap:after{content:"";pointer-events:none;position:absolute;inset:0;box-shadow:inset 0 0 55px #050a17a6}canvas{display:block;width:100%;height:100%;touch-action:manipulation}.hint{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;color:#e4eaf4ae;pointer-events:none;background:#0e15259e;border:1px solid #ffffff1a;padding:6px 10px;border-radius:50px}
+.board-actions{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:12px}.rush{width:100%;background:linear-gradient(110deg,#5c5ce8,#9468ec);border:0;color:#fff;padding:15px;border-radius:11px;font-weight:850;letter-spacing:.03em;box-shadow:0 7px 25px #6655da35;user-select:none;-webkit-user-select:none}.rush.active{background:linear-gradient(110deg,#2fc9c4,#725be8)}.speed-label{font-size:11px;color:var(--muted);text-align:right;min-width:70px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}.metric{text-align:center;padding:12px 6px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric b{display:block;font-size:15px;font-variant-numeric:tabular-nums}.metric span{color:var(--muted);font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+.tabs{display:flex;padding:7px;gap:6px;border-bottom:1px solid var(--line)}.tab{flex:1;padding:11px 7px;border:0;border-radius:10px;color:#a8b0c9;background:none;font-size:12px;font-weight:750}.tab[aria-selected="true"]{background:#30304e;color:#f4efff;box-shadow:inset 0 0 0 1px #69608e}.tab:hover:not([aria-selected="true"]){background:#23283b}.tab-content{padding:15px;min-height:410px}.section-title{margin:2px 0 4px;font-size:17px;font-weight:850;letter-spacing:-.02em}.section-sub{color:var(--muted);font-size:12px;margin:0 0 17px}.tier{border:1px solid #363a53;background:#1c2031;border-radius:13px;padding:12px;margin-bottom:10px}.tier-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.tier-name{display:flex;align-items:center;gap:10px}.spark-emblem{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#111725}.spark-emblem svg{width:22px;height:22px}.tier-info strong{display:block;font-size:13px}.tier-info small{color:var(--muted);font-size:11px}.tier-count{text-align:right;font-size:20px;font-weight:850;color:#e8e9fb}.tier-count small{display:block;font-size:10px;font-weight:500;color:var(--muted)}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.btn{border:1px solid #54557b;background:#34395e;color:#ecefff;border-radius:9px;padding:10px 4px;font-size:11px;min-height:44px;font-weight:750}.btn b{display:block;font-size:12px}.btn.primary{background:#3d60d8;border-color:#6082e8;color:white}.btn.gold{background:#473a39;border-color:#6d5945;color:#ffdd9d}.btn:hover:not(:disabled){filter:brightness(1.17)}.upgrade{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:#1c2031;border:1px solid #353a52;border-radius:12px;padding:13px}.upgrade-symbol{display:grid;place-items:center;min-width:38px;height:38px;border-radius:10px;background:#292e48;font-size:19px}.upgrade-body{flex:1;min-width:0}.upgrade-body strong{display:block;font-size:13px}.upgrade-body small{display:block;color:var(--muted);font-size:11px}.upgrade button{min-width:90px;max-width:110px}.pill{display:inline-block;border-radius:100px;border:1px solid #3b4a57;color:#89ded6;background:#173139;font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 8px}.milestone{text-align:center;padding:28px 15px;border-radius:14px;border:1px solid #373653;background:radial-gradient(circle at top,#332b58,#171b2c 70%)}.milestone-icon{font-size:42px;margin-bottom:12px}.milestone h3{margin:6px 0;font-size:20px}.milestone p{color:#b7b6cb;font-size:12px;line-height:1.65}.milestone .btn{width:100%;padding:15px;font-size:14px}.note{font-size:11px;line-height:1.5;color:#8c97ad;padding:8px 4px}.foot{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-top:14px;color:#7f88a4;font-size:11px}.toast{position:fixed;z-index:4;left:50%;top:24px;transform:translateX(-50%) translateY(-20px);border:1px solid #6f7194;border-radius:12px;background:#272b46;color:#fff;padding:11px 20px;box-shadow:0 14px 40px #0009;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:790px){.wrap{padding-top:12px}.layout{grid-template-columns:1fr}.canvas-wrap{height:clamp(330px,49vh,520px)}.tab-content{min-height:0}.top{margin-bottom:12px}.board-shell,.side{border-radius:15px}}@media(max-width:430px){.brand h1{font-size:20px}.bank{font-size:18px}.metrics{font-size:12px}.tier{padding:10px}.tab-content{padding:12px}.buttons{gap:5px}.btn{font-size:10px}.btn b{font-size:11px}}
 </style>
 </head>
-
 <body>
-
-<header>
-🧰 DocAnkh Apps
-<p>My personal collection of apps</p>
-</header>
-
-<div class="container">
-
-<div class="card">
-<div class="icon">♟️</div>
-<div class="title">Chess</div>
+<div class="wrap">
+<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
+<main class="layout">
+<section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div><div class="metric"><b id="broken">0 / 0</b><span>Shards broken</span></div></div></section>
+<section class="side" aria-label="Upgrades and merging"><div class="tabs" role="tablist" aria-label="Game menus"><button class="tab" data-tab="sparks" role="tab" aria-selected="true">SPARKS</button><button class="tab" data-tab="upgrades" role="tab" aria-selected="false">UPGRADES</button><button class="tab" data-tab="ascend" role="tab" aria-selected="false">ASCEND</button></div><div class="tab-content" id="panel"></div></section>
+</main>
+<div class="foot"><span>Saved automatically on this device · Play offline</span><button class="small-btn" id="reset">Reset game</button></div>
 </div>
-
-<a class="card" href="dnd/">
-<div class="icon">🎲</div>
-<div class="title">D&D Tools</div>
-</a>
-
-<a class="card" href="image/">
-<div class="icon">🎨</div>
-<div class="title">Image Tools</div>
-</a>
-
-<div class="card">
-<div class="icon">🧮</div>
-<div class="title">Utilities</div>
-</div>
-
-<a class="card" href="plumbing/">
-  <div class="icon">🔧</div>
-  <div class="title">Plumbing Toolbox</div>
-</a>
-
-</div>
-
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{'use strict';
+const KEY='prism-drift-save-v1', MAX_TIERS=5, MAX_SPARKS=44;
+const colors=['#7be9de','#d8a6fd','#f9d69d','#83adfd','#f7a9bf','#b8ed9d'];
+const names=['First Light','Soft Orbit','Aurora Tide','Velvet Horizon','Crystal Bloom','Endless Morning'];
+const tierNames=['Breeze','Glimmer','Nova','Comet','Supernova'];
+const tierColors=['#8fd9ff','#9df1b8','#ffd996','#dca5ff','#ff91be'];
+const $=id=>document.getElementById(id),fmt=n=>{if(!Number.isFinite(n))return '∞';if(n<1e3)return Math.floor(n).toLocaleString('en-US');let p=Math.min(Math.floor(Math.log10(n)/3),10);return (n/Math.pow(1000,p)).toFixed(n/Math.pow(1000,p)<10?2:1).replace(/\.0+$/,'')+['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No'][p]},rng=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0},auras:0,ascensions:0,autoMerge:false,muted:true,savedAt:Date.now()});
+let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})}}}}catch(e){}
+for(let i=0;i<MAX_TIERS;i++){state.tiers[i]=clamp(Math.floor(Number(state.tiers[i])||0),0,MAX_SPARKS);state.levels[i]=clamp(Math.floor(Number(state.levels[i])||0),0,100000)}
+state.stage=clamp(Math.floor(Number(state.stage)||1),1,1e6);state.cash=Math.max(0,Number(state.cash)||0);state.earned=Math.max(0,Number(state.earned)||0);state.auras=Math.max(0,Math.floor(Number(state.auras)||0));state.ascensions=Math.max(0,Math.floor(Number(state.ascensions)||0));
+const canvas=$('field'),ctx=canvas.getContext('2d',{alpha:false});let W=360,H=480,dpr=1,sparks=[],shards=[],particles=[],backgroundStars=[],dead=0,total=0,queueStage=false,gameTime=0,tab='sparks',rush=false,lastFrame=0,lastUI=0,lastPanel=0,lastSave=0,recentGains=0,recentTimer=0,lastDps=0,lastTap=0,toastHandle=0,audio=null;
+const totalSparks=()=>state.tiers.reduce((a,b)=>a+b,0),tierPower=i=>(1.6*Math.pow(3.4,i))*(1+state.levels[i]*.38)*(1+state.upgrades.damage*.28)*(1+state.auras*.18),sparkVelocity=i=>rng(83,119)*(1+state.upgrades.speed*.18)*(1+i*.07),fortune=()=>1+state.upgrades.fortune*.24+state.auras*.14;
+const buyCost=i=>Math.floor(20*Math.pow(6.2,i)*Math.pow(1.33,state.tiers[i])*Math.pow(1.11,state.stage>1?Math.min(state.stage-1,10):0));
+const levelCost=i=>Math.floor(20*Math.pow(5.3,i)*Math.pow(1.43,state.levels[i]));
+const upgradeCost=id=>Math.floor(({damage:90,speed:85,fortune:100})[id]*Math.pow(1.78,state.upgrades[id]));
+const mergeNeed=2;
+function renderPanel(){let html='';if(tab==='sparks'){
+ html='<h2 class="section-title">Build your constellation</h2><p class="section-sub">Buy sparks, power them up, and merge pairs to create stronger ones.</p>';
+ const active=totalSparks();for(let i=0;i<MAX_TIERS;i++){let owned=state.tiers[i],prior=i===0||state.tiers.slice(i).some(n=>n>0)||state.levels[i]>0||state.earned>200*Math.pow(6,i);if(!prior)continue;let buy=buyCost(i),level=levelCost(i),canBuy=state.cash>=buy&&active<MAX_SPARKS,canLevel=state.cash>=level&&owned>0,canMerge=owned>=mergeNeed&&i<MAX_TIERS-1;
+ html+=`<div class="tier"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem"><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 2 26 26 15 20 4 26Z" fill="${tierColors[i]}"/></svg></div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1}</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>ADD ONE<b>${fmt(buy)} ✧</b></button><button class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>LEVEL UP<b>${fmt(level)} ✧</b></button><button class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>MERGE ×2<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need 2'}</b></button></div></div>`;
+ }
+ html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Every pair you merge turns into one higher-tier spark. Sparks keep moving and earning even when you aren't tapping.</p>`;
+ }else if(tab==='upgrades'){
+ html='<h2 class="section-title">Make everything brighter</h2><p class="section-sub">Permanent upgrades until your next ascension.</p>';
+ const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Orbit','Sparks travel 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level']];
+ for(const [id,ico,title,desc] of opts){const c=upgradeCost(id);html+=`<div class="upgrade"><span class="upgrade-symbol">${ico}</span><div class="upgrade-body"><strong>${title} · Lv ${state.upgrades[id]}</strong><small>${desc}</small></div><button class="btn primary" data-act="upgrade" data-id="${id}" ${state.cash>=c?'':'disabled'}>UPGRADE<b>${fmt(c)} ✧</b></button></div>`}
+ const c=3500;html+=`<div class="upgrade"><span class="upgrade-symbol">∞</span><div class="upgrade-body"><strong>Auto Merge</strong><small>${state.autoMerge?'On · merges matching pairs automatically':'A convenience upgrade, retained after ascension'}</small></div><button class="btn" data-act="auto" ${state.autoMerge||state.cash<c?'disabled':''}>${state.autoMerge?'OWNED':'UNLOCK'}<b>${state.autoMerge?'✓':fmt(c)+' ✧'}</b></button></div>`;
+ html+='<p class="note">Tip: for faster progress, alternate between buying more sparks and raising their power.</p>';
+ }else{
+ const reward=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000)),ready=state.stage>=5&&reward>0;
+ html=`<h2 class="section-title">A new beginning</h2><p class="section-sub">Restart stronger, with permanent auras that boost every future run.</p><div class="milestone"><div class="milestone-icon">✺</div><span class="pill">${state.auras} permanent auras</span><h3>Ascend into light</h3><p>Ascend to reset your sparks, upgrades, canvases, and prisms, but earn <strong>+${fmt(reward)} aura${reward===1?'':'s'}</strong>. Each aura grants <strong>+18% spark damage</strong> and <strong>+14% earnings</strong> forever.<br><br>Available from Canvas 5 onward.</p><button class="btn primary" data-act="ascend" ${ready?'':'disabled'}>ASCEND FOR +${fmt(reward)} AURAS</button></div><p class="note">Lifetime runs: ${state.ascensions}. Your Auto Merge unlock and existing auras survive ascension.</p>`;
+ }
+ $('panel').innerHTML=html;
+}
+function updateLabels(){ $('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks();$('broken').textContent=`${dead} / ${total}`;$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';}
+function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
+function save(){state.savedAt=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function newSpark(i){const ang=rng(-Math.PI,Math.PI),v=sparkVelocity(i),x=rng(W*.18,W*.82),y=rng(H*.18,H*.82);return{x,y,vx:Math.cos(ang)*v,vy:Math.sin(ang)*v,tier:i,hitDelay:rng(0,.15),wandering:0,path:[],spin:rng(0,6.28)}}
+function syncSparks(){let next=[];for(let i=0;i<MAX_TIERS;i++){let existing=sparks.filter(s=>s.tier===i);let n=state.tiers[i];for(let j=0;j<n;j++)next.push(existing[j]||newSpark(i))}sparks=next;}
+function resize(){let rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;let w=rect.width,h=rect.height;if(Math.abs(W-w)<1&&Math.abs(H-h)<1)return;const oldW=W,oldH=H;W=w;H=h;dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);for(const s of sparks){s.x=s.x/oldW*W;s.y=s.y/oldH*H;s.path=[]}createStage(true)}
+function makeStars(){backgroundStars=Array.from({length:60},()=>({x:rng(0,W),y:rng(0,H),r:rng(.3,1.2),a:rng(.08,.24)}))}
+function createStage(fromResize=false){makeStars();shards=[];let cell=clamp(Math.min(W,H)/7.7,37,69),cols=Math.ceil(W/cell)+1,rows=Math.ceil(H/cell)+1,pts=[];for(let y=0;y<=rows;y++){let ar=[];for(let x=0;x<=cols;x++)ar.push([x*cell+rng(-.22,.22)*cell,y*cell+rng(-.22,.22)*cell]);pts.push(ar)}
+ const makeTri=(a,b,c)=>{let center=[(a[0]+b[0]+c[0])/3,(a[1]+b[1]+c[1])/3],tone=Math.floor(rng(0,colors.length));let base=(.93+state.stage*.18)*(rng(.72,1.47));let hp=Math.max(1,base);shards.push({a,b,c,x:center[0],y:center[1],hp,maxHp:hp,hue:colors[tone],alive:true,alpha:rng(.72,1),phase:rng(0,6.28)});};
+ for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){let p=pts[y][x],q=pts[y][x+1],r=pts[y+1][x],s=pts[y+1][x+1];if((x+y)%2){makeTri(p,q,r);makeTri(q,s,r)}else{makeTri(p,q,s);makeTri(p,s,r)}}
+ total=shards.length;dead=0;if(fromResize)announce('Canvas adjusted');}
+function pointInTriangle(px,py,t){const s=(a,b,c)=>(px-c[0])*(a[1]-c[1])-(a[0]-c[0])*(py-c[1]);let a=s(t.a,t.b,t.c),b=s(t.b,t.c,t.a),c=s(t.c,t.a,t.b);return (a>=0&&b>=0&&c>=0)||(a<=0&&b<=0&&c<=0)}
+function particleBurst(t,count=7){for(let i=0;i<count;i++){let a=rng(0,Math.PI*2),v=rng(25,135);particles.push({x:t.x,y:t.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rng(.25,.68),maxLife:.68,color:t.hue,r:rng(1,3.2)})}if(particles.length>350)particles.splice(0,particles.length-350)}
+function ping(){if(state.muted)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();if(Math.random()>.065)return;let osc=audio.createOscillator(),gain=audio.createGain(),now=audio.currentTime;osc.type='sine';osc.frequency.setValueAtTime(rng(450,850),now);osc.frequency.exponentialRampToValueAtTime(rng(270,470),now+.07);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.018,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+.095);osc.connect(gain).connect(audio.destination);osc.start(now);osc.stop(now+.1)}catch(e){}}
+function hitShard(t,damage,sparkTier){if(!t.alive)return;const reward=(.7+state.stage*.22)*fortune()*(1+sparkTier*.7);const amount=reward*Math.min(3,Math.max(.3,damage));state.cash+=amount;state.earned+=amount;recentGains+=amount;t.hp-=damage;if(t.hp<=0){t.alive=false;dead++;let bonus=(1.7+state.stage*.34)*fortune();state.cash+=bonus;state.earned+=bonus;recentGains+=bonus;particleBurst(t,9);ping();if(dead>=total)queueStage=true}else if(Math.random()<.34)particleBurst(t,2)}
+function nearestAlive(x,y){let chosen=null,d=Infinity;for(const t of shards)if(t.alive){let v=(t.x-x)**2+(t.y-y)**2;if(v<d){d=v;chosen=t}}return chosen}
+function tick(dt){gameTime+=dt;const accel=rush?3:1;let elapsed=dt*accel;for(const s of sparks){let v=sparkVelocity(s.tier);let len=Math.hypot(s.vx,s.vy)||1;s.vx=s.vx/len*v;s.vy=s.vy/len*v;s.hitDelay-=elapsed;s.wandering+=elapsed;
+  let steps=Math.max(1,Math.ceil(elapsed/.016));let slice=elapsed/steps;for(let k=0;k<steps;k++){
+   s.x+=s.vx*slice;s.y+=s.vy*slice;
+   if(s.x<8||s.x>W-8){s.vx*=-1;s.x=clamp(s.x,8,W-8)}if(s.y<8||s.y>H-8){s.vy*=-1;s.y=clamp(s.y,8,H-8)}
+   if(s.hitDelay<=0){let found=null;for(const t of shards){if(t.alive&&Math.abs(t.x-s.x)<72&&Math.abs(t.y-s.y)<72&&pointInTriangle(s.x,s.y,t)){found=t;break}}
+    if(found){hitShard(found,tierPower(s.tier),s.tier);s.hitDelay=.065;s.wandering=0;let ang=Math.atan2(s.vy,s.vx)+rng(-.9,.9);s.vx=Math.cos(ang)*v;s.vy=Math.sin(ang)*v;}}
+  }
+  if(s.wandering>1.1){let t=nearestAlive(s.x,s.y);if(t){let ang=Math.atan2(t.y-s.y,t.x-s.x),cur=Math.atan2(s.vy,s.vx);let diff=Math.atan2(Math.sin(ang-cur),Math.cos(ang-cur));let step=clamp(diff,-dt*2.7,dt*2.7);s.vx=Math.cos(cur+step)*v;s.vy=Math.sin(cur+step)*v}}
+  s.path.push([s.x,s.y]);if(s.path.length>9)s.path.shift();s.spin+=elapsed*3;
+ }
+ for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*elapsed;p.y+=p.vy*elapsed;p.vx*=.985;p.vy*=.985;p.life-=elapsed;if(p.life<=0)particles.splice(i,1)}
+ if(queueStage){queueStage=false;const bonus=Math.floor(16*Math.pow(state.stage,1.42)*fortune());state.cash+=bonus;state.earned+=bonus;state.stage++;createStage();announce('Canvas cleared! +' +fmt(bonus)+' prisms ✧');save()}
+ if(state.autoMerge){for(let i=0;i<MAX_TIERS-1;i++)if(state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();renderPanel()}}
+ recentTimer+=dt;if(recentTimer>=1){lastDps=recentGains/recentTimer;recentGains=0;recentTimer=0}
+}
+function draw(){ctx.clearRect(0,0,W,H);let bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#161a31');bg.addColorStop(.55,'#111c2c');bg.addColorStop(1,'#1b1830');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ for(const star of backgroundStars){ctx.globalAlpha=star.a;ctx.fillStyle='#deecff';ctx.beginPath();ctx.arc(star.x,star.y,star.r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
+ for(const t of shards)if(t.alive){ctx.globalAlpha=t.alpha;ctx.beginPath();ctx.moveTo(t.a[0],t.a[1]);ctx.lineTo(t.b[0],t.b[1]);ctx.lineTo(t.c[0],t.c[1]);ctx.closePath();ctx.fillStyle=t.hue;ctx.fill();ctx.strokeStyle='#13182f';ctx.lineWidth=1.35;ctx.stroke();if(t.hp<t.maxHp){ctx.globalAlpha=.26;ctx.strokeStyle='#f3fcff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(t.x,t.y);ctx.lineTo(t.b[0],t.b[1]);ctx.stroke()}}ctx.globalAlpha=1;
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.maxLife);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
+ for(const s of sparks){let color=tierColors[s.tier];for(let i=1;i<s.path.length;i++){let a=s.path[i-1],b=s.path[i];ctx.globalAlpha=i/s.path.length*.32;ctx.strokeStyle=color;ctx.lineWidth=1+s.tier*.2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}ctx.globalAlpha=1;ctx.save();ctx.translate(s.x,s.y);ctx.rotate(Math.atan2(s.vy,s.vx)+Math.PI/2);ctx.shadowBlur=18;ctx.shadowColor=color;ctx.fillStyle=color;const r=5.2+s.tier*1.5;ctx.beginPath();ctx.moveTo(0,-r*1.5);ctx.lineTo(-r,r);ctx.lineTo(0,r*.34);ctx.lineTo(r,r);ctx.closePath();ctx.fill();ctx.restore()}
+}
+function loop(time){if(!lastFrame)lastFrame=time;const dt=clamp((time-lastFrame)/1000,0,.05);lastFrame=time;tick(dt);draw();if(time-lastUI>220){updateLabels();lastUI=time}if(time-lastPanel>650){renderPanel();lastPanel=time}if(time-lastSave>9000){save();lastSave=time}requestAnimationFrame(loop)}
+$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;syncSparks();ok=true}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;state=next;sparks=[];syncSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();renderPanel();updateLabels()}});
+for(const b of document.querySelectorAll('.tab'))b.addEventListener('click',()=>{tab=b.dataset.tab;for(const t of document.querySelectorAll('.tab'))t.setAttribute('aria-selected',String(t===b));renderPanel()});
+const setRush=on=>{rush=on;$('rush').classList.toggle('active',rush);$('rush').textContent=rush?'✦ 3× SPEED ACTIVE':'HOLD FOR 3× SPEED';updateLabels()};let rushBtn=$('rush');rushBtn.addEventListener('pointerdown',e=>{e.preventDefault();rushBtn.setPointerCapture?.(e.pointerId);setRush(true)});['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(a=>rushBtn.addEventListener(a,()=>setRush(false)));window.addEventListener('blur',()=>setRush(false));
+canvas.addEventListener('pointerdown',e=>{let now=performance.now();if(now-lastTap<60)return;lastTap=now;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let target=null,best=65*65;for(const t of shards)if(t.alive){let d=(t.x-x)**2+(t.y-y)**2;if(d<best){best=d;target=t}}if(target){hitShard(target,Math.max(1.5,tierPower(0)*.9),0);particleBurst(target,4)}});
+$('sound').addEventListener('click',()=>{state.muted=!state.muted;$('sound').textContent=state.muted?'♫ Off':'♫ On';save()});$('sound').textContent=state.muted?'♫ Off':'♫ On';
+$('reset').addEventListener('click',()=>{if(!confirm('Reset all progress, including permanent auras? This cannot be undone.'))return;state=fresh();sparks=[];syncSparks();createStage();save();renderPanel();updateLabels();announce('A fresh canvas awaits')});
+const away=clamp((Date.now()-(Number(state.savedAt)||Date.now()))/1000,0,4*3600);if(away>20){const rate=state.tiers.reduce((v,n,i)=>v+n*tierPower(i)*1.15,0)*fortune();const offline=Math.floor(away*rate*.15);state.cash+=offline;state.earned+=offline;setTimeout(()=>announce('While you were away: +'+fmt(offline)+' prisms'),250)}
+syncSparks();resize();renderPanel();updateLabels();if('ResizeObserver'in window)new ResizeObserver(resize).observe(canvas);window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else lastFrame=0});window.addEventListener('pagehide',save);requestAnimationFrame(loop);
+})();
+</script>
 </body>
 </html>
