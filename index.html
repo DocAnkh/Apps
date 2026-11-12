@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e19">
-<title>Prism Drift v0.8 — An Idle Spark Game</title>
+<title>Prism Drift v0.9 — An Idle Spark Game</title>
 <style>
 :root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
@@ -13,16 +13,16 @@ button{font:inherit;touch-action:manipulation;cursor:pointer}button:disabled{cur
 .layout{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);gap:18px;align-items:start}.board-shell,.side{background:linear-gradient(160deg,#171b2c,#111523);border:1px solid #303549;border-radius:19px;box-shadow:0 16px 55px #0005;overflow:hidden}.board-top{padding:15px 17px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}.stage-line{display:flex;align-items:baseline;gap:9px}.stage-name{font-size:12px;color:var(--muted)}.stage-number{font-size:21px;font-weight:800}.bank{font-variant-numeric:tabular-nums;text-align:right;font-size:21px;font-weight:850;color:#f1d59f}.bank small{font-size:10px;display:block;text-transform:uppercase;letter-spacing:.14em;color:#a5a7b9}.progress{height:5px;background:#2c2c42;overflow:hidden}.progress>div{background:linear-gradient(90deg,#6ae3dc,#b294fc);height:100%;width:0%;transition:width .15s}
 .canvas-wrap{position:relative;height:clamp(410px,66vh,750px);min-height:335px;overflow:hidden;background:#0e1422;touch-action:manipulation}.canvas-wrap:after{content:"";pointer-events:none;position:absolute;inset:0;box-shadow:inset 0 0 55px #050a17a6}canvas{display:block;width:100%;height:100%;touch-action:manipulation}.hint{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);white-space:normal;text-align:center;max-width:calc(100% - 22px);font-size:11px;color:#e4eaf4ae;pointer-events:none;background:#0e15259e;border:1px solid #ffffff1a;padding:6px 10px;border-radius:50px}
 .board-actions{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:12px}.rush{width:100%;background:linear-gradient(110deg,#5c5ce8,#9468ec);border:0;color:#fff;padding:15px;border-radius:11px;font-weight:850;letter-spacing:.03em;box-shadow:0 7px 25px #6655da35;user-select:none;-webkit-user-select:none}.rush.active{background:linear-gradient(110deg,#2fc9c4,#725be8)}.speed-label{font-size:11px;color:var(--muted);text-align:right;min-width:70px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}.metric{text-align:center;padding:12px 6px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric b{display:block;font-size:15px;font-variant-numeric:tabular-nums}.metric span{color:var(--muted);font-size:10px;letter-spacing:.04em;text-transform:uppercase}
-.tabs{display:flex;padding:7px;gap:6px;border-bottom:1px solid var(--line)}.tab{flex:1;padding:11px 7px;border:0;border-radius:10px;color:#a8b0c9;background:none;font-size:12px;font-weight:750}.tab[aria-selected="true"]{background:#30304e;color:#f4efff;box-shadow:inset 0 0 0 1px #69608e}.tab:hover:not([aria-selected="true"]){background:#23283b}.tab-content{padding:15px;min-height:410px}.section-title{margin:2px 0 4px;font-size:17px;font-weight:850;letter-spacing:-.02em}.section-sub{color:var(--muted);font-size:12px;margin:0 0 17px}.tier{border:1px solid #363a53;background:#1c2031;border-radius:13px;padding:12px;margin-bottom:10px}.tier-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.tier-name{display:flex;align-items:center;gap:10px}.spark-emblem{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#111725}.spark-emblem svg{width:22px;height:22px}.tier-info strong{display:block;font-size:13px}.tier-info small{color:var(--muted);font-size:11px}.tier-count{text-align:right;font-size:20px;font-weight:850;color:#e8e9fb}.tier-count small{display:block;font-size:10px;font-weight:500;color:var(--muted)}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.btn{border:1px solid #54557b;background:#34395e;color:#ecefff;border-radius:9px;padding:10px 4px;font-size:11px;min-height:44px;font-weight:750}.btn b{display:block;font-size:12px}.btn.primary{background:#3d60d8;border-color:#6082e8;color:white}.btn.gold{background:#473a39;border-color:#6d5945;color:#ffdd9d}.btn:hover:not(:disabled){filter:brightness(1.17)}.upgrade{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:#1c2031;border:1px solid #353a52;border-radius:12px;padding:13px}.upgrade-symbol{display:grid;place-items:center;min-width:38px;height:38px;border-radius:10px;background:#292e48;font-size:19px}.upgrade-body{flex:1;min-width:0}.upgrade-body strong{display:block;font-size:13px}.upgrade-body small{display:block;color:var(--muted);font-size:11px}.upgrade button{min-width:90px;max-width:110px}.pill{display:inline-block;border-radius:100px;border:1px solid #3b4a57;color:#89ded6;background:#173139;font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 8px}.milestone{text-align:center;padding:28px 15px;border-radius:14px;border:1px solid #373653;background:radial-gradient(circle at top,#332b58,#171b2c 70%)}.milestone-icon{font-size:42px;margin-bottom:12px}.milestone h3{margin:6px 0;font-size:20px}.milestone p{color:#b7b6cb;font-size:12px;line-height:1.65}.milestone .btn{width:100%;padding:15px;font-size:14px}.note{font-size:11px;line-height:1.5;color:#8c97ad;padding:8px 4px}.foot{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-top:14px;color:#7f88a4;font-size:11px}.toast{position:fixed;z-index:4;left:50%;top:24px;transform:translateX(-50%) translateY(-20px);border:1px solid #6f7194;border-radius:12px;background:#272b46;color:#fff;padding:11px 20px;box-shadow:0 14px 40px #0009;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tabs{display:flex;padding:6px;gap:3px;border-bottom:1px solid var(--line)}.tab{flex:1;min-width:0;padding:11px 3px;border:0;border-radius:10px;color:#a8b0c9;background:none;font-size:11px;font-weight:750}.tab[aria-selected="true"]{background:#30304e;color:#f4efff;box-shadow:inset 0 0 0 1px #69608e}.tab:hover:not([aria-selected="true"]){background:#23283b}.tab-content{padding:15px;min-height:410px}.section-title{margin:2px 0 4px;font-size:17px;font-weight:850;letter-spacing:-.02em}.section-sub{color:var(--muted);font-size:12px;margin:0 0 17px}.tier{border:1px solid #363a53;background:#1c2031;border-radius:13px;padding:12px;margin-bottom:10px}.tier-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.tier-name{display:flex;align-items:center;gap:10px}.spark-emblem{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#111725}.spark-emblem svg{width:22px;height:22px}.tier-info strong{display:block;font-size:13px}.tier-info small{color:var(--muted);font-size:11px}.tier-count{text-align:right;font-size:20px;font-weight:850;color:#e8e9fb}.tier-count small{display:block;font-size:10px;font-weight:500;color:var(--muted)}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.btn{border:1px solid #54557b;background:#34395e;color:#ecefff;border-radius:9px;padding:10px 4px;font-size:11px;min-height:44px;font-weight:750}.btn b{display:block;font-size:12px}.btn.primary{background:#3d60d8;border-color:#6082e8;color:white}.btn.gold{background:#473a39;border-color:#6d5945;color:#ffdd9d}.btn:hover:not(:disabled){filter:brightness(1.17)}.upgrade{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:#1c2031;border:1px solid #353a52;border-radius:12px;padding:13px}.upgrade-symbol{display:grid;place-items:center;min-width:38px;height:38px;border-radius:10px;background:#292e48;font-size:19px}.upgrade-body{flex:1;min-width:0}.upgrade-body strong{display:block;font-size:13px}.upgrade-body small{display:block;color:var(--muted);font-size:11px}.upgrade button{min-width:90px;max-width:110px}.pill{display:inline-block;border-radius:100px;border:1px solid #3b4a57;color:#89ded6;background:#173139;font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 8px}.milestone{text-align:center;padding:28px 15px;border-radius:14px;border:1px solid #373653;background:radial-gradient(circle at top,#332b58,#171b2c 70%)}.milestone-icon{font-size:42px;margin-bottom:12px}.milestone h3{margin:6px 0;font-size:20px}.milestone p{color:#b7b6cb;font-size:12px;line-height:1.65}.milestone .btn{width:100%;padding:15px;font-size:14px}.power-tray{display:none;gap:6px;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 12px;border-top:1px solid var(--line);background:#111726}.power-tray.visible{display:grid}.power-quick{display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;border-radius:9px;border:1px solid #505a80;background:#293654;color:#f0f4ff;font:700 11px/1.3 system-ui,sans-serif;min-height:47px;padding:6px 1px}.power-quick:disabled{opacity:.48}.power-quick .symbol{font-size:15px}.power-quick .status{font-size:9px;opacity:.8}.power-hud{display:none;flex-wrap:wrap;gap:6px;padding:8px 12px;background:#111728;border-bottom:1px solid #303549}.power-hud.has-powers{display:flex}.power-chip{font-size:10px;font-weight:800;letter-spacing:.02em;border:1px solid #657196;padding:5px 8px;border-radius:7px;color:#deecff;background:#28314c}.power-chip.gold{background:#4b3b22;color:#ffe0a0;border-color:#8e6b3a}.power-chip.pink{background:#47263c;color:#ffd0eb;border-color:#87506d}.power-chip.cyan{background:#1b4650;color:#aff6ff;border-color:#438b97}.power-card{margin-bottom:11px;padding:13px;background:#1c2031;border:1px solid #353a52;border-radius:13px}.power-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}.power-orb{width:43px;height:43px;flex:0 0 43px;border-radius:13px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,#313355,#1c4e59)}.power-head h3{font-size:14px;line-height:1.3;margin:1px 0 3px}.power-head p{font-size:11px;line-height:1.4;color:#aeb6cc;margin:0}.power-level{margin-left:auto;color:#c1c6dc;font-size:11px;white-space:nowrap}.power-buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px}.power-btn{min-height:49px}.power-btn:disabled{opacity:.45}.note{font-size:11px;line-height:1.5;color:#8c97ad;padding:8px 4px}.foot{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-top:14px;color:#7f88a4;font-size:11px}.toast{position:fixed;z-index:4;left:50%;top:24px;transform:translateX(-50%) translateY(-20px);border:1px solid #6f7194;border-radius:12px;background:#272b46;color:#fff;padding:11px 20px;box-shadow:0 14px 40px #0009;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:790px){.wrap{padding-top:12px}.layout{grid-template-columns:1fr}.canvas-wrap{height:clamp(400px,60svh,660px)}.tab-content{min-height:0}.top{margin-bottom:12px}.board-shell,.side{border-radius:15px}}@media(max-width:430px){.brand h1{font-size:20px}.bank{font-size:18px}.metrics{font-size:12px}.tier{padding:10px}.tab-content{padding:12px}.buttons{gap:5px}.btn{font-size:10px}.btn b{font-size:11px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v0.5</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
+<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v0.9</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
 <main class="layout">
-<section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint" id="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div><div class="metric"><b id="broken">0 / 0</b><span>Shards broken</span></div></div></section>
-<section class="side" aria-label="Upgrades and merging"><div class="tabs" role="tablist" aria-label="Game menus"><button class="tab" data-tab="sparks" role="tab" aria-selected="true">SPARKS</button><button class="tab" data-tab="upgrades" role="tab" aria-selected="false">UPGRADES</button><button class="tab" data-tab="ascend" role="tab" aria-selected="false">ASCEND</button></div><div class="tab-content" id="panel"></div></section>
+<section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div id="power-hud" class="power-hud" aria-live="off"></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint" id="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div id="power-tray" class="power-tray" aria-label="Quick access to unlocked power-ups"></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div><div class="metric"><b id="broken">0 / 0</b><span>Shards broken</span></div></div></section>
+<section class="side" aria-label="Upgrades and merging"><div class="tabs" role="tablist" aria-label="Game menus"><button class="tab" data-tab="sparks" role="tab" aria-selected="true">SPARKS</button><button class="tab" data-tab="upgrades" role="tab" aria-selected="false">UPGRADES</button><button class="tab" data-tab="powers" role="tab" aria-selected="false">POWERS</button><button class="tab" data-tab="ascend" role="tab" aria-selected="false">ASCEND</button></div><div class="tab-content" id="panel"></div></section>
 </main>
 <div class="foot"><span>Shards, damage & progress autosaved on this device · Play offline</span><button class="small-btn" id="reset">Reset game</button></div>
 </div>
@@ -66,15 +66,41 @@ fmt=n=>{
  return Number(scaled.toFixed(scaled<10?2:scaled<100?1:0)).toLocaleString('en-US')+suffix;
 },rng=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 
-const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0},auras:0,ascensions:0,autoMerge:false,muted:true,board:null,savedAt:Date.now()});
-let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})}}}}catch(e){}
+const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0,crit:0,bounty:0,recharge:0},powers:{},auras:0,ascensions:0,autoMerge:false,muted:true,board:null,savedAt:Date.now()});
+let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})},powers:obj.powers&&typeof obj.powers==='object'&&!Array.isArray(obj.powers)?obj.powers:{}}}}catch(e){}
 for(let i=0;i<MAX_TIERS;i++){state.tiers[i]=clamp(Math.floor(Number(state.tiers[i])||0),0,MAX_SPARKS);state.levels[i]=clamp(Math.floor(Number(state.levels[i])||0),0,100000)}
 state.stage=clamp(Math.floor(Number(state.stage)||1),1,1e6);state.cash=Math.max(0,Number(state.cash)||0);state.earned=Math.max(0,Number(state.earned)||0);state.auras=Math.max(0,Math.floor(Number(state.auras)||0));state.ascensions=Math.max(0,Math.floor(Number(state.ascensions)||0));
+for(const id of ['damage','speed','fortune','crit','bounty','recharge'])state.upgrades[id]=clamp(Math.floor(Number(state.upgrades[id])||0),0,200);
+// Restore power levels and cooldown timestamps from old or new saves safely.
+for(const id of ['overcharge','gold','chain','pulse']){
+ const p=state.powers[id]&&typeof state.powers[id]==='object'?state.powers[id]:{};
+ state.powers[id]={level:clamp(Math.floor(Number(p.level)||0),0,5),activeUntil:clamp(Number(p.activeUntil)||0,0,Date.now()+3600000),cooldownUntil:clamp(Number(p.cooldownUntil)||0,0,Date.now()+3600000)};
+}
 const canvas=$('field'),ctx=canvas.getContext('2d',{alpha:false});let W=360,H=480,dpr=1,sparks=[],shards=[],particles=[],damagePopups=[],backgroundStars=[],dead=0,total=0,queueStage=false,gameTime=0,tab='sparks',rush=false,lastFrame=0,lastUI=0,lastPanel=0,lastSave=0,recentGains=0,recentTimer=0,lastDps=0,lastTap=0,toastHandle=0,audio=null,inspected=null,spawnSites=[];
 const totalSparks=()=>state.tiers.reduce((a,b)=>a+b,0),tierPower=i=>(1.6*Math.pow(3.4,i))*(1+state.levels[i]*.38)*(1+state.upgrades.damage*.28)*(1+state.auras*.18),sparkVelocity=i=>100*(1+state.upgrades.speed*.18)*(1+i*.07),fortune=()=>1+state.upgrades.fortune*.24+state.auras*.14;
 const buyCost=i=>Math.floor(20*Math.pow(6.2,i)*Math.pow(1.33,state.tiers[i])*Math.pow(1.11,state.stage>1?Math.min(state.stage-1,10):0));
 const levelCost=i=>Math.floor(20*Math.pow(5.3,i)*Math.pow(1.43,state.levels[i]));
-const upgradeCost=id=>Math.floor(({damage:90,speed:85,fortune:100})[id]*Math.pow(1.78,state.upgrades[id]));
+const upgradeCost=id=>Math.floor(({damage:90,speed:85,fortune:100,crit:190,bounty:260,recharge:360})[id]*Math.pow(1.78,state.upgrades[id]));
+// An unlocked power can be activated free, then recharged by playing/waiting.
+// Wall-clock deadlines prevent refresh/reload from resetting its cooldown.
+const POWER_DEFS={
+ overcharge:{name:'Overcharge',symbol:'⚡',unlock:90,cooldown:52,duration:18,kind:'cyan'},
+ gold:{name:'Golden Rush',symbol:'✧',unlock:280,cooldown:78,duration:24,kind:'gold'},
+ chain:{name:'Chain Reaction',symbol:'✦',unlock:640,cooldown:85,duration:20,kind:'pink'},
+ pulse:{name:'Prism Pulse',symbol:'◈',unlock:1100,cooldown:105,duration:0,kind:'cyan'}
+};
+const powerState=id=>state.powers[id],powerActive=(id,now=Date.now())=>powerState(id).level>0&&powerState(id).activeUntil>now;
+const powerDuration=id=>POWER_DEFS[id].duration+Math.max(0,powerState(id).level-1)*4;
+const powerCooldown=id=>Math.max(15,POWER_DEFS[id].cooldown*(1-Math.min(.52,(state.upgrades.recharge||0)*.06)));
+const powerUpgradeCost=id=>Math.floor(POWER_DEFS[id].unlock*Math.pow(3.6,Math.max(1,powerState(id).level)));
+const powerDescription=id=>{
+ const lv=Math.max(1,powerState(id).level);
+ if(id==='overcharge')return `×${(3+(lv-1)*.75).toFixed(lv===1?0:2)} spark damage for ${powerDuration(id)}s`;
+ if(id==='gold')return `×${(3+(lv-1)*.5).toFixed(lv===1?0:1)} all earnings for ${powerDuration(id)}s`;
+ if(id==='chain')return `Shattered shards splash ${Math.round((.18+.05*(lv-1))*100)}% HP to nearby shards for ${powerDuration(id)}s`;
+ return `Instantly damages every remaining shard for ${Math.round((.07+.025*(lv-1))*1000)/10}% of its max HP`;
+};
+
 const mergeNeed=2;
 function renderPanel(){let html='';if(tab==='sparks'){
  html='<h2 class="section-title">Build your constellation</h2><p class="section-sub">Buy and merge sparks for more damage. Every spark can damage any shard; tougher shards simply take more hits.</p>';
@@ -84,17 +110,46 @@ function renderPanel(){let html='';if(tab==='sparks'){
  html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Merge two matching sparks for a stronger one. Every spark deals damage to every shard, no matter its level.</p>`;
  }else if(tab==='upgrades'){
  html='<h2 class="section-title">Make everything brighter</h2><p class="section-sub">Permanent upgrades until your next ascension.</p>';
- const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Bounce','Sparks ricochet 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level']];
+ const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Bounce','Sparks ricochet 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level'],['crit','⚡','Critical Hits','4% more chance to deal double damage per level (max 60%)'],['bounty','✺','Shard Bounty','Earn 15% more bonus prisms when a shard breaks'],['recharge','◷','Fast Recharge','Power-up cooldowns become 6% shorter per level (max 52%)']];
  for(const [id,ico,title,desc] of opts){const c=upgradeCost(id);html+=`<div class="upgrade"><span class="upgrade-symbol">${ico}</span><div class="upgrade-body"><strong>${title} · Lv ${state.upgrades[id]}</strong><small>${desc}</small></div><button class="btn primary" data-act="upgrade" data-id="${id}" ${state.cash>=c?'':'disabled'}>UPGRADE<b>${fmt(c)} ✧</b></button></div>`}
  const c=3500;html+=`<div class="upgrade"><span class="upgrade-symbol">∞</span><div class="upgrade-body"><strong>Auto Merge</strong><small>${state.autoMerge?'On · merges matching pairs automatically':'A convenience upgrade, retained after ascension'}</small></div><button class="btn" data-act="auto" ${state.autoMerge||state.cash<c?'disabled':''}>${state.autoMerge?'OWNED':'UNLOCK'}<b>${state.autoMerge?'✓':fmt(c)+' ✧'}</b></button></div>`;
- html+='<p class="note">Tip: for faster progress, alternate between buying more sparks and raising their power.</p>';
+ html+='<p class="note">Tip: use your POWERS tab for temporary boosts. Passive upgrades above reset when you ascend.</p>';
+ }else if(tab==='powers'){
+ html='<h2 class="section-title">Unleash your powers</h2><p class="section-sub">Unlock once, activate whenever recharged. Power levels survive ascension and cooldowns persist through reloads.</p>';
+ const now=Date.now();
+ for(const [id,d] of Object.entries(POWER_DEFS)){
+  const p=powerState(id),owned=p.level>0,active=powerActive(id,now);
+  const remaining=Math.max(0,Math.ceil((p.cooldownUntil-now)/1000));
+  const activeRemaining=Math.max(0,Math.ceil((p.activeUntil-now)/1000));
+  const canFire=owned&&!remaining&&!active&&(id!=='pulse'||dead<total);
+  const main=owned?(active?'ACTIVE '+activeRemaining+'s':remaining?'READY IN '+remaining+'s':id==='pulse'&&dead===total?'NO SHARDS':'ACTIVATE'):'UNLOCK';
+  html+=`<div class="power-card"><div class="power-head"><span class="power-orb">${d.symbol}</span><div><h3>${d.name}</h3><p>${powerDescription(id)}</p></div><span class="power-level">${owned?'Lv '+p.level:'LOCKED'}</span></div><div class="power-buttons"><button class="btn primary power-btn" data-act="${owned?'activate-power':'unlock-power'}" data-id="${id}" ${(owned?!canFire:state.cash<d.unlock)?'disabled':''}>${main}${owned?'':`<b>${fmt(d.unlock)} ✧</b>`}</button><button class="btn power-btn" data-act="upgrade-power" data-id="${id}" ${!owned||p.level>=5||state.cash<powerUpgradeCost(id)?'disabled':''}>${p.level>=5?'MAX LEVEL':'LEVEL UP'}<b>${p.level>=5?'✓':owned?fmt(powerUpgradeCost(id))+' ✧':'Unlock first'}</b></button></div></div>`;
+ }
+ html+='<p class="note">Damage and money boosts stack. A shard destroyed by any attack still lets the spark travel straight through. Power-ups use real-time timers and save automatically.</p>';
  }else{
  const reward=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000)),ready=state.stage>=5&&reward>0;
  html=`<h2 class="section-title">A new beginning</h2><p class="section-sub">Restart stronger, with permanent auras that boost every future run.</p><div class="milestone"><div class="milestone-icon">✺</div><span class="pill">${state.auras} permanent auras</span><h3>Ascend into light</h3><p>Ascend to reset your sparks, upgrades, canvases, and prisms, but earn <strong>+${fmt(reward)} aura${reward===1?'':'s'}</strong>. Each aura grants <strong>+18% spark damage</strong> and <strong>+14% earnings</strong> forever.<br><br>Available from Canvas 5 onward.</p><button class="btn primary" data-act="ascend" ${ready?'':'disabled'}>ASCEND FOR +${fmt(reward)} AURAS</button></div><p class="note">Lifetime runs: ${state.ascensions}. Your Auto Merge unlock and existing auras survive ascension.</p>`;
  }
  $('panel').innerHTML=html;
 }
-function updateLabels(){ $('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks();$('broken').textContent=`${dead} / ${total}`;$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
+let powerTrayHTML='';
+function updatePowerHud(){
+ const now=Date.now(),chips=[];
+ for(const [id,d] of Object.entries(POWER_DEFS))if(powerActive(id,now))chips.push(`<span class="power-chip ${d.kind}">${d.symbol} ${d.name} · ${Math.ceil((powerState(id).activeUntil-now)/1000)}s</span>`);
+ const hud=$('power-hud');hud.classList.toggle('has-powers',chips.length>0);hud.innerHTML=chips.join('');
+ // The quick buttons stay mounted across timer ticks, so tapping on mobile
+ // does not lose the click while the label refreshes.
+ const tray=$('power-tray');
+ const unlocked=Object.entries(POWER_DEFS).filter(([id])=>powerState(id).level>0);
+ const markup=unlocked.map(([id,d])=>{
+  const p=powerState(id),ready=p.cooldownUntil<=now&&p.activeUntil<=now&&(id!=='pulse'||dead<total);
+  const status=powerActive(id,now)?'ACTIVE':ready?'READY':'COOLING';
+  return `<button type="button" class="power-quick" data-power="${id}" title="${d.name}" ${ready?'':'disabled'}><span class="symbol">${d.symbol}</span><span class="status">${status}</span></button>`;
+ }).join('');
+ tray.classList.toggle('visible',unlocked.length>0);
+ if(markup!==powerTrayHTML){tray.innerHTML=markup;powerTrayHTML=markup}
+}
+function updateLabels(){ updatePowerHud();$('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks();$('broken').textContent=`${dead} / ${total}`;$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
 function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
 // Save the canvas and the wallet atomically. An unfinished stage must never reappear intact.
 function boardSnapshot(){return{version:5,stage:state.stage,w:W,h:H,spawns:spawnSites.map(p=>[p[0],p[1]]),tiles:shards.map(t=>[t.a[0],t.a[1],t.b[0],t.b[1],t.c[0],t.c[1],Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
@@ -277,20 +332,28 @@ function traceImpact(s,dx,dy){
 function pointInTriangle(px,py,t){const s=(a,b,c)=>(px-c[0])*(a[1]-c[1])-(a[0]-c[0])*(py-c[1]);let a=s(t.a,t.b,t.c),b=s(t.b,t.c,t.a),c=s(t.c,t.a,t.b);return (a>=0&&b>=0&&c>=0)||(a<=0&&b<=0&&c<=0)}
 function particleBurst(t,count=7){for(let i=0;i<count;i++){let a=rng(0,Math.PI*2),v=rng(25,135);particles.push({x:t.x,y:t.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rng(.25,.68),maxLife:.68,color:t.hue,r:rng(1,3.2)})}if(particles.length>350)particles.splice(0,particles.length-350)}
 function ping(){if(state.muted)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();if(Math.random()>.065)return;let osc=audio.createOscillator(),gain=audio.createGain(),now=audio.currentTime;osc.type='sine';osc.frequency.setValueAtTime(rng(450,850),now);osc.frequency.exponentialRampToValueAtTime(rng(270,470),now+.07);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.018,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+.095);osc.connect(gain).connect(audio.destination);osc.start(now);osc.stop(now+.1)}catch(e){}}
-function hitShard(t,damage,sparkTier){
+function hitShard(t,damage,sparkTier,fromSplash=false){
  if(!t.alive)return false;
- const dealt=Math.min(Math.max(0,damage),t.hp);
+ const crit=!fromSplash&&Math.random()<Math.min(.6,(state.upgrades.crit||0)*.04);
+ const dealt=Math.min(Math.max(0,damage*(crit?2:1)),t.hp);
  // Pay for actual shard HP removed, not for excess one-shot damage.
  // This keeps level-30 rewards meaningful without rewarding overkill exploits.
- const reward=dealt*(.65+t.level*.13)*fortune()*(1+sparkTier*.12);
+ const goldMult=powerActive('gold')?3+(powerState('gold').level-1)*.5:1;
+ const reward=dealt*(.65+t.level*.13)*fortune()*(1+sparkTier*.12)*goldMult;
  state.cash+=reward;state.earned+=reward;recentGains+=reward;
  t.hp=Math.max(0,t.hp-dealt);t.flash=.12;
- if(damagePopups.length<28&&Math.random()<.45)damagePopups.push({x:t.x+rng(-11,11),y:t.y+rng(-8,8),value:fmt(dealt),life:.62,maxLife:.62});
+ if(damagePopups.length<28&&Math.random()<.45)damagePopups.push({x:t.x+rng(-11,11),y:t.y+rng(-8,8),value:(crit?'CRIT ':'')+fmt(dealt),life:.62,maxLife:.62});
  if(t.hp<=0){
   t.alive=false;dead++;
-  let bonus=(1.7+state.stage*.34)*fortune();
+  let bonus=(1.7+state.stage*.34)*fortune()*(1+(state.upgrades.bounty||0)*.15)*goldMult;
   state.cash+=bonus;state.earned+=bonus;recentGains+=bonus;
   particleBurst(t,9);ping();
+  if(powerActive('chain')&&!fromSplash){
+   // A single layer of splash damage: splash kills do NOT recurse infinitely.
+   const lv=powerState('chain').level;
+   const near=shards.filter(u=>u.alive&&u!==t&&Math.hypot(u.x-t.x,u.y-t.y)<100).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y)).slice(0,lv>=3?3:2);
+   for(const u of near){hitShard(u,u.maxHp*(.18+.05*(lv-1)),sparkTier,true);particleBurst(u,3)}
+  }
   if(dead>=total)queueStage=true;
  }else if(Math.random()<.25)particleBurst(t,2);
  return true;
@@ -300,6 +363,22 @@ function nearestAlive(x,y){let chosen=null,d=Infinity;
  return chosen;
 }
 
+function activatePower(id){
+ if(!Object.hasOwn(POWER_DEFS,id))return false;
+ const p=powerState(id),def=POWER_DEFS[id],now=Date.now();
+ if(p.level<=0||p.cooldownUntil>now||p.activeUntil>now)return false;
+ if(id==='pulse'&&dead>=total)return false;
+ p.cooldownUntil=now+Math.round(powerCooldown(id)*1000);
+ if(def.duration)p.activeUntil=now+powerDuration(id)*1000;
+ if(id==='pulse'){
+  const amt=.07+.025*(p.level-1);
+  let count=0;
+  for(const t of shards)if(t.alive){hitShard(t,t.maxHp*amt,0,true);count++}
+  announce('Prism Pulse! '+count+' shards struck ◈');
+  // Whole-board pulses must not generate free health/money on reload.
+ }else announce(def.name+' activated! '+powerDuration(id)+' seconds');
+ save();return true;
+}
 function tick(dt){
  gameTime+=dt;
  const elapsed=dt*(rush?3:1);
@@ -319,7 +398,7 @@ function tick(dt){
     // Record each contact point so the spark trail follows its true trajectory.
     s.path.push([s.x,s.y]);if(s.path.length>15)s.path.shift();
     if(impact.shard){
-     hitShard(impact.shard,tierPower(s.tier),s.tier);
+     hitShard(impact.shard,tierPower(s.tier)*(powerActive('overcharge')?3+(powerState('overcharge').level-1)*.75:1),s.tier);
      s.noShardFor=0; // ANY shard contact resets the anti-stall timer.
     }
     if(impact.shard&&!impact.shard.alive){
@@ -369,12 +448,20 @@ if(t.hp<t.maxHp){ctx.globalAlpha=.26;ctx.strokeStyle='#f3fcff';ctx.lineWidth=1;c
  for(const s of sparks){let color=tierColors[s.tier];for(let i=1;i<s.path.length;i++){let a=s.path[i-1],b=s.path[i];ctx.globalAlpha=i/s.path.length*.32;ctx.strokeStyle=color;ctx.lineWidth=1+s.tier*.2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}ctx.globalAlpha=1;ctx.save();ctx.translate(s.x,s.y);ctx.rotate(Math.atan2(s.vy,s.vx)+Math.PI/2);ctx.shadowBlur=18;ctx.shadowColor=color;ctx.fillStyle=color;const r=5.2+s.tier*1.5;ctx.beginPath();ctx.moveTo(0,-r*1.5);ctx.lineTo(-r,r);ctx.lineTo(0,r*.34);ctx.lineTo(r,r);ctx.closePath();ctx.fill();ctx.restore()}
 }
 function loop(time){if(!lastFrame)lastFrame=time;const dt=clamp((time-lastFrame)/1000,0,.05);lastFrame=time;tick(dt);draw();if(time-lastUI>220){updateLabels();lastUI=time}if(time-lastPanel>650){renderPanel();lastPanel=time}if(time-lastSave>2000){save();lastSave=time}requestAnimationFrame(loop)}
-$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;syncSparks();ok=true}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;state=next;sparks=[];syncSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();renderPanel();updateLabels()}});
+$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;syncSparks();ok=true}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='unlock-power'){
+ const def=POWER_DEFS[id],p=state.powers[id];if(def&&p&&p.level===0&&state.cash>=def.unlock){state.cash-=def.unlock;p.level=1;ok=true;announce(def.name+' unlocked!')}}else if(action==='upgrade-power'){
+ const p=state.powers[id];if(POWER_DEFS[id]&&p&&p.level>=1&&p.level<5){let c=powerUpgradeCost(id);if(state.cash>=c){state.cash-=c;p.level++;ok=true;announce(POWER_DEFS[id].name+' Lv '+p.level)}}}else if(action==='activate-power'){
+ if(activatePower(id))ok=true;
+ }else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;
+ // Power unlocks and their levels are permanent; clear active effects on prestige.
+ next.powers=Object.fromEntries(Object.entries(state.powers).map(([id,p])=>[id,{level:p.level,activeUntil:0,cooldownUntil:p.cooldownUntil}]));
+ state=next;sparks=[];syncSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();renderPanel();updateLabels()}});
+$('power-tray').addEventListener('click',e=>{const btn=e.target.closest('button[data-power]');if(!btn)return;if(activatePower(btn.dataset.power)){renderPanel();updateLabels()}});
 for(const b of document.querySelectorAll('.tab'))b.addEventListener('click',()=>{tab=b.dataset.tab;for(const t of document.querySelectorAll('.tab'))t.setAttribute('aria-selected',String(t===b));renderPanel()});
 const setRush=on=>{rush=on;$('rush').classList.toggle('active',rush);$('rush').textContent=rush?'✦ 3× SPEED ACTIVE':'HOLD FOR 3× SPEED';updateLabels()};let rushBtn=$('rush');rushBtn.addEventListener('pointerdown',e=>{e.preventDefault();rushBtn.setPointerCapture?.(e.pointerId);setRush(true)});['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(a=>rushBtn.addEventListener(a,()=>setRush(false)));window.addEventListener('blur',()=>setRush(false));
 canvas.addEventListener('pointerdown',e=>{let now=performance.now();if(now-lastTap<60)return;lastTap=now;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let target=null,best=65*65;for(const t of shards)if(t.alive){let d=(t.x-x)**2+(t.y-y)**2;if(d<best){best=d;target=t}}if(target){let tapTier=0;for(let i=0;i<MAX_TIERS;i++)if(state.tiers[i]>0)tapTier=i;hitShard(target,Math.max(1.5,tierPower(tapTier)*.35),tapTier);inspected={level:target.level,hp:target.hp,maxHp:target.maxHp,until:performance.now()+2600};particleBurst(target,4)}});
 $('sound').addEventListener('click',()=>{state.muted=!state.muted;$('sound').textContent=state.muted?'♫ Off':'♫ On';save()});$('sound').textContent=state.muted?'♫ Off':'♫ On';
-$('reset').addEventListener('click',()=>{if(!confirm('Reset all progress, including permanent auras? This cannot be undone.'))return;state=fresh();sparks=[];syncSparks();createStage();save();renderPanel();updateLabels();announce('A fresh canvas awaits')});
+$('reset').addEventListener('click',()=>{if(!confirm('Reset all progress, including power-ups and permanent auras? This cannot be undone.'))return;state=fresh();sparks=[];syncSparks();createStage();save();renderPanel();updateLabels();announce('A fresh canvas awaits')});
 const away=clamp((Date.now()-(Number(state.savedAt)||Date.now()))/1000,0,4*3600);if(away>20){const rate=state.tiers.reduce((v,n,i)=>v+n*tierPower(i)*1.15,0)*fortune();const offline=Math.floor(away*rate*.15);state.cash+=offline;state.earned+=offline;setTimeout(()=>announce('While you were away: +'+fmt(offline)+' prisms'),250)}
 syncSparks();resize();renderPanel();updateLabels();if('ResizeObserver'in window)new ResizeObserver(resize).observe(canvas);window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden)save();else lastFrame=0});window.addEventListener('pagehide',save);requestAnimationFrame(loop);
 })();
