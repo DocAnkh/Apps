@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e19">
-<title>Prism Drift v0.7 — An Idle Spark Game</title>
+<title>Prism Drift v0.8 — An Idle Spark Game</title>
 <style>
 :root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
@@ -97,29 +97,58 @@ function renderPanel(){let html='';if(tab==='sparks'){
 function updateLabels(){ $('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks();$('broken').textContent=`${dead} / ${total}`;$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
 function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
 // Save the canvas and the wallet atomically. An unfinished stage must never reappear intact.
-function boardSnapshot(){return{version:4,stage:state.stage,w:W,h:H,spawns:spawnSites.map(p=>[p[0],p[1]]),tiles:shards.map(t=>[t.a[0],t.a[1],t.b[0],t.b[1],t.c[0],t.c[1],Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
+function boardSnapshot(){return{version:5,stage:state.stage,w:W,h:H,spawns:spawnSites.map(p=>[p[0],p[1]]),tiles:shards.map(t=>[t.a[0],t.a[1],t.b[0],t.b[1],t.c[0],t.c[1],Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
 
 function save(){if(shards.length)state.board=boardSnapshot();state.savedAt=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 // Restore the actual shards, including their remaining HP. The old save format is
 // kept under the same key, so cash, bought sparks and upgrades remain intact.
-// Six permanent spawn pockets, arranged in two rows through the central playfield.
-// The chosen shards are REMOVED, not marked destroyed (no free coins or stage credit).
+// Six possible launch locations, but ONE actual launch pocket per canvas.
+// Only the triangle at that location is removed (never counted as destroyed or paid out).
 const SPAWN_ANCHORS=[[.26,.35],[.5,.35],[.74,.35],[.26,.65],[.5,.65],[.74,.65]];
-function carveSpawnSites(){
- const used=new Set();spawnSites=[];
- for(const [px,py] of SPAWN_ANCHORS){
-  let closest=-1,dist=Infinity;
-  for(let i=0;i<shards.length;i++){
-   if(used.has(i))continue;
-   const t=shards[i],d=(t.x-W*px)**2+(t.y-H*py)**2;
-   if(d<dist){dist=d;closest=i}
-  }
-  if(closest>=0){used.add(closest);const t=shards[closest];spawnSites.push([t.x,t.y]);}
+const STALL_WALL_SECONDS=3.5;
+function carveSpawnSite(){
+ const [px,py]=SPAWN_ANCHORS[Math.floor(rng(0,SPAWN_ANCHORS.length))];
+ let closest=-1,dist=Infinity;
+ for(let i=0;i<shards.length;i++){
+  const t=shards[i],d=(t.x-W*px)**2+(t.y-H*py)**2;
+  if(d<dist){dist=d;closest=i}
  }
- shards=shards.filter((_,i)=>!used.has(i));
+ spawnSites=[];
+ if(closest>=0){const [t]=shards.splice(closest,1);spawnSites=[[t.x,t.y]];}
+}
+// An existing v0.7 saved canvas had all six pockets carved out.
+// Reconstruct the five unused triangles from the shared tile edges, leaving
+// all the old damage, destroyed shards, currency and stage progress intact.
+function repairSixPocketSave(oldSites){
+ const counts=new Map();
+ const key=p=>`${Math.round(p[0]*10000)},${Math.round(p[1]*10000)}`;
+ for(const t of shards){
+  const pts=[t.a,t.b,t.c];
+  for(let j=0;j<3;j++){
+   const a=pts[j],b=pts[(j+1)%3],ka=key(a),kb=key(b),k=ka<kb?ka+'|'+kb:kb+'|'+ka;
+   if(counts.has(k))counts.get(k).count++;
+   else counts.set(k,{a,b,count:1});
+  }
+ }
+ const available=[...counts.values()].filter(e=>e.count===1);
+ const keeper=Math.floor(rng(0,oldSites.length));
+ spawnSites=[[...oldSites[keeper]]];
+ for(let n=0;n<oldSites.length;n++){
+  if(n===keeper)continue;
+  const p=oldSites[n];
+  const nearby=available.map(e=>({e,dist:((e.a[0]+e.b[0])/2-p[0])**2+((e.a[1]+e.b[1])/2-p[1])**2})).sort((a,b)=>a.dist-b.dist).slice(0,3);
+  const unique=new Map();for(const {e} of nearby){unique.set(key(e.a),e.a);unique.set(key(e.b),e.b);}
+  if(unique.size!==3)continue;
+  const [a,b,c]=[...unique.values()].map(pt=>[...pt]);
+  const x=(a[0]+b[0]+c[0])/3,y=(a[1]+b[1]+c[1])/3;
+  // Don't accidentally fill an unrelated exterior boundary or an old dead tile.
+  if(Math.hypot(x-p[0],y-p[1])>Math.min(W,H)*.08)continue;
+  const level=pickShardLevel(state.stage),hp=shardHealth(level)*rng(.96,1.09);
+  shards.push(withBounds({a,b,c,x,y,hp,maxHp:hp,level,flash:0,hue:colors[Math.floor(rng(0,colors.length))],alive:true,alpha:rng(.72,1),phase:0}));
+ }
 }
 function resetSparksToSites(){
- for(const s of sparks){const home=newSpark(s.tier);s.x=home.x;s.y=home.y;s.vx=home.vx;s.vy=home.vy;s.path=[]}
+ for(const s of sparks){const home=newSpark(s.tier);s.x=home.x;s.y=home.y;s.vx=home.vx;s.vy=home.vy;s.path=[];s.noShardFor=0}
 }
 // Preserve remaining shard HP/deaths from every previous save version, while
 // recovering flush edges from the older inset and shrunken triangle mosaic.
@@ -127,7 +156,7 @@ function restoreStage(){
  const b=state.board;
  if(!b||b.stage!==state.stage||!Number.isFinite(b.w)||!Number.isFinite(b.h)||b.w<=0||b.h<=0||!Array.isArray(b.tiles)||b.tiles.length<1||b.tiles.length>5000)return false;
  const sx=W/b.w,sy=H/b.h,next=[];
- const previousFormat=![2,3,4].includes(b.version);
+ const previousFormat=![2,3,4,5].includes(b.version);
  for(let j=0;j<b.tiles.length;j++){
   const data=b.tiles[j];
   if(!Array.isArray(data)||data.length!==11||!data.every(Number.isFinite))return false;
@@ -145,7 +174,7 @@ function restoreStage(){
   next.push(withBounds({a,b:bb,c,x:(a[0]+bb[0]+c[0])/3,y:(a[1]+bb[1]+c[1])/3,hp:newHp,maxHp:newMaxHp,level,flash:0,hue:colors[tone],alive:newHp>0,alpha:clamp(alpha,0,1),phase:0}));
  }
  shards=next;
- if(b.version!==4){
+ if(b.version!==4&&b.version!==5){
   // Keep existing shard HP and destroyed state, change only their geometry.
   const pts=shards.flatMap(t=>[t.a,t.b,t.c]);
   const minX=Math.min(...pts.map(p=>p[0])),maxX=Math.max(...pts.map(p=>p[0]));
@@ -155,20 +184,22 @@ function restoreStage(){
    for(const pt of [t.a,t.b,t.c]){pt[0]=(pt[0]-minX)/(maxX-minX)*W;pt[1]=(pt[1]-minY)/(maxY-minY)*H;}
    t.x=(t.a[0]+t.b[0]+t.c[0])/3;t.y=(t.a[1]+t.b[1]+t.c[1])/3;withBounds(t);
   }
-  carveSpawnSites();
- }else if(Array.isArray(b.spawns)&&b.spawns.length===6&&b.spawns.every(pt=>Array.isArray(pt)&&pt.length===2&&pt.every(Number.isFinite))){
+  carveSpawnSite();
+ }else if(b.version===4&&Array.isArray(b.spawns)&&b.spawns.length===6&&b.spawns.every(pt=>Array.isArray(pt)&&pt.length===2&&pt.every(Number.isFinite))){
+  repairSixPocketSave(b.spawns.map(pt=>[pt[0]*sx,pt[1]*sy]));
+ }else if(b.version===5&&Array.isArray(b.spawns)&&b.spawns.length===1&&b.spawns[0].length===2&&b.spawns[0].every(Number.isFinite)){
   spawnSites=b.spawns.map(pt=>[pt[0]*sx,pt[1]*sy]);
- }else{carveSpawnSites()}
+ }else{carveSpawnSite()}
  total=shards.length;dead=shards.reduce((n,t)=>n+(!t.alive?1:0),0);queueStage=dead===total;
  makeStars();resetSparksToSites();return true;
 }
 
-// Each spark launches from one of six empty pockets INSIDE the shard mosaic.
+// Every spark launches from the one active pocket on this canvas.
 // It travels in a perfectly straight line until a surviving shard or wall reflects it.
 function newSpark(i){
- const home=spawnSites.length?spawnSites[Math.floor(rng(0,spawnSites.length))]:[W*.5,H*.5];
+ const home=spawnSites.length?spawnSites[0]:[W*.5,H*.5];
  const heading=rng(0,Math.PI*2),v=sparkVelocity(i);
- return{x:home[0],y:home[1],vx:Math.cos(heading)*v,vy:Math.sin(heading)*v,tier:i,path:[],spin:rng(0,6.28)};
+ return{x:home[0],y:home[1],vx:Math.cos(heading)*v,vy:Math.sin(heading)*v,tier:i,path:[],spin:rng(0,6.28),noShardFor:0};
 }
 function syncSparks(){let next=[];for(let i=0;i<MAX_TIERS;i++){let existing=sparks.filter(s=>s.tier===i);let n=state.tiers[i];for(let j=0;j<n;j++)next.push(existing[j]||newSpark(i))}sparks=next;}
 function resize(){
@@ -204,7 +235,7 @@ function createStage(){makeStars();shards=[];spawnSites=[];inspected=null;
   const p=pts[y][x],q=pts[y][x+1],r=pts[y+1][x],s=pts[y+1][x+1];
   if((x+y)%2){makeTri(p,q,r);makeTri(q,s,r)}else{makeTri(p,q,s);makeTri(p,s,r)}
  }
- carveSpawnSites();total=shards.length;dead=0;queueStage=false;
+ carveSpawnSite();total=shards.length;dead=0;queueStage=false;
  resetSparksToSites();
 }
 
@@ -282,17 +313,31 @@ function tick(dt){
    for(let bounce=0;bounce<6&&remaining>1e-7;bounce++){
     const dx=s.vx*remaining,dy=s.vy*remaining;
     const impact=traceImpact(s,dx,dy);
-    if(!impact){s.x+=dx;s.y+=dy;break}
+    if(!impact){s.x+=dx;s.y+=dy;s.noShardFor=(s.noShardFor||0)+remaining;break}
     s.x+=dx*impact.time;s.y+=dy*impact.time;
+    s.noShardFor=(s.noShardFor||0)+remaining*impact.time;
     // Record each contact point so the spark trail follows its true trajectory.
     s.path.push([s.x,s.y]);if(s.path.length>15)s.path.shift();
-    if(impact.shard)hitShard(impact.shard,tierPower(s.tier),s.tier);
+    if(impact.shard){
+     hitShard(impact.shard,tierPower(s.tier),s.tier);
+     s.noShardFor=0; // ANY shard contact resets the anti-stall timer.
+    }
     if(impact.shard&&!impact.shard.alive){
      // Killing blow: shard disappears, so fly THROUGH without changing heading.
      const len=Math.hypot(s.vx,s.vy)||1;
      s.x+=s.vx/len*.15;s.y+=s.vy/len*.15;
+    }else if(!impact.shard&&s.noShardFor>=STALL_WALL_SECONDS){
+     // After a prolonged empty flight, the NEXT wall bounce gets an inward,
+     // randomized heading. Never randomize on shard collisions or in open air.
+     const speed=Math.hypot(s.vx,s.vy)||1;
+     const nx=impact.nx,ny=impact.ny,tx=-ny,ty=nx;
+     const angle=(Math.random()<.5?-1:1)*rng(.25,1.08);
+     s.vx=(nx*Math.cos(angle)+tx*Math.sin(angle))*speed;
+     s.vy=(ny*Math.cos(angle)+ty*Math.sin(angle))*speed;
+     s.noShardFor=0;
+     s.x+=nx*.15;s.y+=ny*.15;
     }else{
-     // Surviving shards and walls reflect the incoming straight-line direction.
+     // Surviving shards and ordinary wall contacts use mirror reflection.
      const dot=s.vx*impact.nx+s.vy*impact.ny;
      s.vx-=2*dot*impact.nx;s.vy-=2*dot*impact.ny;
      s.x+=impact.nx*.15;s.y+=impact.ny*.15;
