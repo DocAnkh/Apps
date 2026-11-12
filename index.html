@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e19">
-<title>Prism Drift v0.5 — An Idle Spark Game</title>
+<title>Prism Drift v0.6 — An Idle Spark Game</title>
 <style>
 :root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
@@ -71,7 +71,7 @@ let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.par
 for(let i=0;i<MAX_TIERS;i++){state.tiers[i]=clamp(Math.floor(Number(state.tiers[i])||0),0,MAX_SPARKS);state.levels[i]=clamp(Math.floor(Number(state.levels[i])||0),0,100000)}
 state.stage=clamp(Math.floor(Number(state.stage)||1),1,1e6);state.cash=Math.max(0,Number(state.cash)||0);state.earned=Math.max(0,Number(state.earned)||0);state.auras=Math.max(0,Math.floor(Number(state.auras)||0));state.ascensions=Math.max(0,Math.floor(Number(state.ascensions)||0));
 const canvas=$('field'),ctx=canvas.getContext('2d',{alpha:false});let W=360,H=480,dpr=1,sparks=[],shards=[],particles=[],damagePopups=[],backgroundStars=[],dead=0,total=0,queueStage=false,gameTime=0,tab='sparks',rush=false,lastFrame=0,lastUI=0,lastPanel=0,lastSave=0,recentGains=0,recentTimer=0,lastDps=0,lastTap=0,toastHandle=0,audio=null,inspected=null;
-const totalSparks=()=>state.tiers.reduce((a,b)=>a+b,0),tierPower=i=>(1.6*Math.pow(3.4,i))*(1+state.levels[i]*.38)*(1+state.upgrades.damage*.28)*(1+state.auras*.18),sparkVelocity=i=>rng(83,119)*(1+state.upgrades.speed*.18)*(1+i*.07),fortune=()=>1+state.upgrades.fortune*.24+state.auras*.14;
+const totalSparks=()=>state.tiers.reduce((a,b)=>a+b,0),tierPower=i=>(1.6*Math.pow(3.4,i))*(1+state.levels[i]*.38)*(1+state.upgrades.damage*.28)*(1+state.auras*.18),sparkVelocity=i=>100*(1+state.upgrades.speed*.18)*(1+i*.07),fortune=()=>1+state.upgrades.fortune*.24+state.auras*.14;
 const buyCost=i=>Math.floor(20*Math.pow(6.2,i)*Math.pow(1.33,state.tiers[i])*Math.pow(1.11,state.stage>1?Math.min(state.stage-1,10):0));
 const levelCost=i=>Math.floor(20*Math.pow(5.3,i)*Math.pow(1.43,state.levels[i]));
 const upgradeCost=id=>Math.floor(({damage:90,speed:85,fortune:100})[id]*Math.pow(1.78,state.upgrades[id]));
@@ -84,7 +84,7 @@ function renderPanel(){let html='';if(tab==='sparks'){
  html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Merge two matching sparks for a stronger one. Every spark deals damage to every shard, no matter its level.</p>`;
  }else if(tab==='upgrades'){
  html='<h2 class="section-title">Make everything brighter</h2><p class="section-sub">Permanent upgrades until your next ascension.</p>';
- const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Orbit','Sparks travel 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level']];
+ const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Bounce','Sparks ricochet 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level']];
  for(const [id,ico,title,desc] of opts){const c=upgradeCost(id);html+=`<div class="upgrade"><span class="upgrade-symbol">${ico}</span><div class="upgrade-body"><strong>${title} · Lv ${state.upgrades[id]}</strong><small>${desc}</small></div><button class="btn primary" data-act="upgrade" data-id="${id}" ${state.cash>=c?'':'disabled'}>UPGRADE<b>${fmt(c)} ✧</b></button></div>`}
  const c=3500;html+=`<div class="upgrade"><span class="upgrade-symbol">∞</span><div class="upgrade-body"><strong>Auto Merge</strong><small>${state.autoMerge?'On · merges matching pairs automatically':'A convenience upgrade, retained after ascension'}</small></div><button class="btn" data-act="auto" ${state.autoMerge||state.cash<c?'disabled':''}>${state.autoMerge?'OWNED':'UNLOCK'}<b>${state.autoMerge?'✓':fmt(c)+' ✧'}</b></button></div>`;
  html+='<p class="note">Tip: for faster progress, alternate between buying more sparks and raising their power.</p>';
@@ -97,7 +97,7 @@ function renderPanel(){let html='';if(tab==='sparks'){
 function updateLabels(){ $('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks();$('broken').textContent=`${dead} / ${total}`;$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
 function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
 // Save the canvas and the wallet atomically. An unfinished stage must never reappear intact.
-function boardSnapshot(){return{version:2,stage:state.stage,w:W,h:H,tiles:shards.map(t=>[t.a[0],t.a[1],t.b[0],t.b[1],t.c[0],t.c[1],Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
+function boardSnapshot(){return{version:3,stage:state.stage,w:W,h:H,tiles:shards.map(t=>[t.a[0],t.a[1],t.b[0],t.b[1],t.c[0],t.c[1],Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
 
 function save(){if(shards.length)state.board=boardSnapshot();state.savedAt=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 // Restore the actual shards, including their remaining HP. The old save format is
@@ -106,25 +106,37 @@ function restoreStage(){
  const b=state.board;
  if(!b||b.stage!==state.stage||!Number.isFinite(b.w)||!Number.isFinite(b.h)||b.w<=0||b.h<=0||!Array.isArray(b.tiles)||b.tiles.length<1||b.tiles.length>5000)return false;
  const sx=W/b.w,sy=H/b.h,next=[];
- const previousFormat=b.version!==2;
+ const previousFormat=b.version!==2&&b.version!==3;
+ const needsSpacing=b.version!==3;
  for(let j=0;j<b.tiles.length;j++){
   const data=b.tiles[j];
   if(!Array.isArray(data)||data.length!==11||!data.every(Number.isFinite))return false;
   const [ax,ay,bx,by,cx,cy,hp,maxHp,oldLevel,tone,alpha]=data;
   if(maxHp<=0||tone<0||tone>=colors.length||oldLevel<0||oldLevel>1e6)return false;
-  const a=[ax*sx,ay*sy],bb=[bx*sx,by*sy],c=[cx*sx,cy*sy];
+  let a=[ax*sx,ay*sy],bb=[bx*sx,by*sy],c=[cx*sx,cy*sy];
+  // The v0.5 mosaic had touching triangles. Open small corridors once on upgrade.
+  if(needsSpacing){const center=[(a[0]+bb[0]+c[0])/3,(a[1]+bb[1]+c[1])/3];for(const pt of [a,bb,c]){pt[0]=center[0]+(pt[0]-center[0])*.74;pt[1]=center[1]+(pt[1]-center[1])*.74}}
   // v0.4 saves had armour instead of level and much smaller HP pools.
   // Convert in place without resurrecting previously destroyed shards or resetting damage.
   const level=previousFormat?pickShardLevel(state.stage,((j*37+19)%101)/101):oldLevel;
   const newMaxHp=previousFormat?shardHealth(level):maxHp;
   const newHp=previousFormat?(hp<=0?0:newMaxHp*clamp(hp/maxHp,0,1)):clamp(hp,0,maxHp);
-  next.push({a,b:bb,c,x:(a[0]+bb[0]+c[0])/3,y:(a[1]+bb[1]+c[1])/3,hp:newHp,maxHp:newMaxHp,level,flash:0,hue:colors[tone],alive:newHp>0,alpha:clamp(alpha,0,1),phase:0});
+  next.push(withBounds({a,b:bb,c,x:(a[0]+bb[0]+c[0])/3,y:(a[1]+bb[1]+c[1])/3,hp:newHp,maxHp:newMaxHp,level,flash:0,hue:colors[tone],alive:newHp>0,alpha:clamp(alpha,0,1),phase:0}));
  }
  shards=next;total=shards.length;dead=shards.reduce((n,t)=>n+(!t.alive?1:0),0);queueStage=dead===total;
  makeStars();return true;
 }
 
-function newSpark(i){const ang=rng(-Math.PI,Math.PI),v=sparkVelocity(i),x=rng(W*.18,W*.82),y=rng(H*.18,H*.82);return{x,y,vx:Math.cos(ang)*v,vy:Math.sin(ang)*v,tier:i,hitDelay:rng(0,.15),wandering:0,path:[],spin:rng(0,6.28)}}
+// Launch from the empty perimeter, not from inside an existing shard.
+// All movement between collisions is linear; direction changes only on impact.
+function newSpark(i){
+ const edge=9,side=Math.floor(rng(0,4)),along=side<2?rng(edge+2,H-edge-2):rng(edge+2,W-edge-2);
+ const x=side===0?edge:side===1?W-edge:along;
+ const y=side===2?edge:side===3?H-edge:along;
+ const heading=[0,Math.PI,Math.PI/2,-Math.PI/2][side]+rng(-.85,.85);
+ const v=sparkVelocity(i);
+ return{x,y,vx:Math.cos(heading)*v,vy:Math.sin(heading)*v,tier:i,path:[],spin:rng(0,6.28)};
+}
 function syncSparks(){let next=[];for(let i=0;i<MAX_TIERS;i++){let existing=sparks.filter(s=>s.tier===i);let n=state.tiers[i];for(let j=0;j<n;j++)next.push(existing[j]||newSpark(i))}sparks=next;}
 function resize(){
  let rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
@@ -135,7 +147,7 @@ function resize(){
  if(shards.length){
   // Changing orientation or window size must never regenerate a cleared canvas.
   const sx=W/oldW,sy=H/oldH;
-  for(const t of shards){for(const pt of [t.a,t.b,t.c]){pt[0]*=sx;pt[1]*=sy}t.x*=sx;t.y*=sy}
+  for(const t of shards){for(const pt of [t.a,t.b,t.c]){pt[0]*=sx;pt[1]*=sy}t.x*=sx;t.y*=sy;withBounds(t)}
   makeStars();
  }else if(!restoreStage())createStage();
  save();
@@ -144,16 +156,56 @@ function makeStars(){backgroundStars=Array.from({length:60},()=>({x:rng(0,W),y:r
 function createStage(){makeStars();shards=[];inspected=null;
  const pad=18,playW=Math.max(80,W-2*pad),playH=Math.max(100,H-2*pad),cell=clamp(Math.min(playW,playH)/7.7,37,69),cols=Math.max(4,Math.ceil(playW/cell)),rows=Math.max(5,Math.ceil(playH/cell)),stepX=playW/cols,stepY=playH/rows,pts=[];
  for(let y=0;y<=rows;y++){let ar=[];for(let x=0;x<=cols;x++){let px=pad+x*stepX+(x===0||x===cols?0:rng(-.17,.17)*stepX),py=pad+y*stepY+(y===0||y===rows?0:rng(-.17,.17)*stepY);ar.push([px,py])}pts.push(ar)}
- const makeTri=(a,b,c)=>{
-  let center=[(a[0]+b[0]+c[0])/3,(a[1]+b[1]+c[1])/3],tone=Math.floor(rng(0,colors.length));
-  let level=pickShardLevel(state.stage),hp=shardHealth(level)*rng(.96,1.09);
-  shards.push({a,b,c,x:center[0],y:center[1],hp,maxHp:hp,level,flash:0,hue:colors[tone],alive:true,alpha:rng(.72,1),phase:rng(0,6.28)});
+ const makeTri=(va,vb,vc)=>{
+  const center=[(va[0]+vb[0]+vc[0])/3,(va[1]+vb[1]+vc[1])/3];
+  // Open corridors between neighboring shards so sparks can physically ricochet.
+  const scaled=v=>[center[0]+(v[0]-center[0])*.74,center[1]+(v[1]-center[1])*.74];
+  const a=scaled(va),b=scaled(vb),c=scaled(vc),tone=Math.floor(rng(0,colors.length));
+  const level=pickShardLevel(state.stage),hp=shardHealth(level)*rng(.96,1.09);
+  shards.push(withBounds({a,b,c,x:center[0],y:center[1],hp,maxHp:hp,level,flash:0,hue:colors[tone],alive:true,alpha:rng(.72,1),phase:rng(0,6.28)}));
  };
  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
   let p=pts[y][x],q=pts[y][x+1],r=pts[y+1][x],s=pts[y+1][x+1];
   if((x+y)%2){makeTri(p,q,r);makeTri(q,s,r)}else{makeTri(p,q,s);makeTri(p,s,r)}
  }
  total=shards.length;dead=0;queueStage=false;
+ // Every new canvas has a different layout; free sparks caught inside new tiles.
+ for(const s of sparks){if(shards.some(t=>pointInTriangle(s.x,s.y,t))){const spawn=newSpark(s.tier);s.x=spawn.x;s.y=spawn.y;s.vx=spawn.vx;s.vy=spawn.vy;s.path=[]}}
+}
+
+function withBounds(t){t.minX=Math.min(t.a[0],t.b[0],t.c[0]);t.maxX=Math.max(t.a[0],t.b[0],t.c[0]);t.minY=Math.min(t.a[1],t.b[1],t.c[1]);t.maxY=Math.max(t.a[1],t.b[1],t.c[1]);return t}
+
+// Return the FIRST contact along the moving segment, including a shard edge or wall.
+// Swept intersections prevent high-speed sparks from tunneling through triangles.
+function traceImpact(s,dx,dy){
+ let best=1+1e-8,impact=null;
+ const offer=(time,nx,ny,shard)=>{if(time>=0&&time<=1&&time<best){best=time;impact={time,nx,ny,shard}}};
+ const left=8,right=W-8,top=8,bottom=H-8;
+ if(dx<0&&s.x+dx<left)offer((left-s.x)/dx,1,0,null);
+ else if(dx>0&&s.x+dx>right)offer((right-s.x)/dx,-1,0,null);
+ if(dy<0&&s.y+dy<top)offer((top-s.y)/dy,0,1,null);
+ else if(dy>0&&s.y+dy>bottom)offer((bottom-s.y)/dy,0,-1,null);
+ const x1=Math.min(s.x,s.x+dx)-.01,x2=Math.max(s.x,s.x+dx)+.01;
+ const y1=Math.min(s.y,s.y+dy)-.01,y2=Math.max(s.y,s.y+dy)+.01;
+ for(const t of shards){
+  if(!t.alive||x1>t.maxX||x2<t.minX||y1>t.maxY||y2<t.minY)continue;
+  const poly=[t.a,t.b,t.c];
+  for(let j=0;j<3;j++){
+   const a=poly[j],b=poly[(j+1)%3],ex=b[0]-a[0],ey=b[1]-a[1];
+   const den=dx*ey-dy*ex;
+   if(Math.abs(den)<1e-10)continue;
+   const qx=a[0]-s.x,qy=a[1]-s.y;
+   const time=(qx*ey-qy*ex)/den,edgePart=(qx*dy-qy*dx)/den;
+   if(time<=1e-8||time>=best||edgePart<0||edgePart>1)continue;
+   let nx=ey,ny=-ex;
+   if(nx*(t.x-a[0])+ny*(t.y-a[1])>0){nx=-nx;ny=-ny}
+   const mag=Math.hypot(nx,ny);if(!mag)continue;
+   nx/=mag;ny/=mag;
+   if(dx*nx+dy*ny>=-1e-8)continue; // Entering only; no double-hit on exit.
+   offer(time,nx,ny,t);
+  }
+ }
+ return impact;
 }
 
 function pointInTriangle(px,py,t){const s=(a,b,c)=>(px-c[0])*(a[1]-c[1])-(a[0]-c[0])*(py-c[1]);let a=s(t.a,t.b,t.c),b=s(t.b,t.c,t.a),c=s(t.c,t.a,t.b);return (a>=0&&b>=0&&c>=0)||(a<=0&&b<=0&&c<=0)}
@@ -182,18 +234,36 @@ function nearestAlive(x,y){let chosen=null,d=Infinity;
  return chosen;
 }
 
-function tick(dt){gameTime+=dt;const accel=rush?3:1;let elapsed=dt*accel;for(const s of sparks){let v=sparkVelocity(s.tier);let len=Math.hypot(s.vx,s.vy)||1;s.vx=s.vx/len*v;s.vy=s.vy/len*v;s.hitDelay-=elapsed;s.wandering+=elapsed;
-  let steps=Math.max(1,Math.ceil(elapsed/.016));let slice=elapsed/steps;for(let k=0;k<steps;k++){
-   s.x+=s.vx*slice;s.y+=s.vy*slice;
-   if(s.x<8||s.x>W-8){s.vx*=-1;s.x=clamp(s.x,8,W-8)}if(s.y<8||s.y>H-8){s.vy*=-1;s.y=clamp(s.y,8,H-8)}
-   if(s.hitDelay<=0){let found=null;for(const t of shards){if(t.alive&&Math.abs(t.x-s.x)<72&&Math.abs(t.y-s.y)<72&&pointInTriangle(s.x,s.y,t)){found=t;break}}
-    if(found){hitShard(found,tierPower(s.tier),s.tier);s.hitDelay=.065;s.wandering=0;let ang=Math.atan2(s.vy,s.vx)+rng(-.9,.9);s.vx=Math.cos(ang)*v;s.vy=Math.sin(ang)*v;}}
+function tick(dt){
+ gameTime+=dt;
+ const elapsed=dt*(rush?3:1);
+ for(const s of sparks){
+  // Fixed heading between impacts: NO steering or circular homing.
+  const speed=sparkVelocity(s.tier),len=Math.hypot(s.vx,s.vy)||1;
+  s.vx=s.vx/len*speed;s.vy=s.vy/len*speed;
+  let steps=Math.max(1,Math.ceil(elapsed/.016)),slice=elapsed/steps;
+  for(let k=0;k<steps;k++){
+   let remaining=slice;
+   for(let bounce=0;bounce<6&&remaining>1e-7;bounce++){
+    const dx=s.vx*remaining,dy=s.vy*remaining;
+    const impact=traceImpact(s,dx,dy);
+    if(!impact){s.x+=dx;s.y+=dy;break}
+    s.x+=dx*impact.time;s.y+=dy*impact.time;
+    // Record the actual ricochet corner so the glow trail never cuts through a tile.
+    s.path.push([s.x,s.y]);if(s.path.length>15)s.path.shift();
+    if(impact.shard)hitShard(impact.shard,tierPower(s.tier),s.tier);
+    const dot=s.vx*impact.nx+s.vy*impact.ny;
+    s.vx-=2*dot*impact.nx;s.vy-=2*dot*impact.ny;
+    // A tiny separation stops numerical re-collisions at the same edge.
+    s.x+=impact.nx*.15;s.y+=impact.ny*.15;
+    remaining*=1-impact.time;
+   }
   }
-  if(s.wandering>1.1){let t=nearestAlive(s.x,s.y);if(t){let ang=Math.atan2(t.y-s.y,t.x-s.x),cur=Math.atan2(s.vy,s.vx);let diff=Math.atan2(Math.sin(ang-cur),Math.cos(ang-cur));let step=clamp(diff,-dt*2.7,dt*2.7);s.vx=Math.cos(cur+step)*v;s.vy=Math.sin(cur+step)*v}}
-  s.path.push([s.x,s.y]);if(s.path.length>9)s.path.shift();s.spin+=elapsed*3;
+  s.x=clamp(s.x,8,W-8);s.y=clamp(s.y,8,H-8);
+  s.path.push([s.x,s.y]);if(s.path.length>15)s.path.shift();
+  s.spin+=elapsed*3;
  }
  for(const t of shards)if(t.flash>0)t.flash=Math.max(0,t.flash-elapsed);
-
  for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*elapsed;p.y+=p.vy*elapsed;p.vx*=.985;p.vy*=.985;p.life-=elapsed;if(p.life<=0)particles.splice(i,1)}
  for(let i=damagePopups.length-1;i>=0;i--){const p=damagePopups[i];p.life-=elapsed;p.y-=20*elapsed;if(p.life<=0)damagePopups.splice(i,1)}
  if(queueStage){queueStage=false;const bonus=Math.floor(16*Math.pow(state.stage,1.42)*fortune());state.cash+=bonus;state.earned+=bonus;state.stage++;createStage();announce('Canvas cleared! +' +fmt(bonus)+' prisms ✧ · Next: Lv '+shardLevelAtStage(state.stage));save()}
