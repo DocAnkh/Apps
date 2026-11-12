@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e19">
-<title>Prism Drift v1.4 — Reliable Polygon Collisions</title>
+<title>Prism Drift v1.5 — Workshop Refresh</title>
 <style>
 :root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
@@ -17,14 +17,60 @@ button{font:inherit;touch-action:manipulation;cursor:pointer}button:disabled{cur
 .elite-card{margin-bottom:12px;padding:13px;border-radius:13px;background:linear-gradient(115deg,#1c2031,#202337);border:1px solid #3a3c56;border-left:3px solid var(--elite-color)}.elite-title{display:flex;gap:11px;align-items:flex-start}.elite-orb{display:grid;place-items:center;border-radius:12px;background:#111726;width:43px;height:43px;flex-shrink:0;color:var(--elite-color);font-size:26px;text-shadow:0 0 17px var(--elite-color)}.elite-title h3{font-size:14px;margin:0 0 5px}.elite-title p{font-size:11px;line-height:1.5;color:#aeb6cc;margin:0}.elite-detail{font-size:11px;color:#d8d0ef;padding:10px 0}.elite-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #39384e;padding-top:10px}.elite-bottom>span{font-size:10px;font-weight:800;color:#bec6d9}.elite-bottom button{min-width:118px}
 .limited-card{border:1px solid #5e4c77;border-radius:13px;background:linear-gradient(120deg,#29213f,#1a2a39);padding:14px;margin-top:13px}.limited-card strong{display:block;font-size:14px;margin-bottom:5px}.limited-card p{margin:0 0 8px;color:#c2bdd6;font-size:12px;line-height:1.5}.limited-row{display:flex;flex-wrap:wrap;gap:7px}.limited-pill{font-size:11px;color:#ddd4ed;border:1px solid #655678;background:#221f36;border-radius:9px;padding:7px 9px}.power-card{margin-bottom:11px;padding:13px;background:#1c2031;border:1px solid #353a52;border-radius:13px}.power-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}.power-orb{width:43px;height:43px;flex:0 0 43px;border-radius:13px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,#313355,#1c4e59)}.power-head h3{font-size:14px;line-height:1.3;margin:1px 0 3px}.power-head p{font-size:11px;line-height:1.4;color:#aeb6cc;margin:0}.power-level{margin-left:auto;color:#c1c6dc;font-size:11px;white-space:nowrap}.power-buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px}.power-btn{min-height:49px}.power-btn:disabled{opacity:.45}.note{font-size:11px;line-height:1.5;color:#8c97ad;padding:8px 4px}.foot{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-top:14px;color:#7f88a4;font-size:11px}.toast{position:fixed;z-index:4;left:50%;top:24px;transform:translateX(-50%) translateY(-20px);border:1px solid #6f7194;border-radius:12px;background:#272b46;color:#fff;padding:11px 20px;box-shadow:0 14px 40px #0009;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:790px){.wrap{padding-top:12px}.layout{grid-template-columns:1fr}.canvas-wrap{height:clamp(400px,60svh,660px)}.tab-content{min-height:0}.top{margin-bottom:12px}.board-shell,.side{border-radius:15px}}@media(max-width:430px){.tab{font-size:10px;padding:10px 1px}.brand h1{font-size:20px}.bank{font-size:18px}.metrics{font-size:12px}.tier{padding:10px}.tab-content{padding:12px}.buttons{gap:5px}.btn{font-size:10px}.btn b{font-size:11px}}
+
+/* v1.5 Workshop: stable, large touch targets and clearer hierarchy */
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;appearance:none;-webkit-appearance:none}
+.side{background:linear-gradient(165deg,#181c30,#111522)}
+.shop-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:15px 16px 12px;background:linear-gradient(120deg,#20233a,#152538)}
+.shop-heading-title{font-size:11px;color:#c8c6f1;letter-spacing:.15em;font-weight:900;white-space:nowrap}
+.shop-wallet{font-size:10px;letter-spacing:.04em;font-weight:750;color:#a9b6d0;white-space:nowrap}
+.shop-wallet strong{font-size:14px;color:#ffe2a1;font-variant-numeric:tabular-nums;margin:0 2px}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:8px;border-bottom:1px solid #343b54;background:#141a2b}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;padding:7px 1px;border:1px solid transparent;border-radius:12px;color:#a9b3ce;background:#1b2133;font-size:11px;font-weight:800;letter-spacing:.01em;transition:background .16s,border-color .16s,transform .12s}
+.tab-icon{font-size:18px;font-weight:650;line-height:1;color:inherit}
+.tab[aria-selected="true"]{background:linear-gradient(130deg,#393968,#294559);border-color:#8a81c7;color:#fff;box-shadow:0 3px 16px #6a62ff24,inset 0 0 0 1px #b7a7fb1a}
+.tab:active{transform:scale(.96);background:#43416c}
+.tab:focus-visible,.btn:focus-visible,.power-quick:focus-visible{outline:2px solid #b0eff4;outline-offset:2px}
+.tab-content{padding:16px;min-height:395px}
+.section-title{font-size:19px;letter-spacing:-.035em;font-weight:850;margin:2px 0 5px}
+.section-sub{font-size:12px;line-height:1.55;color:#aab7d2;margin-bottom:17px}
+.tier,.upgrade,.elite-card,.power-card{background:linear-gradient(145deg,#20263a,#1b2031);border:1px solid #414961;border-radius:15px;box-shadow:0 4px 16px #04071224}
+.tier{padding:14px;margin-bottom:12px}
+.tier-name{min-width:0}.tier-info{min-width:0}.tier-info strong{font-size:15px;letter-spacing:-.01em}.tier-info small{font-size:11px;line-height:1.45;display:block;margin-top:4px}.tier-count{font-size:23px;color:#f1e4ff}
+.spark-emblem{width:42px;height:42px;flex:0 0 42px;border-radius:12px;background:linear-gradient(140deg,#263e59,#262341)}
+.buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.btn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;padding:9px 6px;border-radius:11px;border:1px solid #5b6387;background:linear-gradient(155deg,#3c446a,#313855);color:#f2f4ff;font-size:11px;font-weight:850;letter-spacing:.025em;line-height:1.2;user-select:none;-webkit-user-select:none;transition:transform .1s ease,background .14s,border-color .14s,box-shadow .14s}
+.btn b{font-size:12px;font-variant-numeric:tabular-nums;letter-spacing:0;color:#ffe2ac}
+.btn.primary{background:linear-gradient(125deg,#4b69de,#6950c6);border-color:#8f92f4;box-shadow:0 4px 13px #5456d62b}
+.btn.gold{background:linear-gradient(125deg,#514338,#453d46);border-color:#8c7358;color:#ffe6b0}
+.btn:disabled{opacity:.42;filter:saturate(.55);box-shadow:none}
+.btn:not(:disabled):active,.power-quick:not(:disabled):active{transform:scale(.96);filter:brightness(1.2);box-shadow:0 0 0 2px #a9b1ff50}
+@media (hover:hover){.btn:not(:disabled):hover{filter:brightness(1.12);border-color:#a49df2}.tab:not([aria-selected="true"]):hover{background:#293249}}
+.tier-heading{margin-bottom:14px;gap:8px}
+.upgrade{padding:13px;gap:12px;margin-bottom:10px}.upgrade-body strong{font-size:13px}.upgrade-body small{font-size:11px;line-height:1.5;margin-top:4px}.upgrade button{min-width:96px;max-width:115px}
+.elite-card,.power-card{padding:15px;margin-bottom:12px}.elite-title h3,.power-head h3{font-size:15px}.elite-title p,.power-head p{font-size:12px;line-height:1.45}.elite-detail{padding:12px 0;font-size:12px}
+.elite-bottom{padding-top:12px}.elite-bottom button{min-width:130px}
+.power-buttons{gap:9px}.power-btn{min-height:54px}
+.limited-card{margin-top:15px;border-color:#615579;background:linear-gradient(135deg,#272443,#1d2e3a)}
+.limited-card summary{cursor:pointer;color:#f5e4ff;font-weight:800;font-size:13px;min-height:24px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.limited-card summary::-webkit-details-marker{display:none}
+.limited-card summary::after{content:'⌄';font-size:22px;line-height:1;color:#b7ace6;transition:transform .16s}
+.limited-card[open] summary::after{transform:rotate(180deg)}
+.limited-card p{margin-top:10px}
+.note{font-size:11px;line-height:1.6;color:#9aa7c0}
+.milestone{border-radius:15px}.milestone .btn{min-height:54px}
+@media(max-width:790px){.shop-heading{padding:13px 15px 10px}.tabs{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:9px}.tab{grid-column:span 2;min-height:49px;flex-direction:row;gap:6px;font-size:12px}.tab:nth-child(4),.tab:nth-child(5){grid-column:span 3}.tab-icon{font-size:17px}.tab-content{padding:15px;min-height:0}}
+@media(max-width:430px){.tab{font-size:12px;padding:8px 2px;min-height:47px}.tab-content{padding:12px}.btn{font-size:11px;min-height:51px;padding:10px 4px}.btn b{font-size:11px}.tier{padding:12px}.tier-info small{font-size:10px}.tier-count{font-size:21px}.upgrade{display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-areas:'ico desc' 'action action';gap:8px 10px}.upgrade-symbol{grid-area:ico}.upgrade-body{grid-area:desc}.upgrade button{grid-area:action;width:100%;max-width:none;min-height:45px}.elite-bottom{flex-wrap:wrap}.elite-bottom button{width:100%}}
+@media(prefers-reduced-motion:reduce){.btn,.tab,.limited-card summary::after{transition:none}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v1.3</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
+<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v1.5</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
 <main class="layout">
 <section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div id="power-hud" class="power-hud" aria-live="off"></div><div id="elite-hud" class="elite-hud" aria-label="Purchased elite sparks"></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint" id="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div id="power-tray" class="power-tray" aria-label="Quick access to unlocked power-ups"></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div></div></section>
-<section class="side" aria-label="Upgrades and merging"><div class="tabs" role="tablist" aria-label="Game menus"><button class="tab" data-tab="sparks" role="tab" aria-selected="true">SPARKS</button><button class="tab" data-tab="elites" role="tab" aria-selected="false">ELITES</button><button class="tab" data-tab="upgrades" role="tab" aria-selected="false">UPGRADES</button><button class="tab" data-tab="powers" role="tab" aria-selected="false">POWERS</button><button class="tab" data-tab="ascend" role="tab" aria-selected="false">ASCEND</button></div><div class="tab-content" id="panel"></div></section>
+<section class="side" aria-label="Upgrade workshop"><div class="shop-heading"><span class="shop-heading-title">✦ THE WORKSHOP</span><span class="shop-wallet">AVAILABLE <strong id="menu-cash">0</strong> ✧</span></div><div class="tabs" role="tablist" aria-label="Game menus"><button type="button" class="tab" data-tab="sparks" role="tab" aria-selected="true" aria-controls="panel"><span class="tab-icon">✧</span><span>Sparks</span></button><button type="button" class="tab" data-tab="elites" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">✺</span><span>Elites</span></button><button type="button" class="tab" data-tab="upgrades" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">⇡</span><span>Upgrades</span></button><button type="button" class="tab" data-tab="powers" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">⚡</span><span>Powers</span></button><button type="button" class="tab" data-tab="ascend" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">✦</span><span>Ascend</span></button></div><div class="tab-content" role="tabpanel" id="panel"></div></section>
 </main>
 <div class="foot"><span>Shards, damage & progress autosaved on this device · Play offline</span><button class="small-btn" id="reset">Reset game</button></div>
 </div>
@@ -139,10 +185,10 @@ const mergeNeed=2;
 function renderPanel(){let html='';if(tab==='sparks'){
  html='<h2 class="section-title">Build your constellation</h2><p class="section-sub">Buy and merge sparks for more damage. Every spark can damage any shard; tougher shards simply take more hits.</p>';
  const active=totalSparks();for(let i=0;i<MAX_TIERS;i++){let owned=state.tiers[i],prior=i===0||state.tiers.slice(i).some(n=>n>0)||state.levels[i]>0||state.earned>200*Math.pow(6,i);if(!prior)continue;let buy=buyCost(i),level=levelCost(i),canBuy=state.cash>=buy&&active<MAX_SPARKS,canLevel=state.cash>=level&&owned>0,canMerge=owned>=mergeNeed&&i<MAX_TIERS-1;
- html+=`<div class="tier"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem"><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 2 26 26 15 20 4 26Z" fill="${tierColors[i]}"/></svg></div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1} · hits all shard levels</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>ADD ONE<b>${fmt(buy)} ✧</b></button><button class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>LEVEL UP<b>${fmt(level)} ✧</b></button><button class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>MERGE ×2<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need 2'}</b></button></div></div>`;
+ html+=`<div class="tier" data-card-tier="${i}"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem"><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 2 26 26 15 20 4 26Z" fill="${tierColors[i]}"/></svg></div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1} · hits all shard levels</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button type="button" class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>+ BUY ONE<b>${fmt(buy)} ✧</b></button><button type="button" class="btn" data-act="buy-max" data-tier="${i}" ${canBuy?'':'disabled'}>BUY MAX<b>Fill available slots</b></button><button type="button" class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>↑ LEVEL UP<b>${fmt(level)} ✧</b></button><button type="button" class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>◇ MERGE ×2<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need 2'}</b></button></div></div>`;
  }
  html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Merge two matching sparks for a stronger one. Every spark deals damage to every shard, no matter its level.</p>`;
- html+=`<div class="limited-card"><strong>✦ Limited-edition sparks</strong><p>Every destroyed shard has a 1% chance to release a special spark. These extra sparks last for <b>3 real-world minutes</b>, continue across canvases, and do not count towards your regular spark limit. Up to ${MAX_LIMITED} can be active, with only one of each kind at a time.</p><div class="limited-row"><span class="limited-pill">🔥 Ember · ×9 damage</span><span class="limited-pill">✧ Gilded · ×5 damage & ×3 earnings</span><span class="limited-pill">✴ Singularity · ×22 damage</span></div><p style="margin-top:9px;margin-bottom:0">In flight now: <b>${specialSparks.length}</b> · Total found: <b>${fmt(state.specialFinds||0)}</b></p></div>`;
+ html+=`<details class="limited-card"><summary>✦ About rare sparks</summary><p>Destroyed shards have a 1% chance to release a special spark for <b>3 real-world minutes</b>. Only one of each kind can be active at once.</p><div class="limited-row"><span class="limited-pill">🔥 Ember · ×9 damage</span><span class="limited-pill">✧ Gilded · ×5 damage & ×3 earnings</span><span class="limited-pill">✴ Singularity · ×22 damage</span></div><p style="margin-bottom:0">Active: <b>${specialSparks.length}</b> · Found: <b>${fmt(state.specialFinds||0)}</b></p></details>`;
  }else if(tab==='elites'){
  html='<h2 class="section-title">Elite spark workshop</h2><p class="section-sub">Three independent permanent specialty sparks. Each adds one extra spark to the board, with its own unique attack. Elite levels and unlocks survive ascension.</p>';
  for(const [id,d] of Object.entries(ELITE_DEFS)){
@@ -150,13 +196,13 @@ function renderPanel(){let html='';if(tab==='sparks'){
   const detail=id==='rotary'?`Lv ${lv||1}: ${5+(lv>=3?1:0)+(lv>=5?1:0)} radial shots per volley · every ${Math.max(.6,1.55-(lv||1)*.17).toFixed(2)}s`:
     id==='phase'?`Lv ${lv||1}: +${Math.round((.35+((lv||1)-1)*.12)*100)}% damage per shard crossed · charge resets at walls`:
     `Lv ${lv||1}: ${Math.min(5,2+(lv||1))} fragments on each shard destroyed`;
-  html+=`<div class="elite-card" style="--elite-color:${d.color}"><div class="elite-title"><span class="elite-orb">${d.symbol}</span><div><h3>${d.name}</h3><p>${d.desc}</p></div></div><div class="elite-detail">${detail}</div><div class="elite-bottom"><span>${lv?'OWNED · LEVEL '+lv:'NOT YET OWNED'}</span><button class="btn primary" data-act="${lv?'upgrade-elite':'buy-elite'}" data-id="${id}" ${lv>=5||state.cash<cost?'disabled':''}>${lv>=5?'MAX LEVEL':lv?'UPGRADE':'PURCHASE'}<b>${lv>=5?'✓':fmt(cost)+' ✧'}</b></button></div></div>`;
+  html+=`<div class="elite-card" data-card-elite="${id}" style="--elite-color:${d.color}"><div class="elite-title"><span class="elite-orb">${d.symbol}</span><div><h3>${d.name}</h3><p>${d.desc}</p></div></div><div class="elite-detail">${detail}</div><div class="elite-bottom"><span>${lv?'OWNED · LEVEL '+lv:'NOT YET OWNED'}</span><button class="btn primary" data-act="${lv?'upgrade-elite':'buy-elite'}" data-id="${id}" ${lv>=5||state.cash<cost?'disabled':''}>${lv>=5?'MAX LEVEL':lv?'UPGRADE':'PURCHASE'}<b>${lv>=5?'✓':fmt(cost)+' ✧'}</b></button></div></div>`;
  }
  html+='<p class="note">One of each elite spark can be owned and upgraded to level 5. Elite mini-sparks are temporary projectiles, not limited-edition rare drops. They earn prisms normally and never take regular spark slots.</p>';
  }else if(tab==='upgrades'){
  html='<h2 class="section-title">Make everything brighter</h2><p class="section-sub">Permanent upgrades until your next ascension.</p>';
  const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Bounce','Sparks ricochet 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level'],['crit','⚡','Critical Hits','4% more chance to deal double damage per level (max 60%)'],['bounty','✺','Shard Bounty','Earn 15% more bonus prisms when a shard breaks'],['recharge','◷','Fast Recharge','Power-up cooldowns become 6% shorter per level (max 52%)']];
- for(const [id,ico,title,desc] of opts){const c=upgradeCost(id);html+=`<div class="upgrade"><span class="upgrade-symbol">${ico}</span><div class="upgrade-body"><strong>${title} · Lv ${state.upgrades[id]}</strong><small>${desc}</small></div><button class="btn primary" data-act="upgrade" data-id="${id}" ${state.cash>=c?'':'disabled'}>UPGRADE<b>${fmt(c)} ✧</b></button></div>`}
+ for(const [id,ico,title,desc] of opts){const c=upgradeCost(id);html+=`<div class="upgrade" data-card-upgrade="${id}"><span class="upgrade-symbol">${ico}</span><div class="upgrade-body"><strong>${title} · Lv ${state.upgrades[id]}</strong><small>${desc}</small></div><button class="btn primary" data-act="upgrade" data-id="${id}" ${state.cash>=c?'':'disabled'}>UPGRADE<b>${fmt(c)} ✧</b></button></div>`}
  const c=3500;html+=`<div class="upgrade"><span class="upgrade-symbol">∞</span><div class="upgrade-body"><strong>Auto Merge</strong><small>${state.autoMerge?'On · merges matching pairs automatically':'A convenience upgrade, retained after ascension'}</small></div><button class="btn" data-act="auto" ${state.autoMerge||state.cash<c?'disabled':''}>${state.autoMerge?'OWNED':'UNLOCK'}<b>${state.autoMerge?'✓':fmt(c)+' ✧'}</b></button></div>`;
  html+='<p class="note">Tip: use your POWERS tab for temporary boosts. Passive upgrades above reset when you ascend.</p>';
  }else if(tab==='powers'){
@@ -168,14 +214,43 @@ function renderPanel(){let html='';if(tab==='sparks'){
   const activeRemaining=Math.max(0,Math.ceil((p.activeUntil-now)/1000));
   const canFire=owned&&!remaining&&!active&&(id!=='pulse'||dead<total);
   const main=owned?(active?'ACTIVE '+activeRemaining+'s':remaining?'READY IN '+remaining+'s':id==='pulse'&&dead===total?'NO SHARDS':'ACTIVATE'):'UNLOCK';
-  html+=`<div class="power-card"><div class="power-head"><span class="power-orb">${d.symbol}</span><div><h3>${d.name}</h3><p>${powerDescription(id)}</p></div><span class="power-level">${owned?'Lv '+p.level:'LOCKED'}</span></div><div class="power-buttons"><button class="btn primary power-btn" data-act="${owned?'activate-power':'unlock-power'}" data-id="${id}" ${(owned?!canFire:state.cash<d.unlock)?'disabled':''}>${main}${owned?'':`<b>${fmt(d.unlock)} ✧</b>`}</button><button class="btn power-btn" data-act="upgrade-power" data-id="${id}" ${!owned||p.level>=5||state.cash<powerUpgradeCost(id)?'disabled':''}>${p.level>=5?'MAX LEVEL':'LEVEL UP'}<b>${p.level>=5?'✓':owned?fmt(powerUpgradeCost(id))+' ✧':'Unlock first'}</b></button></div></div>`;
+  html+=`<div class="power-card" data-card-power="${id}"><div class="power-head"><span class="power-orb">${d.symbol}</span><div><h3>${d.name}</h3><p>${powerDescription(id)}</p></div><span class="power-level">${owned?'Lv '+p.level:'LOCKED'}</span></div><div class="power-buttons"><button class="btn primary power-btn" data-act="${owned?'activate-power':'unlock-power'}" data-id="${id}" ${(owned?!canFire:state.cash<d.unlock)?'disabled':''}>${main}${owned?'':`<b>${fmt(d.unlock)} ✧</b>`}</button><button class="btn power-btn" data-act="upgrade-power" data-id="${id}" ${!owned||p.level>=5||state.cash<powerUpgradeCost(id)?'disabled':''}>${p.level>=5?'MAX LEVEL':'LEVEL UP'}<b>${p.level>=5?'✓':owned?fmt(powerUpgradeCost(id))+' ✧':'Unlock first'}</b></button></div></div>`;
  }
  html+='<p class="note">Damage and money boosts stack. A shard destroyed by any attack still lets the spark travel straight through. Power-ups use real-time timers and save automatically.</p>';
  }else{
  const reward=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000)),ready=state.stage>=5&&reward>0;
  html=`<h2 class="section-title">A new beginning</h2><p class="section-sub">Restart stronger, with permanent auras that boost every future run.</p><div class="milestone"><div class="milestone-icon">✺</div><span class="pill">${state.auras} permanent auras</span><h3>Ascend into light</h3><p>Ascend to reset your sparks, upgrades, canvases, and prisms, but earn <strong>+${fmt(reward)} aura${reward===1?'':'s'}</strong>. Each aura grants <strong>+18% spark damage</strong> and <strong>+14% earnings</strong> forever.<br><br>Available from Canvas 5 onward.</p><button class="btn primary" data-act="ascend" ${ready?'':'disabled'}>ASCEND FOR +${fmt(reward)} AURAS</button></div><p class="note">Lifetime runs: ${state.ascensions}. Your Auto Merge unlock and existing auras survive ascension.</p>`;
  }
- $('panel').innerHTML=html;
+ patchWorkshop(html);
+}
+// Preserve the actual controls during live updates. The old innerHTML replacement
+// ran every 650ms, destroying buttons mid-touch on iOS before Safari dispatched click.
+let menuPressing=false,menuLastPress=0;
+function nodeIdentity(n){if(n.nodeType!==1)return '';
+ const d=n.dataset;return [n.tagName,d.cardTier??'',d.cardUpgrade??'',d.cardElite??'',d.cardPower??'',d.act??'',d.tier??'',d.id??'',d.power??''].join('|');}
+function patchNode(oldNode,newNode){
+ if(!oldNode||!newNode)return;
+ if(oldNode.nodeType!==newNode.nodeType||oldNode.nodeName!==newNode.nodeName||(oldNode.nodeType===1&&nodeIdentity(oldNode)!==nodeIdentity(newNode))){oldNode.replaceWith(newNode.cloneNode(true));return;}
+ if(oldNode.nodeType===3){if(oldNode.nodeValue!==newNode.nodeValue)oldNode.nodeValue=newNode.nodeValue;return;}
+ if(oldNode.nodeType!==1)return;
+ for(const a of [...oldNode.attributes])if(!newNode.hasAttribute(a.name)&&!(oldNode.tagName==='DETAILS'&&a.name==='open'))oldNode.removeAttribute(a.name);
+ for(const a of newNode.attributes)if(oldNode.getAttribute(a.name)!==a.value)oldNode.setAttribute(a.name,a.value);
+ const incoming=[...newNode.childNodes];
+ for(let i=0;i<incoming.length;i++){
+  const current=oldNode.childNodes[i];if(current)patchNode(current,incoming[i]);else oldNode.appendChild(incoming[i].cloneNode(true));
+ }
+ while(oldNode.childNodes.length>incoming.length)oldNode.lastChild.remove();
+}
+function patchWorkshop(markup){
+ const root=$('panel');
+ if(root.dataset.activeTab!==tab){root.innerHTML=markup;root.dataset.activeTab=tab;return;}
+ if(menuPressing||performance.now()-menuLastPress<300)return;
+ const source=document.createElement('template');source.innerHTML=markup;
+ const incoming=[...source.content.childNodes];
+ for(let i=0;i<incoming.length;i++){
+  const current=root.childNodes[i];if(current)patchNode(current,incoming[i]);else root.appendChild(incoming[i].cloneNode(true));
+ }
+ while(root.childNodes.length>incoming.length)root.lastChild.remove();
 }
 let powerTrayHTML='';
 function updatePowerHud(){
@@ -193,7 +268,15 @@ function updatePowerHud(){
   return `<button type="button" class="power-quick" data-power="${id}" title="${d.name}" ${ready?'':'disabled'}><span class="symbol">${d.symbol}</span><span class="status">${status}</span></button>`;
  }).join('');
  tray.classList.toggle('visible',unlocked.length>0);
- if(markup!==powerTrayHTML){tray.innerHTML=markup;powerTrayHTML=markup}
+ if(markup!==powerTrayHTML){
+  const source=document.createElement('template');source.innerHTML=markup;
+  const desired=[...source.content.children];
+  for(let i=0;i<desired.length;i++){
+   if(tray.children[i])patchNode(tray.children[i],desired[i]);else tray.appendChild(desired[i].cloneNode(true));
+  }
+  while(tray.children.length>desired.length)tray.lastElementChild.remove();
+  powerTrayHTML=markup;
+ }
 }
 function updateLabels(){ updatePowerHud();const eliteHud=$('elite-hud');
  // Reserve two fixed grid columns and a dedicated multiplier slot for Phase.
@@ -205,7 +288,7 @@ function updateLabels(){ updatePowerHud();const eliteHud=$('elite-hud');
  }
  const phase=eliteSparks.find(s=>s.elite==='phase'),charge=eliteHud.querySelector('.elite-charge');
  if(phase&&charge)charge.textContent='×'+(1+(phase.phaseChain||0)*(.35+(state.elites.phase-1)*.12)).toFixed(1);
- eliteHud.classList.toggle('visible',eliteSparks.length>0);$('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks()+(eliteSparks.length?' +'+eliteSparks.length+' ✺':'')+(specialSparks.length?' +'+specialSparks.length+' ✦':'');$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
+ eliteHud.classList.toggle('visible',eliteSparks.length>0);$('cash').textContent=fmt(state.cash);$('menu-cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks()+(eliteSparks.length?' +'+eliteSparks.length+' ✺':'')+(specialSparks.length?' +'+specialSparks.length+' ✦':'');$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
 function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
 // Save the canvas and the wallet atomically. An unfinished stage must never reappear intact.
 function boardSnapshot(){return{version:6,stage:state.stage,w:W,h:H,spawns:spawnSites.map(p=>[p[0],p[1]]),tiles:shards.map(t=>[corners(t).flat(),Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
@@ -708,7 +791,10 @@ function draw(){ctx.clearRect(0,0,W,H);let bg=ctx.createLinearGradient(0,0,W,H);
  for(const s of miniSparks){const def=ELITE_DEFS[s.mini];ctx.globalAlpha=Math.min(1,Math.max(0,s.life/.25));ctx.strokeStyle=def.color;ctx.fillStyle='#fff';ctx.lineWidth=1.3;ctx.shadowBlur=13;ctx.shadowColor=def.color;ctx.beginPath();ctx.moveTo(s.x-s.vx*.027,s.y-s.vy*.027);ctx.lineTo(s.x,s.y);ctx.stroke();ctx.beginPath();ctx.arc(s.x,s.y,s.mini==='rotary'?2.7:3.5,0,Math.PI*2);ctx.fill();}ctx.shadowBlur=0;ctx.globalAlpha=1;
 }
 function loop(time){if(!lastFrame)lastFrame=time;const dt=clamp((time-lastFrame)/1000,0,.05);lastFrame=time;tick(dt);draw();if(time-lastUI>220){updateLabels();lastUI=time}if(time-lastPanel>650){renderPanel();lastPanel=time}if(time-lastSave>2000){save();lastSave=time}requestAnimationFrame(loop)}
-$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;syncSparks();ok=true}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='unlock-power'){
+$('panel').addEventListener('pointerdown',()=>{menuPressing=true;menuLastPress=performance.now()});
+for(const ev of ['pointerup','pointercancel'])$('panel').addEventListener(ev,()=>{menuPressing=false;menuLastPress=performance.now()});
+window.addEventListener('pointerup',()=>{menuPressing=false});
+$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;syncSparks();ok=true}}else if(action==='buy-max'){let n=0;while(n<MAX_SPARKS&&totalSparks()<MAX_SPARKS){let c=buyCost(i);if(state.cash<c)break;state.cash-=c;state.tiers[i]++;n++}if(n){syncSparks();ok=true;announce('Added '+n+' '+tierNames[i]+' spark'+(n===1?'':'s'))}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='unlock-power'){
  const def=POWER_DEFS[id],p=state.powers[id];if(def&&p&&p.level===0&&state.cash>=def.unlock){state.cash-=def.unlock;p.level=1;ok=true;announce(def.name+' unlocked!')}}else if(action==='upgrade-power'){
  const p=state.powers[id];if(POWER_DEFS[id]&&p&&p.level>=1&&p.level<5){let c=powerUpgradeCost(id);if(state.cash>=c){state.cash-=c;p.level++;ok=true;announce(POWER_DEFS[id].name+' Lv '+p.level)}}}else if(action==='activate-power'){
  if(activatePower(id))ok=true;
@@ -719,7 +805,7 @@ $('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-ac
  }else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;next.elites={...state.elites};
  // Power unlocks and their levels are permanent; clear active effects on prestige.
  next.powers=Object.fromEntries(Object.entries(state.powers).map(([id,p])=>[id,{level:p.level,activeUntil:0,cooldownUntil:p.cooldownUntil}]));
- state=next;sparks=[];specialSparks=state.specialSparks;miniSparks=[];syncSparks();syncEliteSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();renderPanel();updateLabels()}});
+ state=next;sparks=[];specialSparks=state.specialSparks;miniSparks=[];syncSparks();syncEliteSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();menuLastPress=-1000;renderPanel();updateLabels()}});
 $('power-tray').addEventListener('click',e=>{const btn=e.target.closest('button[data-power]');if(!btn)return;if(activatePower(btn.dataset.power)){renderPanel();updateLabels()}});
 for(const b of document.querySelectorAll('.tab'))b.addEventListener('click',()=>{tab=b.dataset.tab;for(const t of document.querySelectorAll('.tab'))t.setAttribute('aria-selected',String(t===b));renderPanel()});
 const setRush=on=>{rush=on;$('rush').classList.toggle('active',rush);$('rush').textContent=rush?'✦ 3× SPEED ACTIVE':'HOLD FOR 3× SPEED';updateLabels()};let rushBtn=$('rush');rushBtn.addEventListener('pointerdown',e=>{e.preventDefault();rushBtn.setPointerCapture?.(e.pointerId);setRush(true)});['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(a=>rushBtn.addEventListener(a,()=>setRush(false)));window.addEventListener('blur',()=>setRush(false));
