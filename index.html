@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e19">
-<title>Prism Drift v1.2 — Stable HUD & Unique Rares</title>
+<title>Prism Drift v1.3 — Living Polygon Mosaic</title>
 <style>
 :root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
@@ -12,7 +12,7 @@ button{font:inherit;touch-action:manipulation;cursor:pointer}button:disabled{cur
 .wrap{width:min(1120px,100%);margin:0 auto;padding:18px clamp(12px,3vw,28px) 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.logo{display:flex;align-items:center;gap:11px}.brand-icon{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#39346b,#133d4a);box-shadow:0 0 35px #8866ff23}.brand-icon svg{width:29px;height:29px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:var(--muted);font-size:10px;font-weight:800}.brand h1{font-size:22px;letter-spacing:-.03em;margin:0;font-weight:800}.small-btn{color:#d6d8ed;background:#222638;border:1px solid #373d53;padding:9px 12px;border-radius:11px}.small-btn:hover{background:#30364e}
 .layout{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);gap:18px;align-items:start}.board-shell,.side{background:linear-gradient(160deg,#171b2c,#111523);border:1px solid #303549;border-radius:19px;box-shadow:0 16px 55px #0005;overflow:hidden}.board-top{padding:15px 17px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}.stage-line{display:flex;align-items:baseline;gap:9px}.stage-name{font-size:12px;color:var(--muted)}.stage-number{font-size:21px;font-weight:800}.bank{font-variant-numeric:tabular-nums;text-align:right;font-size:21px;font-weight:850;color:#f1d59f}.bank small{font-size:10px;display:block;text-transform:uppercase;letter-spacing:.14em;color:#a5a7b9}.progress{height:5px;background:#2c2c42;overflow:hidden}.progress>div{background:linear-gradient(90deg,#6ae3dc,#b294fc);height:100%;width:0%;transition:width .15s}
 .canvas-wrap{position:relative;height:clamp(410px,66vh,750px);min-height:335px;overflow:hidden;background:#0e1422;touch-action:manipulation}.canvas-wrap:after{content:"";pointer-events:none;position:absolute;inset:0;box-shadow:inset 0 0 55px #050a17a6}canvas{display:block;width:100%;height:100%;touch-action:manipulation}.hint{position:absolute;bottom:11px;left:50%;transform:translateX(-50%);white-space:normal;text-align:center;max-width:calc(100% - 22px);font-size:11px;color:#e4eaf4ae;pointer-events:none;background:#0e15259e;border:1px solid #ffffff1a;padding:6px 10px;border-radius:50px}
-.board-actions{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:12px}.rush{width:100%;background:linear-gradient(110deg,#5c5ce8,#9468ec);border:0;color:#fff;padding:15px;border-radius:11px;font-weight:850;letter-spacing:.03em;box-shadow:0 7px 25px #6655da35;user-select:none;-webkit-user-select:none}.rush.active{background:linear-gradient(110deg,#2fc9c4,#725be8)}.speed-label{font-size:11px;color:var(--muted);text-align:right;min-width:70px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}.metric{text-align:center;padding:12px 6px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric b{display:block;font-size:15px;font-variant-numeric:tabular-nums}.metric span{color:var(--muted);font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+.board-actions{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:12px}.rush{width:100%;background:linear-gradient(110deg,#5c5ce8,#9468ec);border:0;color:#fff;padding:15px;border-radius:11px;font-weight:850;letter-spacing:.03em;box-shadow:0 7px 25px #6655da35;user-select:none;-webkit-user-select:none}.rush.active{background:linear-gradient(110deg,#2fc9c4,#725be8)}.speed-label{font-size:11px;color:var(--muted);text-align:right;min-width:70px}.metrics{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line)}.metric{text-align:center;padding:12px 6px;border-right:1px solid var(--line)}.metric:last-child{border-right:0}.metric b{display:block;font-size:15px;font-variant-numeric:tabular-nums}.metric span{color:var(--muted);font-size:10px;letter-spacing:.04em;text-transform:uppercase}
 .tabs{display:flex;padding:6px;gap:3px;border-bottom:1px solid var(--line)}.tab{flex:1;min-width:0;padding:11px 3px;border:0;border-radius:10px;color:#a8b0c9;background:none;font-size:11px;font-weight:750}.tab[aria-selected="true"]{background:#30304e;color:#f4efff;box-shadow:inset 0 0 0 1px #69608e}.tab:hover:not([aria-selected="true"]){background:#23283b}.tab-content{padding:15px;min-height:410px}.section-title{margin:2px 0 4px;font-size:17px;font-weight:850;letter-spacing:-.02em}.section-sub{color:var(--muted);font-size:12px;margin:0 0 17px}.tier{border:1px solid #363a53;background:#1c2031;border-radius:13px;padding:12px;margin-bottom:10px}.tier-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.tier-name{display:flex;align-items:center;gap:10px}.spark-emblem{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#111725}.spark-emblem svg{width:22px;height:22px}.tier-info strong{display:block;font-size:13px}.tier-info small{color:var(--muted);font-size:11px}.tier-count{text-align:right;font-size:20px;font-weight:850;color:#e8e9fb}.tier-count small{display:block;font-size:10px;font-weight:500;color:var(--muted)}.buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.btn{border:1px solid #54557b;background:#34395e;color:#ecefff;border-radius:9px;padding:10px 4px;font-size:11px;min-height:44px;font-weight:750}.btn b{display:block;font-size:12px}.btn.primary{background:#3d60d8;border-color:#6082e8;color:white}.btn.gold{background:#473a39;border-color:#6d5945;color:#ffdd9d}.btn:hover:not(:disabled){filter:brightness(1.17)}.upgrade{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:#1c2031;border:1px solid #353a52;border-radius:12px;padding:13px}.upgrade-symbol{display:grid;place-items:center;min-width:38px;height:38px;border-radius:10px;background:#292e48;font-size:19px}.upgrade-body{flex:1;min-width:0}.upgrade-body strong{display:block;font-size:13px}.upgrade-body small{display:block;color:var(--muted);font-size:11px}.upgrade button{min-width:90px;max-width:110px}.pill{display:inline-block;border-radius:100px;border:1px solid #3b4a57;color:#89ded6;background:#173139;font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 8px}.milestone{text-align:center;padding:28px 15px;border-radius:14px;border:1px solid #373653;background:radial-gradient(circle at top,#332b58,#171b2c 70%)}.milestone-icon{font-size:42px;margin-bottom:12px}.milestone h3{margin:6px 0;font-size:20px}.milestone p{color:#b7b6cb;font-size:12px;line-height:1.65}.milestone .btn{width:100%;padding:15px;font-size:14px}.power-tray{display:none;gap:6px;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 12px;border-top:1px solid var(--line);background:#111726}.power-tray.visible{display:grid}.power-quick{display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;border-radius:9px;border:1px solid #505a80;background:#293654;color:#f0f4ff;font:700 11px/1.3 system-ui,sans-serif;min-height:47px;padding:6px 1px}.power-quick:disabled{opacity:.48}.power-quick .symbol{font-size:15px}.power-quick .status{font-size:9px;opacity:.8}.power-hud{display:none;flex-wrap:wrap;gap:6px;padding:8px 12px;background:#111728;border-bottom:1px solid #303549}.power-hud.has-powers{display:flex}.power-chip{font-size:10px;font-weight:800;letter-spacing:.02em;border:1px solid #657196;padding:5px 8px;border-radius:7px;color:#deecff;background:#28314c}.power-chip.gold{background:#4b3b22;color:#ffe0a0;border-color:#8e6b3a}.power-chip.pink{background:#47263c;color:#ffd0eb;border-color:#87506d}.power-chip.cyan{background:#1b4650;color:#aff6ff;border-color:#438b97}.power-chip.limited{background:#30244c;color:#f0d8ff;border-color:#8960c0}.elite-hud{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:7px 12px;background:#101a29;border-bottom:1px solid #303549}.elite-hud.visible{display:grid}.elite-pill{display:flex;align-items:center;gap:3px;min-width:0;height:30px;overflow:hidden;white-space:nowrap;font-size:10px;font-weight:750;border:1px solid;border-radius:7px;padding:4px 8px;background:#222a3c;color:#ecf4ff}.elite-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.elite-charge{flex:0 0 44px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .elite-card{margin-bottom:12px;padding:13px;border-radius:13px;background:linear-gradient(115deg,#1c2031,#202337);border:1px solid #3a3c56;border-left:3px solid var(--elite-color)}.elite-title{display:flex;gap:11px;align-items:flex-start}.elite-orb{display:grid;place-items:center;border-radius:12px;background:#111726;width:43px;height:43px;flex-shrink:0;color:var(--elite-color);font-size:26px;text-shadow:0 0 17px var(--elite-color)}.elite-title h3{font-size:14px;margin:0 0 5px}.elite-title p{font-size:11px;line-height:1.5;color:#aeb6cc;margin:0}.elite-detail{font-size:11px;color:#d8d0ef;padding:10px 0}.elite-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #39384e;padding-top:10px}.elite-bottom>span{font-size:10px;font-weight:800;color:#bec6d9}.elite-bottom button{min-width:118px}
 .limited-card{border:1px solid #5e4c77;border-radius:13px;background:linear-gradient(120deg,#29213f,#1a2a39);padding:14px;margin-top:13px}.limited-card strong{display:block;font-size:14px;margin-bottom:5px}.limited-card p{margin:0 0 8px;color:#c2bdd6;font-size:12px;line-height:1.5}.limited-row{display:flex;flex-wrap:wrap;gap:7px}.limited-pill{font-size:11px;color:#ddd4ed;border:1px solid #655678;background:#221f36;border-radius:9px;padding:7px 9px}.power-card{margin-bottom:11px;padding:13px;background:#1c2031;border:1px solid #353a52;border-radius:13px}.power-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}.power-orb{width:43px;height:43px;flex:0 0 43px;border-radius:13px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,#313355,#1c4e59)}.power-head h3{font-size:14px;line-height:1.3;margin:1px 0 3px}.power-head p{font-size:11px;line-height:1.4;color:#aeb6cc;margin:0}.power-level{margin-left:auto;color:#c1c6dc;font-size:11px;white-space:nowrap}.power-buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px}.power-btn{min-height:49px}.power-btn:disabled{opacity:.45}.note{font-size:11px;line-height:1.5;color:#8c97ad;padding:8px 4px}.foot{display:flex;gap:9px;align-items:center;justify-content:space-between;margin-top:14px;color:#7f88a4;font-size:11px}.toast{position:fixed;z-index:4;left:50%;top:24px;transform:translateX(-50%) translateY(-20px);border:1px solid #6f7194;border-radius:12px;background:#272b46;color:#fff;padding:11px 20px;box-shadow:0 14px 40px #0009;pointer-events:none;opacity:0;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -21,9 +21,9 @@ button{font:inherit;touch-action:manipulation;cursor:pointer}button:disabled{cur
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v1.2</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
+<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v1.3</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
 <main class="layout">
-<section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div id="power-hud" class="power-hud" aria-live="off"></div><div id="elite-hud" class="elite-hud" aria-label="Purchased elite sparks"></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint" id="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div id="power-tray" class="power-tray" aria-label="Quick access to unlocked power-ups"></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div><div class="metric"><b id="broken">0 / 0</b><span>Shards broken</span></div></div></section>
+<section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div id="power-hud" class="power-hud" aria-live="off"></div><div id="elite-hud" class="elite-hud" aria-label="Purchased elite sparks"></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint" id="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div id="power-tray" class="power-tray" aria-label="Quick access to unlocked power-ups"></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div></div></section>
 <section class="side" aria-label="Upgrades and merging"><div class="tabs" role="tablist" aria-label="Game menus"><button class="tab" data-tab="sparks" role="tab" aria-selected="true">SPARKS</button><button class="tab" data-tab="elites" role="tab" aria-selected="false">ELITES</button><button class="tab" data-tab="upgrades" role="tab" aria-selected="false">UPGRADES</button><button class="tab" data-tab="powers" role="tab" aria-selected="false">POWERS</button><button class="tab" data-tab="ascend" role="tab" aria-selected="false">ASCEND</button></div><div class="tab-content" id="panel"></div></section>
 </main>
 <div class="foot"><span>Shards, damage & progress autosaved on this device · Play offline</span><button class="small-btn" id="reset">Reset game</button></div>
@@ -205,10 +205,10 @@ function updateLabels(){ updatePowerHud();const eliteHud=$('elite-hud');
  }
  const phase=eliteSparks.find(s=>s.elite==='phase'),charge=eliteHud.querySelector('.elite-charge');
  if(phase&&charge)charge.textContent='×'+(1+(phase.phaseChain||0)*(.35+(state.elites.phase-1)*.12)).toFixed(1);
- eliteHud.classList.toggle('visible',eliteSparks.length>0);$('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks()+(eliteSparks.length?' +'+eliteSparks.length+' ✺':'')+(specialSparks.length?' +'+specialSparks.length+' ✦':'');$('broken').textContent=`${dead} / ${total}`;$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
+ eliteHud.classList.toggle('visible',eliteSparks.length>0);$('cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks()+(eliteSparks.length?' +'+eliteSparks.length+' ✺':'')+(specialSparks.length?' +'+specialSparks.length+' ✦':'');$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
 function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
 // Save the canvas and the wallet atomically. An unfinished stage must never reappear intact.
-function boardSnapshot(){return{version:5,stage:state.stage,w:W,h:H,spawns:spawnSites.map(p=>[p[0],p[1]]),tiles:shards.map(t=>[t.a[0],t.a[1],t.b[0],t.b[1],t.c[0],t.c[1],Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
+function boardSnapshot(){return{version:6,stage:state.stage,w:W,h:H,spawns:spawnSites.map(p=>[p[0],p[1]]),tiles:shards.map(t=>[corners(t).flat(),Math.max(0,t.hp),t.maxHp,t.level,colors.indexOf(t.hue),t.alpha])}}
 
 function save(){state.specialSparks=specialSparks;if(shards.length)state.board=boardSnapshot();state.savedAt=Date.now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 // Restore the actual shards, including their remaining HP. The old save format is
@@ -227,6 +227,104 @@ function carveSpawnSite(){
  spawnSites=[];
  if(closest>=0){const [t]=shards.splice(closest,1);spawnSites=[[t.x,t.y]];}
 }
+
+// Packed, irregular Voronoi prisms: neighbouring polygons SHARE the same edge.
+// A few ten-sided cells are deliberately sculpted into each new canvas.
+function polygonCenter(poly){
+ let twiceArea=0,cx=0,cy=0;
+ for(let i=0;i<poly.length;i++){
+  const a=poly[i],b=poly[(i+1)%poly.length],cross=a[0]*b[1]-b[0]*a[1];
+  twiceArea+=cross;cx+=(a[0]+b[0])*cross;cy+=(a[1]+b[1])*cross;
+ }
+ if(Math.abs(twiceArea)<.0001)return[poly.reduce((n,p)=>n+p[0],0)/poly.length,poly.reduce((n,p)=>n+p[1],0)/poly.length];
+ return[cx/(3*twiceArea),cy/(3*twiceArea)];
+}
+function clipCell(poly,own,other){
+ const nx=other[0]-own[0],ny=other[1]-own[1],
+  mx=(own[0]+other[0])*.5,my=(own[1]+other[1])*.5;
+ const side=p=>(p[0]-mx)*nx+(p[1]-my)*ny;
+ const result=[];
+ for(let k=0;k<poly.length;k++){
+  const a=poly[k],b=poly[(k+1)%poly.length],sa=side(a),sb=side(b),ina=sa<=1e-7,inb=sb<=1e-7;
+  if(ina)result.push(a);
+  if(ina!==inb){const fraction=sa/(sa-sb);result.push([a[0]+(b[0]-a[0])*fraction,a[1]+(b[1]-a[1])*fraction]);}
+ }
+ return result;
+}
+function sculptTenSided(sites,anchor,step,protectedIndex){
+ const [x,y]=anchor,r=step*1.12;
+ if(Math.hypot(sites[protectedIndex][0]-x,sites[protectedIndex][1]-y)<r*2.05)return;
+ const indices=sites.map((p,i)=>({i,d:(p[0]-x)**2+(p[1]-y)**2})).filter(v=>v.i!==protectedIndex).sort((a,b)=>a.d-b.d).slice(0,11).map(v=>v.i);
+ if(indices.length!==11)return;
+ const chosen=new Set(indices),base=rng(0,Math.PI*2);
+ sites[indices[0]]=[x,y];
+ for(let j=0;j<10;j++){
+  const a=base+j*Math.PI/5+rng(-.035,.035),dist=r*rng(.96,1.04);
+  sites[indices[j+1]]=[x+Math.cos(a)*dist,y+Math.sin(a)*dist];
+ }
+ // Protect the ten sides from closer unrelated sites.
+ for(let j=0;j<sites.length;j++){
+  if(chosen.has(j)||j===protectedIndex)continue;
+  let dx=sites[j][0]-x,dy=sites[j][1]-y,d=Math.hypot(dx,dy);
+  if(d<r*1.55){const a=d<.0001?rng(0,2*Math.PI):Math.atan2(dy,dx);
+   sites[j]=[clamp(x+Math.cos(a)*r*1.58,1,W-1),clamp(y+Math.sin(a)*r*1.58,1,H-1)];}
+ }
+}
+function makeMosaic(count,pocket){
+ // Uneven jittered seeds produce mixed tile sizes and angles instead of a repeated grid.
+ const cols=Math.max(5,Math.round(Math.sqrt(count*W/H))),rows=Math.max(5,Math.ceil(count/cols));
+ const slots=[];
+ for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)slots.push([clamp((x+.5+rng(-.38,.38))*W/cols,3,W-3),clamp((y+.5+rng(-.38,.38))*H/rows,3,H-3)]);
+ for(let i=slots.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]]}
+ const sites=slots.slice(0,count);
+ // Reserve ONE real spawn cell, never six empty pockets.
+ let ghost=0,best=Infinity;
+ for(let i=0;i<sites.length;i++){const d=(sites[i][0]-pocket[0])**2+(sites[i][1]-pocket[1])**2;if(d<best){best=d;ghost=i}}
+ sites[ghost]=[...pocket];
+ const step=Math.min(W/cols,H/rows);
+ const anchors=[[.26,.23],[.74,.72],[.73,.23],[.28,.74]];
+ for(let i=anchors.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[anchors[i],anchors[j]]=[anchors[j],anchors[i]]}
+ let made=0;
+ for(const [fx,fy] of anchors){if(made>=2)break;const x=fx*W,y=fy*H;
+  if(Math.min(x,W-x,y,H-y)<step*1.22)continue;
+  if(Math.hypot(x-pocket[0],y-pocket[1])<step*2.6)continue;
+  sculptTenSided(sites,[x,y],step,ghost);made++;
+ }
+ const polygons=[];
+ for(let i=0;i<sites.length;i++){
+  let poly=[[0,0],[W,0],[W,H],[0,H]];
+  for(let j=0;j<sites.length&&poly.length>=3;j++)if(i!==j)poly=clipCell(poly,sites[i],sites[j]);
+  // Float tolerance only removes degenerate duplicate vertices, not real shared edges.
+  const clean=[];
+  for(const pt of poly)if(!clean.length||Math.hypot(pt[0]-clean[clean.length-1][0],pt[1]-clean[clean.length-1][1])>.001)clean.push(pt);
+  if(clean.length>2&&Math.hypot(clean[0][0]-clean[clean.length-1][0],clean[0][1]-clean[clean.length-1][1])<.001)clean.pop();
+  if(clean.length<3)throw Error('Degenerate prism tessellation');
+  const center=polygonCenter(clean);
+  polygons.push({poly:clean,x:center[0],y:center[1],ghost:i===ghost});
+ }
+ return polygons;
+}
+// Existing triangle saves are assigned ONE-TO-ONE to the new polygons.
+// Every saved HP, kill, colour and level is transferred exactly once: no free prisms.
+function remapLegacyTiles(oldTiles){
+ const old=oldTiles.slice(),pocket=spawnSites[0]||[W*.5,H*.5];
+ const cells=makeMosaic(old.length+1,pocket).filter(t=>!t.ghost);
+ const candidates=[];
+ for(let i=0;i<cells.length;i++)for(let j=0;j<old.length;j++){
+  const dx=cells[i].x-old[j].x,dy=cells[i].y-old[j].y;
+  candidates.push([dx*dx+dy*dy,i,j]);
+ }
+ candidates.sort((a,b)=>a[0]-b[0]);
+ const usedCells=new Set(),usedOld=new Set(),next=new Array(old.length);
+ for(const [,i,j] of candidates){if(usedCells.has(i)||usedOld.has(j))continue;
+  usedCells.add(i);usedOld.add(j);
+  next[i]=withBounds({...old[j],poly:cells[i].poly,x:cells[i].x,y:cells[i].y});
+  if(usedCells.size===old.length)break;
+ }
+ shards=next;
+}
+function corners(t){return t.poly||[t.a,t.b,t.c]}
+
 // An existing v0.7 saved canvas had all six pockets carved out.
 // Reconstruct the five unused triangles from the shared tile edges, leaving
 // all the old damage, destroyed shards, currency and stage progress intact.
@@ -271,6 +369,22 @@ function restoreStage(){
  const b=state.board;
  if(!b||b.stage!==state.stage||!Number.isFinite(b.w)||!Number.isFinite(b.h)||b.w<=0||b.h<=0||!Array.isArray(b.tiles)||b.tiles.length<1||b.tiles.length>5000)return false;
  const sx=W/b.w,sy=H/b.h,next=[];
+ if(b.version===6){
+  for(const data of b.tiles){
+   if(!Array.isArray(data)||data.length!==6)return false;
+   const [coords,hp,maxHp,level,tone,alpha]=data;
+   if(!Array.isArray(coords)||coords.length<6||coords.length>64||coords.length%2||!coords.every(Number.isFinite)||![hp,maxHp,level,tone,alpha].every(Number.isFinite)||maxHp<=0||hp<0||hp>maxHp||tone<0||tone>=colors.length)return false;
+   const poly=[];for(let k=0;k<coords.length;k+=2)poly.push([coords[k]*sx,coords[k+1]*sy]);
+   const center=polygonCenter(poly);
+   next.push(withBounds({poly,x:center[0],y:center[1],hp,maxHp,level,flash:0,hue:colors[tone],alive:hp>0,alpha:clamp(alpha,0,1),phase:0}));
+  }
+  if(!Array.isArray(b.spawns)||b.spawns.length!==1||!Array.isArray(b.spawns[0])||b.spawns[0].length!==2||!b.spawns[0].every(Number.isFinite))return false;
+  spawnSites=b.spawns.map(pt=>[pt[0]*sx,pt[1]*sy]);
+  shards=next;total=shards.length;dead=shards.reduce((n,t)=>n+(!t.alive?1:0),0);queueStage=dead===total;
+  makeStars();
+  for(const s of specialSparks){s.x=clamp(s.x*sx,8,W-8);s.y=clamp(s.y*sy,8,H-8);s.path=[];}
+  resetSparksToSites(false);return true;
+ }
  const previousFormat=![2,3,4,5].includes(b.version);
  for(let j=0;j<b.tiles.length;j++){
   const data=b.tiles[j];
@@ -305,6 +419,8 @@ function restoreStage(){
  }else if(b.version===5&&Array.isArray(b.spawns)&&b.spawns.length===1&&b.spawns[0].length===2&&b.spawns[0].every(Number.isFinite)){
   spawnSites=b.spawns.map(pt=>[pt[0]*sx,pt[1]*sy]);
  }else{carveSpawnSite()}
+ // Upgrade the active legacy canvas immediately without changing its HP or rewards.
+ remapLegacyTiles(shards);
  total=shards.length;dead=shards.reduce((n,t)=>n+(!t.alive?1:0),0);queueStage=dead===total;
  makeStars();
  // Saved spark positions are relative to the board size of the saved canvas.
@@ -349,35 +465,31 @@ function resize(){
  if(shards.length){
   // Changing orientation or window size must never regenerate a cleared canvas.
   const sx=W/oldW,sy=H/oldH;
-  for(const t of shards){for(const pt of [t.a,t.b,t.c]){pt[0]*=sx;pt[1]*=sy}t.x*=sx;t.y*=sy;withBounds(t)}
+  for(const t of shards){for(const pt of corners(t)){pt[0]*=sx;pt[1]*=sy}t.x*=sx;t.y*=sy;withBounds(t)}
   for(const pt of spawnSites){pt[0]*=sx;pt[1]*=sy}
   makeStars();
  }else if(!restoreStage())createStage();
  save();
 }
 function makeStars(){backgroundStars=Array.from({length:60},()=>({x:rng(0,W),y:rng(0,H),r:rng(.3,1.2),a:rng(.08,.24)}))}
+
 function createStage(){makeStars();shards=[];spawnSites=[];inspected=null;
- // The shared vertices make a completely solid mosaic, flush to ALL four edges.
- const cell=clamp(Math.min(W,H)/7.7,37,69),cols=Math.max(5,Math.ceil(W/cell)),rows=Math.max(7,Math.ceil(H/cell)),stepX=W/cols,stepY=H/rows,pts=[];
- for(let y=0;y<=rows;y++){let ar=[];for(let x=0;x<=cols;x++){
-  const px=x*stepX+(x===0||x===cols?0:rng(-.17,.17)*stepX);
-  const py=y*stepY+(y===0||y===rows?0:rng(-.17,.17)*stepY);
-  ar.push([px,py]);
- }pts.push(ar)}
- const makeTri=(a,b,c)=>{
-  const center=[(a[0]+b[0]+c[0])/3,(a[1]+b[1]+c[1])/3];
+ const anchor=SPAWN_ANCHORS[Math.floor(rng(0,SPAWN_ANCHORS.length))],pocket=[W*anchor[0],H*anchor[1]];
+ const count=Math.round(clamp(W*H/2300,65,165));
+ const cells=makeMosaic(count,pocket);
+ for(const cell of cells){
+  if(cell.ghost){spawnSites=[[cell.x,cell.y]];continue;}
   const tone=Math.floor(rng(0,colors.length)),level=pickShardLevel(state.stage),hp=shardHealth(level)*rng(.96,1.09);
-  shards.push(withBounds({a,b,c,x:center[0],y:center[1],hp,maxHp:hp,level,flash:0,hue:colors[tone],alive:true,alpha:rng(.72,1),phase:rng(0,6.28)}));
- };
- for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
-  const p=pts[y][x],q=pts[y][x+1],r=pts[y+1][x],s=pts[y+1][x+1];
-  if((x+y)%2){makeTri(p,q,r);makeTri(q,s,r)}else{makeTri(p,q,s);makeTri(p,s,r)}
+  shards.push(withBounds({poly:cell.poly,x:cell.x,y:cell.y,hp,maxHp:hp,level,flash:0,hue:colors[tone],alive:true,alpha:rng(.78,1),phase:rng(0,6.28)}));
  }
- carveSpawnSite();total=shards.length;dead=0;queueStage=false;
+ total=shards.length;dead=0;queueStage=false;
  resetSparksToSites();
 }
-
-function withBounds(t){t.minX=Math.min(t.a[0],t.b[0],t.c[0]);t.maxX=Math.max(t.a[0],t.b[0],t.c[0]);t.minY=Math.min(t.a[1],t.b[1],t.c[1]);t.maxY=Math.max(t.a[1],t.b[1],t.c[1]);return t}
+function withBounds(t){
+ const pts=corners(t);
+ t.minX=Math.min(...pts.map(p=>p[0]));t.maxX=Math.max(...pts.map(p=>p[0]));
+ t.minY=Math.min(...pts.map(p=>p[1]));t.maxY=Math.max(...pts.map(p=>p[1]));return t;
+}
 
 // Return the FIRST contact along the moving segment, including a shard edge or wall.
 // Swept intersections prevent high-speed sparks from tunneling through triangles.
@@ -393,8 +505,8 @@ function traceImpact(s,dx,dy){
  const y1=Math.min(s.y,s.y+dy)-.01,y2=Math.max(s.y,s.y+dy)+.01;
  for(const t of shards){
   if(!t.alive||x1>t.maxX||x2<t.minX||y1>t.maxY||y2<t.minY)continue;
-  const poly=[t.a,t.b,t.c];
-  for(let j=0;j<3;j++){
+  const poly=corners(t);
+  for(let j=0;j<poly.length;j++){
    const a=poly[j],b=poly[(j+1)%3],ex=b[0]-a[0],ey=b[1]-a[1];
    const den=dx*ey-dy*ex;
    if(Math.abs(den)<1e-10)continue;
@@ -412,7 +524,13 @@ function traceImpact(s,dx,dy){
  return impact;
 }
 
-function pointInTriangle(px,py,t){const s=(a,b,c)=>(px-c[0])*(a[1]-c[1])-(a[0]-c[0])*(py-c[1]);let a=s(t.a,t.b,t.c),b=s(t.b,t.c,t.a),c=s(t.c,t.a,t.b);return (a>=0&&b>=0&&c>=0)||(a<=0&&b<=0&&c<=0)}
+function pointInPrism(px,py,t){
+ const poly=corners(t);let inside=false;
+ for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+  const a=poly[i],b=poly[j];if(((a[1]>py)!==(b[1]>py))&&(px<(b[0]-a[0])*(py-a[1])/(b[1]-a[1])+a[0]))inside=!inside;
+ }
+ return inside;
+}
 function particleBurst(t,count=7){for(let i=0;i<count;i++){let a=rng(0,Math.PI*2),v=rng(25,135);particles.push({x:t.x,y:t.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:rng(.25,.68),maxLife:.68,color:t.hue,r:rng(1,3.2)})}if(particles.length>350)particles.splice(0,particles.length-350)}
 function ping(){if(state.muted)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();if(Math.random()>.065)return;let osc=audio.createOscillator(),gain=audio.createGain(),now=audio.currentTime;osc.type='sine';osc.frequency.setValueAtTime(rng(450,850),now);osc.frequency.exponentialRampToValueAtTime(rng(270,470),now+.07);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.018,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+.095);osc.connect(gain).connect(audio.destination);osc.start(now);osc.stop(now+.1)}catch(e){}}
 function spawnLimitedSpark(t){
@@ -560,12 +678,18 @@ function tick(dt){
 }
 function draw(){ctx.clearRect(0,0,W,H);let bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#161a31');bg.addColorStop(.55,'#111c2c');bg.addColorStop(1,'#1b1830');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
  for(const star of backgroundStars){ctx.globalAlpha=star.a;ctx.fillStyle='#deecff';ctx.beginPath();ctx.arc(star.x,star.y,star.r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
- for(const t of shards)if(t.alive){ctx.globalAlpha=t.alpha;ctx.beginPath();ctx.moveTo(t.a[0],t.a[1]);ctx.lineTo(t.b[0],t.b[1]);ctx.lineTo(t.c[0],t.c[1]);ctx.closePath();ctx.fillStyle=t.hue;ctx.fill();// Same subtle boundary for ALL shard levels; no coloured armour outlines or tier dots.
-ctx.strokeStyle=t.flash>0?'#f3fcff':'#13182f';
-ctx.lineWidth=1.1;
-ctx.stroke();
-
-if(t.hp<t.maxHp){ctx.globalAlpha=.26;ctx.strokeStyle='#f3fcff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(t.x,t.y);ctx.lineTo(t.b[0],t.b[1]);ctx.stroke()}}ctx.globalAlpha=1;
+ for(const t of shards)if(t.alive){
+  const poly=corners(t);
+  ctx.globalAlpha=t.alpha;ctx.beginPath();ctx.moveTo(poly[0][0],poly[0][1]);
+  for(let j=1;j<poly.length;j++)ctx.lineTo(poly[j][0],poly[j][1]);
+  ctx.closePath();ctx.fillStyle=t.hue;ctx.fill();
+  // Fine uncoloured seams, subtle internal facets: no armour outlines or gaps.
+  if(poly.length>=5){ctx.globalAlpha=t.alpha*.10;ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(t.x,t.y);
+   ctx.lineTo(poly[1][0],poly[1][1]);ctx.lineTo(poly[2][0],poly[2][1]);ctx.closePath();ctx.fill();}
+  ctx.globalAlpha=t.alpha;ctx.beginPath();ctx.moveTo(poly[0][0],poly[0][1]);for(let j=1;j<poly.length;j++)ctx.lineTo(poly[j][0],poly[j][1]);ctx.closePath();ctx.strokeStyle=t.flash>0?'#f3fcff':'#13182f';ctx.lineWidth=1;ctx.stroke();
+  if(t.hp<t.maxHp){ctx.globalAlpha=.2;ctx.strokeStyle='#f3fcff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(t.x,t.y);
+   const corner=poly[Math.floor(poly.length/2)];ctx.lineTo(corner[0],corner[1]);ctx.stroke();}
+ }ctx.globalAlpha=1;
  for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.maxLife);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
  ctx.textAlign='center';ctx.font='700 11px system-ui,sans-serif';for(const p of damagePopups){ctx.globalAlpha=Math.max(0,p.life/p.maxLife)*.9;ctx.fillStyle='#f4fbff';ctx.fillText('−'+p.value,p.x,p.y)}ctx.globalAlpha=1;
  for(const s of [...sparks,...specialSparks]){let color=s.special?LIMITED_DEFS[s.special].color:tierColors[s.tier];for(let i=1;i<s.path.length;i++){let a=s.path[i-1],b=s.path[i];ctx.globalAlpha=i/s.path.length*.32;ctx.strokeStyle=color;ctx.lineWidth=1+s.tier*.2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}ctx.globalAlpha=1;ctx.save();ctx.translate(s.x,s.y);ctx.rotate(Math.atan2(s.vy,s.vx)+Math.PI/2);ctx.shadowBlur=s.special?30:18;ctx.shadowColor=color;ctx.fillStyle=color;const r=s.special?9.5+Math.sin(gameTime*6+s.spin)*1.2:5.2+s.tier*1.5;ctx.beginPath();ctx.moveTo(0,-r*1.5);ctx.lineTo(-r,r);ctx.lineTo(0,r*.34);ctx.lineTo(r,r);ctx.closePath();ctx.fill();if(s.special){ctx.strokeStyle='#fff6e9';ctx.lineWidth=1.8;ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*1.7,0,Math.PI*2);ctx.strokeStyle=color;ctx.globalAlpha=.5;ctx.lineWidth=1;ctx.stroke();}ctx.restore()}
@@ -595,7 +719,7 @@ $('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-ac
 $('power-tray').addEventListener('click',e=>{const btn=e.target.closest('button[data-power]');if(!btn)return;if(activatePower(btn.dataset.power)){renderPanel();updateLabels()}});
 for(const b of document.querySelectorAll('.tab'))b.addEventListener('click',()=>{tab=b.dataset.tab;for(const t of document.querySelectorAll('.tab'))t.setAttribute('aria-selected',String(t===b));renderPanel()});
 const setRush=on=>{rush=on;$('rush').classList.toggle('active',rush);$('rush').textContent=rush?'✦ 3× SPEED ACTIVE':'HOLD FOR 3× SPEED';updateLabels()};let rushBtn=$('rush');rushBtn.addEventListener('pointerdown',e=>{e.preventDefault();rushBtn.setPointerCapture?.(e.pointerId);setRush(true)});['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(a=>rushBtn.addEventListener(a,()=>setRush(false)));window.addEventListener('blur',()=>setRush(false));
-canvas.addEventListener('pointerdown',e=>{let now=performance.now();if(now-lastTap<60)return;lastTap=now;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let target=null,best=65*65;for(const t of shards)if(t.alive){let d=(t.x-x)**2+(t.y-y)**2;if(d<best){best=d;target=t}}if(target){let tapTier=0;for(let i=0;i<MAX_TIERS;i++)if(state.tiers[i]>0)tapTier=i;hitShard(target,Math.max(1.5,tierPower(tapTier)*.35),tapTier);inspected={level:target.level,hp:target.hp,maxHp:target.maxHp,until:performance.now()+2600};particleBurst(target,4)}});
+canvas.addEventListener('pointerdown',e=>{let now=performance.now();if(now-lastTap<60)return;lastTap=now;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let target=null;for(const t of shards)if(t.alive&&pointInPrism(x,y,t)){target=t;break}if(target){let tapTier=0;for(let i=0;i<MAX_TIERS;i++)if(state.tiers[i]>0)tapTier=i;hitShard(target,Math.max(1.5,tierPower(tapTier)*.35),tapTier);inspected={level:target.level,hp:target.hp,maxHp:target.maxHp,until:performance.now()+2600};particleBurst(target,4)}});
 $('sound').addEventListener('click',()=>{state.muted=!state.muted;$('sound').textContent=state.muted?'♫ Off':'♫ On';save()});$('sound').textContent=state.muted?'♫ Off':'♫ On';
 $('reset').addEventListener('click',()=>{if(!confirm('Reset all progress, including power-ups and permanent auras? This cannot be undone.'))return;state=fresh();sparks=[];specialSparks=state.specialSparks;eliteSparks=[];miniSparks=[];syncSparks();syncEliteSparks();createStage();save();renderPanel();updateLabels();announce('A fresh canvas awaits')});
 const away=clamp((Date.now()-(Number(state.savedAt)||Date.now()))/1000,0,4*3600);if(away>20){const rate=state.tiers.reduce((v,n,i)=>v+n*tierPower(i)*1.15,0)*fortune();const offline=Math.floor(away*rate*.15);state.cash+=offline;state.earned+=offline;setTimeout(()=>announce('While you were away: +'+fmt(offline)+' prisms'),250)}
