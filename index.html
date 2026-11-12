@@ -63,11 +63,35 @@ button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;appeara
 @media(max-width:430px){.tab{font-size:12px;padding:8px 2px;min-height:47px}.tab-content{padding:12px}.btn{font-size:11px;min-height:51px;padding:10px 4px}.btn b{font-size:11px}.tier{padding:12px}.tier-info small{font-size:10px}.tier-count{font-size:21px}.upgrade{display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-areas:'ico desc' 'action action';gap:8px 10px}.upgrade-symbol{grid-area:ico}.upgrade-body{grid-area:desc}.upgrade button{grid-area:action;width:100%;max-width:none;min-height:45px}.elite-bottom{flex-wrap:wrap}.elite-bottom button{width:100%}}
 @media(prefers-reduced-motion:reduce){.btn,.tab,.limited-card summary::after{transition:none}}
 
+
+/* v1.6: unified luminous spark glyphs and timed elite deployments */
+.spark-art{display:block;flex:0 0 auto;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 4px currentColor)}
+.spark-emblem{color:var(--spark-glow);box-shadow:inset 0 0 0 1px #ffffff12,0 0 22px color-mix(in srgb,var(--spark-glow) 18%,transparent)}
+.spark-emblem .spark-art{width:31px;height:31px}
+.elite-orb{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#354763,#161a2b 78%);box-shadow:inset 0 0 0 1px #ffffff1c;overflow:hidden}
+.elite-orb .spark-art{width:37px;height:37px;filter:drop-shadow(0 0 6px var(--elite-color))}
+.elite-title>div{min-width:0;flex:1}.elite-level{margin-left:auto;flex:0 0 auto;font-size:10px;letter-spacing:.03em;color:#e5e4f6;border:1px solid #6c708a;background:#2b324b;border-radius:8px;padding:6px 8px;font-weight:800}
+.elite-timer{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px;color:#92a4c1;font-size:10px;min-height:20px;font-variant-numeric:tabular-nums}
+.elite-status{font-weight:850;letter-spacing:.04em;color:#d2c2ec}.elite-status.live{color:#a4f4da}.elite-status.ready{color:#ffe6ac}
+.elite-timer-track{height:5px;overflow:hidden;border-radius:10px;background:#0c1325;margin-bottom:12px}
+.elite-timer-track>span{display:block;height:100%;border-radius:10px;transition:width .25s linear}
+.elite-bottom{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:stretch}.elite-bottom button{width:100%;min-width:0}
+.deploy-btn{border-color:var(--elite-color);background:linear-gradient(125deg,#254b52,#34405c)}
+.power-chip.limited{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.power-chip .spark-art{width:18px;height:18px;filter:none}
+.elite-hud{grid-template-columns:repeat(2,minmax(0,1fr));align-items:center}
+.elite-pill{height:36px;gap:5px}
+.elite-pill .spark-art{width:21px;height:21px;filter:none}
+.elite-pill .elite-charge{flex:0 0 auto;max-width:112px;font-size:9px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.limited-pill{display:inline-flex;align-items:center;gap:5px}
+.limited-pill .spark-art{width:20px;height:20px;filter:none}
+@media(max-width:430px){.elite-bottom{grid-template-columns:repeat(2,minmax(0,1fr))}.elite-bottom button{min-height:58px;font-size:10px}.elite-card{padding:12px}.elite-timer{font-size:9px}.elite-level{font-size:9px;padding:5px}.elite-pill .elite-name{font-size:9px}.elite-pill .elite-charge{font-size:9px}}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v1.5</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
+<header class="top"><div class="logo"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 1 30 16 16 31 2 16Z" fill="none" stroke="#9ef6ef" stroke-width="1.4"/><path d="M16 1 16 31M2 16h28M16 1 2 16l14 15 14-15Z" stroke="#a899ff" stroke-width="1" fill="none"/></svg></div><div class="brand"><div class="eyebrow">A little pocket universe · v1.6</div><h1>PRISM DRIFT</h1></div></div><button id="sound" class="small-btn" title="Toggle sound">♫ Off</button></header>
 <main class="layout">
 <section class="board-shell" aria-label="Game board"><div class="board-top"><div><div class="stage-name">CANVAS <span id="stage">01</span></div><div class="stage-line"><span class="stage-number" id="stage-title">First Light</span><span class="pill" id="prestige-tag">✦ 0 auras</span></div></div><div class="bank"><small>Prisms</small><span id="cash">0</span> ✧</div></div><div class="progress"><div id="bar"></div></div><div id="power-hud" class="power-hud" aria-live="off"></div><div id="elite-hud" class="elite-hud" aria-label="Purchased elite sparks"></div><div class="canvas-wrap"><canvas id="field" aria-label="Floating sparks break a mosaic of colorful shards; tap the canvas to help them"></canvas><div class="hint" id="hint">Tap a shard to help break it ✧</div></div><div class="board-actions"><button id="rush" class="rush">HOLD FOR 3× SPEED</button><span id="speed-label" class="speed-label">Idle mode<br>is on</span></div><div id="power-tray" class="power-tray" aria-label="Quick access to unlocked power-ups"></div><div class="metrics"><div class="metric"><b id="spark-total">1</b><span>Active sparks</span></div><div class="metric"><b id="dps">0</b><span>Prisms / sec</span></div></div></section>
 <section class="side" aria-label="Upgrade workshop"><div class="shop-heading"><span class="shop-heading-title">✦ THE WORKSHOP</span><span class="shop-wallet">AVAILABLE <strong id="menu-cash">0</strong> ✧</span></div><div class="tabs" role="tablist" aria-label="Game menus"><button type="button" class="tab" data-tab="sparks" role="tab" aria-selected="true" aria-controls="panel"><span class="tab-icon">✧</span><span>Sparks</span></button><button type="button" class="tab" data-tab="elites" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">✺</span><span>Elites</span></button><button type="button" class="tab" data-tab="upgrades" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">⇡</span><span>Upgrades</span></button><button type="button" class="tab" data-tab="powers" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">⚡</span><span>Powers</span></button><button type="button" class="tab" data-tab="ascend" role="tab" aria-selected="false" aria-controls="panel"><span class="tab-icon">✦</span><span>Ascend</span></button></div><div class="tab-content" role="tabpanel" id="panel"></div></section>
@@ -114,8 +138,8 @@ fmt=n=>{
  return Number(scaled.toFixed(scaled<10?2:scaled<100?1:0)).toLocaleString('en-US')+suffix;
 },rng=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 
-const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0,crit:0,bounty:0,recharge:0},powers:{},auras:0,ascensions:0,autoMerge:false,muted:true,board:null,savedAt:Date.now(),specialSparks:[],specialFinds:0,elites:{rotary:0,phase:0,shatter:0}});
-let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})},powers:obj.powers&&typeof obj.powers==='object'&&!Array.isArray(obj.powers)?obj.powers:{},elites:obj.elites&&typeof obj.elites==='object'&&!Array.isArray(obj.elites)?obj.elites:{rotary:0,phase:0,shatter:0}}}}catch(e){}
+const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0,crit:0,bounty:0,recharge:0},powers:{},auras:0,ascensions:0,autoMerge:false,muted:true,board:null,savedAt:Date.now(),specialSparks:[],specialFinds:0,elites:{rotary:0,phase:0,shatter:0},eliteTimers:{rotary:{activeUntil:0,cooldownUntil:0},phase:{activeUntil:0,cooldownUntil:0},shatter:{activeUntil:0,cooldownUntil:0}}});
+let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})},powers:obj.powers&&typeof obj.powers==='object'&&!Array.isArray(obj.powers)?obj.powers:{},elites:obj.elites&&typeof obj.elites==='object'&&!Array.isArray(obj.elites)?obj.elites:{rotary:0,phase:0,shatter:0},eliteTimers:obj.eliteTimers&&typeof obj.eliteTimers==='object'&&!Array.isArray(obj.eliteTimers)?obj.eliteTimers:{}}}}catch(e){}
 for(let i=0;i<MAX_TIERS;i++){state.tiers[i]=clamp(Math.floor(Number(state.tiers[i])||0),0,MAX_SPARKS);state.levels[i]=clamp(Math.floor(Number(state.levels[i])||0),0,100000)}
 state.stage=clamp(Math.floor(Number(state.stage)||1),1,1e6);state.cash=Math.max(0,Number(state.cash)||0);state.earned=Math.max(0,Number(state.earned)||0);state.auras=Math.max(0,Math.floor(Number(state.auras)||0));state.ascensions=Math.max(0,Math.floor(Number(state.ascensions)||0));
 for(const id of ['damage','speed','fortune','crit','bounty','recharge'])state.upgrades[id]=clamp(Math.floor(Number(state.upgrades[id])||0),0,200);
@@ -132,15 +156,29 @@ const LIMITED_DEFS={
  gilded:{name:'Gilded',symbol:'✧',color:'#ffdc76',damage:5,speed:1.15,earn:3},
  singularity:{name:'Singularity',symbol:'✴',color:'#b894ff',damage:22,speed:1.2,earn:1}
 };
-// Purchased elite sparks are permanent unlocks (including through ascension),
-// independent of normal spark slots and three-minute rare drops.
+// Elite UPGRADES are permanent, but each deployment lasts three to four minutes.
+// Real-world expiry and cooldown deadlines prevent refresh or 3× from extending life.
 const ELITE_DEFS={
  rotary:{name:'Rotary Cannon',symbol:'✺',color:'#6cf1ee',cost:3500,desc:'Fires rotating rings of high-powered mini sparks. A mobile cannon that blankets the mosaic.'},
  phase:{name:'Phase Drifter',symbol:'◇',color:'#c4a4ff',cost:8000,desc:'Phases straight through every shard. Each shard penetrated increases its damage until its next wall bounce.'},
  shatter:{name:'Shatter Spark',symbol:'✶',color:'#ffb871',cost:15000,desc:'Every shard it destroys releases short-lived fragment sparks that ricochet and deal more damage.'}
 };
-for(const id of Object.keys(ELITE_DEFS))state.elites[id]=clamp(Math.floor(Number(state.elites[id])||0),0,5);
-const eliteUpgradeCost=id=>Math.floor(ELITE_DEFS[id].cost*Math.pow(3.1,state.elites[id]));
+const MAX_ELITE_LEVEL=20,ELITE_COOLDOWN=90;
+for(const id of Object.keys(ELITE_DEFS)){
+ state.elites[id]=clamp(Math.floor(Number(state.elites[id])||0),0,MAX_ELITE_LEVEL);
+ const old=state.eliteTimers[id]&&typeof state.eliteTimers[id]==='object'?state.eliteTimers[id]:{};
+ const limit=Date.now()+3600000;
+ state.eliteTimers[id]={activeUntil:clamp(Number(old.activeUntil)||0,0,limit),cooldownUntil:clamp(Number(old.cooldownUntil)||0,0,limit)};
+ if(state.elites[id]===0)state.eliteTimers[id]={activeUntil:0,cooldownUntil:0};
+}
+const eliteUpgradeCost=id=>Math.floor(ELITE_DEFS[id].cost*1.35*Math.pow(1.58,Math.max(0,state.elites[id]-1)));
+const eliteDuration=id=>180+Math.min(60,Math.max(0,state.elites[id]-1)*4);
+const eliteActive=(id,now=Date.now())=>state.elites[id]>0&&state.eliteTimers[id].activeUntil>now;
+const eliteReady=(id,now=Date.now())=>state.elites[id]>0&&state.eliteTimers[id].activeUntil<=now&&state.eliteTimers[id].cooldownUntil<=now;
+const secondsFmt=secs=>{secs=Math.max(0,Math.ceil(secs));return `${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`};
+const rotaryCount=lv=>Math.min(11,5+Math.floor((Math.max(1,lv)-1)/3));
+const rotaryInterval=lv=>Math.max(.38,1.55/Math.pow(1.075,Math.max(1,lv)-1));
+const shatterCount=lv=>Math.min(12,3+Math.floor((Math.max(1,lv)-1)/2));
 const MAX_MINI=45;
 const LIMITED_TIME=180000,MAX_LIMITED=3,LIMITED_CHANCE=.01;
 const nowAtLoad=Date.now();
@@ -181,24 +219,72 @@ const powerDescription=id=>{
  return `Instantly damages every remaining shard for ${Math.round((.07+.025*(lv-1))*1000)/10}% of its max HP`;
 };
 
+// Cohesive hand-drawn vector glyphs for all 5 normal, 3 rare and 3 elite sparks.
+// Use the same standalone SVG art for cards, timers and in-board renderers.
+function sparkIconSvg(group,key){
+ const color=group==='normal'?tierColors[Number(key)]:group==='rare'?LIMITED_DEFS[key].color:ELITE_DEFS[key].color;
+ const ink='#effbff', dark='#111a30';
+ const line=(path,width=2)=>`<path d="${path}" fill="none" stroke="${ink}" stroke-width="${width}" stroke-linejoin="round" stroke-linecap="round"/>`;
+ let art='';
+ if(group==='normal'){
+  const n=Number(key);
+  const bodies=[
+   `<path d="M24 4 37 29 25 24 24 44 16 29 11 35Z" fill="${color}" stroke="${ink}" stroke-width="2"/>${line('M24 11 24 30 M20 29 24 24 29 27',1.4)}`,
+   `<path d="M24 3 35 18 43 18 31 31 24 44 17 31 5 18 13 18Z" fill="${color}" stroke="${ink}" stroke-width="1.8"/>${line('M24 6 24 38 M9 19 39 19 M18 32 30 32',1.5)}`,
+   `<path d="M24 2 29 16 45 23 30 29 24 46 18 29 3 23 18 16Z" fill="${color}" stroke="${ink}" stroke-width="2"/><path d="M24 13 29 23 24 35 19 23Z" fill="${dark}"/>`,
+   `<path d="M24 2 32 13 43 9 36 25 43 40 28 36 24 46 18 35 5 39 12 24 5 9 17 13Z" fill="${color}" stroke="${ink}" stroke-width="1.8"/>${line('M24 9 28 24 24 37 20 24Z',1.7)}`,
+   `<path d="M24 2 29 12 41 6 38 19 47 24 38 30 42 42 30 38 24 47 18 38 6 42 10 30 1 24 10 19 6 6 19 12Z" fill="${color}" stroke="${ink}" stroke-width="1.7"/><path d="M24 12 32 24 24 36 16 24Z" fill="${dark}" stroke="${ink}" stroke-width="1.4"/>`
+  ];art=bodies[n]||bodies[0];
+ }else if(group==='rare'&&key==='ember'){
+  art=`<path d="M25 2 Q33 12 29 21 Q40 16 39 29 Q40 41 25 46 Q10 44 9 31 Q8 20 19 12 Q18 23 24 25 Q29 16 25 2Z" fill="${color}" stroke="${ink}" stroke-width="1.7"/><path d="M24 22 Q30 29 27 36 Q24 43 19 38 Q15 33 24 22" fill="#ffe39f"/>`;
+ }else if(group==='rare'&&key==='gilded'){
+  art=`<circle cx="24" cy="24" r="19" fill="none" stroke="${color}" stroke-width="2.5" stroke-dasharray="8 4"/><path d="M24 4 29 18 44 24 29 30 24 44 19 30 4 24 19 18Z" fill="${color}" stroke="${ink}" stroke-width="1.7"/><path d="M24 14 29 24 24 34 19 24Z" fill="#fff4b8"/>`;
+ }else if(group==='rare'&&key==='singularity'){
+  art=`<ellipse cx="24" cy="24" rx="22" ry="9" transform="rotate(-35 24 24)" fill="none" stroke="${color}" stroke-width="3"/><ellipse cx="24" cy="24" rx="21" ry="9" transform="rotate(45 24 24)" fill="none" stroke="${ink}" stroke-opacity=".7" stroke-width="1.4"/><circle cx="24" cy="24" r="11" fill="${dark}" stroke="${color}" stroke-width="3"/><circle cx="24" cy="24" r="5" fill="${ink}"/>`;
+ }else if(group==='elite'&&key==='rotary'){
+  art=`<circle cx="24" cy="24" r="19" fill="none" stroke="${color}" stroke-opacity=".55" stroke-width="1.5"/>`;
+  for(let i=0;i<6;i++){const a=i*Math.PI/3,px=24+Math.cos(a)*14,py=24+Math.sin(a)*14;
+   art+=`<path d="M24 24 L${px.toFixed(2)} ${py.toFixed(2)}" stroke="${color}" stroke-width="4" stroke-linecap="round"/><circle cx="${px.toFixed(2)}" cy="${py.toFixed(2)}" r="3.3" fill="${ink}"/>`}
+  art+=`<circle cx="24" cy="24" r="9" fill="${dark}" stroke="${ink}" stroke-width="2.5"/><circle cx="24" cy="24" r="4" fill="${color}"/>`;
+ }else if(group==='elite'&&key==='phase'){
+  art=`<path d="M16 7 30 7 44 24 30 41 16 41 30 24Z" fill="none" stroke="${color}" stroke-opacity=".65" stroke-width="2.5"/><path d="M21 3 39 24 21 45 5 24Z" fill="${dark}" stroke="${ink}" stroke-width="2.4"/><path d="M21 11 33 24 21 37 10 24Z" fill="${color}"/><path d="M15 24h12" stroke="${ink}" stroke-width="2"/>`;
+ }else if(group==='elite'&&key==='shatter'){
+  art=`<path d="M24 2 29 16 43 9 35 22 47 27 32 31 36 45 24 36 12 45 16 30 2 27 15 22 5 9 19 16Z" fill="${color}" stroke="${ink}" stroke-width="2"/><path d="M24 10 27 22 24 27 18 19 M24 27 31 35 M24 27 14 38" fill="none" stroke="${dark}" stroke-width="2" stroke-linecap="round"/>`;
+ }
+ return `<svg xmlns="http://www.w3.org/2000/svg" class="spark-art" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">${art}</svg>`;
+}
+const sparkImageCache={};
+function sparkImage(group,key){const id=group+':'+key;if(!sparkImageCache[id]){
+ const img=new Image();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(sparkIconSvg(group,key));sparkImageCache[id]=img;
+}return sparkImageCache[id];}
+function drawSparkGlyph(group,key,size,rotation=0){const img=sparkImage(group,key);
+ ctx.save();ctx.rotate(rotation);if(img.complete&&img.naturalWidth>0)ctx.drawImage(img,-size/2,-size/2,size,size);
+ else{ctx.fillStyle=group==='normal'?tierColors[key]:group==='rare'?LIMITED_DEFS[key].color:ELITE_DEFS[key].color;ctx.beginPath();ctx.moveTo(0,-size*.48);ctx.lineTo(size*.35,0);ctx.lineTo(0,size*.48);ctx.lineTo(-size*.35,0);ctx.closePath();ctx.fill()}
+ ctx.restore();}
+
 const mergeNeed=2;
 function renderPanel(){let html='';if(tab==='sparks'){
  html='<h2 class="section-title">Build your constellation</h2><p class="section-sub">Buy and merge sparks for more damage. Every spark can damage any shard; tougher shards simply take more hits.</p>';
  const active=totalSparks();for(let i=0;i<MAX_TIERS;i++){let owned=state.tiers[i],prior=i===0||state.tiers.slice(i).some(n=>n>0)||state.levels[i]>0||state.earned>200*Math.pow(6,i);if(!prior)continue;let buy=buyCost(i),level=levelCost(i),canBuy=state.cash>=buy&&active<MAX_SPARKS,canLevel=state.cash>=level&&owned>0,canMerge=owned>=mergeNeed&&i<MAX_TIERS-1;
- html+=`<div class="tier" data-card-tier="${i}"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem"><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 2 26 26 15 20 4 26Z" fill="${tierColors[i]}"/></svg></div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1} · hits all shard levels</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button type="button" class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>+ BUY ONE<b>${fmt(buy)} ✧</b></button><button type="button" class="btn" data-act="buy-max" data-tier="${i}" ${canBuy?'':'disabled'}>BUY MAX<b>Fill available slots</b></button><button type="button" class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>↑ LEVEL UP<b>${fmt(level)} ✧</b></button><button type="button" class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>◇ MERGE ×2<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need 2'}</b></button></div></div>`;
+ html+=`<div class="tier" data-card-tier="${i}"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem" style="--spark-glow:${tierColors[i]}">${sparkIconSvg('normal',i)}</div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1} · hits all shard levels</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button type="button" class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>+ BUY ONE<b>${fmt(buy)} ✧</b></button><button type="button" class="btn" data-act="buy-max" data-tier="${i}" ${canBuy?'':'disabled'}>BUY MAX<b>Fill available slots</b></button><button type="button" class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>↑ LEVEL UP<b>${fmt(level)} ✧</b></button><button type="button" class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>◇ MERGE ×2<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need 2'}</b></button></div></div>`;
  }
  html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Merge two matching sparks for a stronger one. Every spark deals damage to every shard, no matter its level.</p>`;
- html+=`<details class="limited-card"><summary>✦ About rare sparks</summary><p>Destroyed shards have a 1% chance to release a special spark for <b>3 real-world minutes</b>. Only one of each kind can be active at once.</p><div class="limited-row"><span class="limited-pill">🔥 Ember · ×9 damage</span><span class="limited-pill">✧ Gilded · ×5 damage & ×3 earnings</span><span class="limited-pill">✴ Singularity · ×22 damage</span></div><p style="margin-bottom:0">Active: <b>${specialSparks.length}</b> · Found: <b>${fmt(state.specialFinds||0)}</b></p></details>`;
+ html+=`<details class="limited-card"><summary>✦ About rare sparks</summary><p>Destroyed shards have a 1% chance to release a special spark for <b>3 real-world minutes</b>. Only one of each kind can be active at once.</p><div class="limited-row"><span class="limited-pill">${sparkIconSvg('rare','ember')} Ember · ×9 damage</span><span class="limited-pill">${sparkIconSvg('rare','gilded')} Gilded · ×5 damage & ×3 earnings</span><span class="limited-pill">${sparkIconSvg('rare','singularity')} Singularity · ×22 damage</span></div><p style="margin-bottom:0">Active: <b>${specialSparks.length}</b> · Found: <b>${fmt(state.specialFinds||0)}</b></p></details>`;
  }else if(tab==='elites'){
- html='<h2 class="section-title">Elite spark workshop</h2><p class="section-sub">Three independent permanent specialty sparks. Each adds one extra spark to the board, with its own unique attack. Elite levels and unlocks survive ascension.</p>';
+ html='<h2 class="section-title">Elite spark hangar</h2><p class="section-sub">Unlock permanently, then deploy for 3–4 real-world minutes. Upgrade to level 20 to strengthen attacks and extend each mission. After a deployment, recharge for 90 seconds.</p>';
+ const now=Date.now();
  for(const [id,d] of Object.entries(ELITE_DEFS)){
-  const lv=state.elites[id],cost=lv?eliteUpgradeCost(id):d.cost;
-  const detail=id==='rotary'?`Lv ${lv||1}: ${5+(lv>=3?1:0)+(lv>=5?1:0)} radial shots per volley · every ${Math.max(.6,1.55-(lv||1)*.17).toFixed(2)}s`:
-    id==='phase'?`Lv ${lv||1}: +${Math.round((.35+((lv||1)-1)*.12)*100)}% damage per shard crossed · charge resets at walls`:
-    `Lv ${lv||1}: ${Math.min(5,2+(lv||1))} fragments on each shard destroyed`;
-  html+=`<div class="elite-card" data-card-elite="${id}" style="--elite-color:${d.color}"><div class="elite-title"><span class="elite-orb">${d.symbol}</span><div><h3>${d.name}</h3><p>${d.desc}</p></div></div><div class="elite-detail">${detail}</div><div class="elite-bottom"><span>${lv?'OWNED · LEVEL '+lv:'NOT YET OWNED'}</span><button class="btn primary" data-act="${lv?'upgrade-elite':'buy-elite'}" data-id="${id}" ${lv>=5||state.cash<cost?'disabled':''}>${lv>=5?'MAX LEVEL':lv?'UPGRADE':'PURCHASE'}<b>${lv>=5?'✓':fmt(cost)+' ✧'}</b></button></div></div>`;
+  const lv=state.elites[id],timer=state.eliteTimers[id],active=eliteActive(id,now),ready=eliteReady(id,now);
+  const cost=lv?eliteUpgradeCost(id):d.cost;
+  const remaining=Math.max(0,Math.ceil((active?timer.activeUntil:timer.cooldownUntil)-now)/1000);
+  const status=active?'ACTIVE · '+secondsFmt(remaining):ready?'READY TO DEPLOY':lv?'RECHARGING · '+secondsFmt(remaining):'LOCKED';
+  const detail=id==='rotary'?`Lv ${lv||1}: ${rotaryCount(lv||1)} radial shots per volley · every ${rotaryInterval(lv||1).toFixed(2)}s`:
+    id==='phase'?`Lv ${lv||1}: +${Math.round((.35+((lv||1)-1)*.055)*100)}% damage per shard crossed · charge resets at walls`:
+    `Lv ${lv||1}: ${shatterCount(lv||1)} fragments each time it destroys a shard`;
+  const progress=active?Math.max(0,Math.min(100,remaining/eliteDuration(id)*100)):lv&&!ready?Math.max(0,Math.min(100,100*(1-remaining/ELITE_COOLDOWN))):0;
+  html+=`<div class="elite-card" data-card-elite="${id}" style="--elite-color:${d.color}"><div class="elite-title"><span class="elite-orb">${sparkIconSvg('elite',id)}</span><div><h3>${d.name}</h3><p>${d.desc}</p></div><span class="elite-level">${lv?'LV '+lv+' / '+MAX_ELITE_LEVEL:'LOCKED'}</span></div><div class="elite-detail">${detail}</div><div class="elite-timer"><span class="elite-status ${active?'live':ready?'ready':''}">${status}</span><span>${lv?secondsFmt(eliteDuration(id))+' duration · '+ELITE_COOLDOWN+'s cooldown':'Permanent unlock'}</span></div><div class="elite-timer-track"><span style="width:${progress.toFixed(1)}%;background:${d.color}"></span></div><div class="elite-bottom"><button type="button" class="btn primary" data-act="${lv?'upgrade-elite':'buy-elite'}" data-id="${id}" ${lv>=MAX_ELITE_LEVEL||state.cash<cost?'disabled':''}>${lv>=MAX_ELITE_LEVEL?'MAX LEVEL':lv?'↑ UPGRADE':'UNLOCK + DEPLOY'}<b>${lv>=MAX_ELITE_LEVEL?'✓':fmt(cost)+' ✧'}</b></button><button type="button" class="btn deploy-btn" data-act="deploy-elite" data-id="${id}" ${ready?'':'disabled'}>${active?'DEPLOYED':lv&&!ready?'RECHARGING':lv?'▶ DEPLOY':'LOCKED'}<b>${active?secondsFmt(remaining):lv&&!ready?secondsFmt(remaining):ready?'FREE · '+secondsFmt(eliteDuration(id)):'Unlock first'}</b></button></div></div>`;
  }
- html+='<p class="note">One of each elite spark can be owned and upgraded to level 5. Elite mini-sparks are temporary projectiles, not limited-edition rare drops. They earn prisms normally and never take regular spark slots.</p>';
+ html+='<p class="note">Level upgrades and unlocks are permanent—even after ascension. Active deployments and cooldowns use the real clock, so refreshing or using 3× speed will not extend them. Leveling up changes your next deployment duration.</p>';
  }else if(tab==='upgrades'){
  html='<h2 class="section-title">Make everything brighter</h2><p class="section-sub">Permanent upgrades until your next ascension.</p>';
  const opts=[['damage','✦','Radiant Force','Every spark deals 28% more damage per level'],['speed','➤','Quick Bounce','Sparks ricochet 18% faster per level'],['fortune','✧','Prism Harvest','Earn 24% more prisms per level'],['crit','⚡','Critical Hits','4% more chance to deal double damage per level (max 60%)'],['bounty','✺','Shard Bounty','Earn 15% more bonus prisms when a shard breaks'],['recharge','◷','Fast Recharge','Power-up cooldowns become 6% shorter per level (max 52%)']];
@@ -255,7 +341,7 @@ function patchWorkshop(markup){
 let powerTrayHTML='';
 function updatePowerHud(){
  const now=Date.now(),chips=[];
- for(const s of specialSparks){const d=LIMITED_DEFS[s.special];chips.push(`<span class="power-chip limited" style="border-color:${d.color}">${d.symbol} ${d.name} · ${Math.ceil(Math.max(0,s.expiresAt-now)/1000)}s</span>`)}
+ for(const s of specialSparks){const d=LIMITED_DEFS[s.special];chips.push(`<span class="power-chip limited" style="border-color:${d.color}">${sparkIconSvg('rare',s.special)} ${d.name} · ${secondsFmt((s.expiresAt-now)/1000)}</span>`)}
  for(const [id,d] of Object.entries(POWER_DEFS))if(powerActive(id,now))chips.push(`<span class="power-chip ${d.kind}">${d.symbol} ${d.name} · ${Math.ceil((powerState(id).activeUntil-now)/1000)}s</span>`);
  const hud=$('power-hud');hud.classList.toggle('has-powers',chips.length>0);hud.innerHTML=chips.join('');
  // The quick buttons stay mounted across timer ticks, so tapping on mobile
@@ -279,15 +365,16 @@ function updatePowerHud(){
  }
 }
 function updateLabels(){ updatePowerHud();const eliteHud=$('elite-hud');
- // Reserve two fixed grid columns and a dedicated multiplier slot for Phase.
- // This prevents growing/shrinking text from adding/removing a HUD row.
- const ownedElites=eliteSparks.map(s=>s.elite).join(',');
- if(eliteHud.dataset.owned!==ownedElites){
-  eliteHud.innerHTML=eliteSparks.map(s=>{const d=ELITE_DEFS[s.elite];return `<span class="elite-pill" style="border-color:${d.color}"><span class="elite-name">${d.symbol} ${d.name}</span>${s.elite==='phase'?'<span class="elite-charge">×1.0</span>':''}</span>`}).join('');
-  eliteHud.dataset.owned=ownedElites;
+ // Stable two-column HUD. Update text nodes without remounting as phase charge/timers change.
+ const activeKeys=eliteSparks.map(s=>s.elite).join(',');
+ if(eliteHud.dataset.owned!==activeKeys){
+  eliteHud.innerHTML=eliteSparks.map(s=>{const d=ELITE_DEFS[s.elite];return `<span class="elite-pill" style="border-color:${d.color}">${sparkIconSvg('elite',s.elite)}<span class="elite-name">${d.name}</span><span class="elite-charge" data-charge="${s.elite}">3:00</span></span>`}).join('');
+  eliteHud.dataset.owned=activeKeys;
  }
- const phase=eliteSparks.find(s=>s.elite==='phase'),charge=eliteHud.querySelector('.elite-charge');
- if(phase&&charge)charge.textContent='×'+(1+(phase.phaseChain||0)*(.35+(state.elites.phase-1)*.12)).toFixed(1);
+ for(const s of eliteSparks){const el=eliteHud.querySelector(`[data-charge="${s.elite}"]`);if(!el)continue;
+  const timer=secondsFmt((state.eliteTimers[s.elite].activeUntil-Date.now())/1000);
+  el.textContent=s.elite==='phase'?`×${(1+(s.phaseChain||0)*(.35+(state.elites.phase-1)*.055)).toFixed(1)} · ${timer}`:timer;
+ }
  eliteHud.classList.toggle('visible',eliteSparks.length>0);$('cash').textContent=fmt(state.cash);$('menu-cash').textContent=fmt(state.cash);$('stage').textContent=String(state.stage).padStart(2,'0');$('stage-title').textContent=names[(state.stage-1)%names.length];$('prestige-tag').textContent=`✦ ${fmt(state.auras)} aura${state.auras===1?'':'s'}`;$('bar').style.width=total?Math.min(100,dead/total*100).toFixed(2)+'%':'0%';$('spark-total').textContent=totalSparks()+(eliteSparks.length?' +'+eliteSparks.length+' ✺':'')+(specialSparks.length?' +'+specialSparks.length+' ✦':'');$('dps').textContent=fmt(lastDps);$('speed-label').innerHTML=rush?'3× speed<br>active':'Idle mode<br>is on';$('hint').textContent=inspected&&performance.now()<inspected.until?`Lv ${inspected.level} · ${fmt(inspected.hp)} / ${fmt(inspected.maxHp)} HP`: `Mostly Lv ${shardLevelAtStage(state.stage)} shards · tap to inspect ✧`;}
 function announce(msg){let e=$('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>e.classList.remove('show'),2400)}
 // Save the canvas and the wallet atomically. An unfinished stage must never reappear intact.
@@ -519,22 +606,30 @@ function newSpark(i){
  return{x:home[0],y:home[1],vx:Math.cos(heading)*v,vy:Math.sin(heading)*v,tier:i,path:[],spin:rng(0,6.28),noShardFor:0};
 }
 function syncSparks(){let next=[];for(let i=0;i<MAX_TIERS;i++){let existing=sparks.filter(s=>s.tier===i);let n=state.tiers[i];for(let j=0;j<n;j++)next.push(existing[j]||newSpark(i))}sparks=next;}
-function syncEliteSparks(){eliteSparks=Object.keys(ELITE_DEFS).filter(id=>state.elites[id]>0).map(id=>{
- const existing=eliteSparks.find(s=>s.elite===id);
- if(existing)return existing;
- const n=newSpark(bestTier());return{...n,elite:id,fireClock:0,phaseChain:0};
-});}
+function syncEliteSparks(now=Date.now()){
+ eliteSparks=Object.keys(ELITE_DEFS).filter(id=>eliteActive(id,now)).map(id=>{
+  const existing=eliteSparks.find(s=>s.elite===id);
+  if(existing)return existing;
+  const n=newSpark(bestTier());return{...n,elite:id,fireClock:0,phaseChain:0};
+ });
+}
+function deployElite(id){
+ if(!ELITE_DEFS[id]||!eliteReady(id))return false;
+ const now=Date.now(),duration=eliteDuration(id);
+ state.eliteTimers[id]={activeUntil:now+duration*1000,cooldownUntil:now+(duration+ELITE_COOLDOWN)*1000};
+ syncEliteSparks(now);announce(ELITE_DEFS[id].name+' deployed for '+secondsFmt(duration)+' ✦');save();return true;
+}
 function spawnMini(parent,heading,kind){if(miniSparks.length>=MAX_MINI)return;
  const v=sparkVelocity(bestTier())*(kind==='rotary'?2.25:1.75);
  miniSparks.push({x:clamp(parent.x,8,W-8),y:clamp(parent.y,8,H-8),vx:Math.cos(heading)*v,vy:Math.sin(heading)*v,
  tier:0,mini:kind,life:kind==='rotary'?1.7:2.2,path:[],spin:rng(0,6.28),noShardFor:0});
 }
 function fireRotary(parent){const lv=state.elites.rotary;
- const count=5+(lv>=3?1:0)+(lv>=5?1:0),offset=parent.spin*2.1;
+ const count=rotaryCount(lv),offset=parent.spin*2.1;
  for(let i=0;i<count;i++)spawnMini(parent,offset+i*Math.PI*2/count,'rotary');
  for(let i=0;i<6;i++){const a=offset+i*Math.PI/3;particles.push({x:parent.x,y:parent.y,vx:Math.cos(a)*45,vy:Math.sin(a)*45,life:.18,maxLife:.18,color:ELITE_DEFS.rotary.color,r:1.5})}
 }
-function releaseShatter(parent){const count=Math.min(5,2+state.elites.shatter),angle=Math.atan2(parent.vy,parent.vx);
+function releaseShatter(parent){const count=shatterCount(state.elites.shatter),angle=Math.atan2(parent.vy,parent.vx);
  for(let i=0;i<count;i++)spawnMini(parent,angle+((i+.5)/count-.5)*2.5+rng(-.13,.13),'shatter');
 }
 
@@ -688,11 +783,13 @@ function tick(dt){
   state.specialSparks=specialSparks;
  }
 
+ // Expired elites disappear at the real-world deadline; they do not keep firing.
+ if(eliteSparks.some(s=>!eliteActive(s.elite,now)))syncEliteSparks(now);
  const elapsed=dt*(rush?3:1);
- // Elite launchers keep firing automatically even during a long idle session.
+ // Rotary launchers fire automatically while deployed.
  for(const s of eliteSparks)if(s.elite==='rotary'){
   s.fireClock=(s.fireClock||0)+elapsed;
-  const interval=Math.max(.6,1.55-state.elites.rotary*.17);
+  const interval=rotaryInterval(state.elites.rotary);
   while(s.fireClock>=interval){s.fireClock-=interval;fireRotary(s)}
  }
  for(const s of [...sparks,...specialSparks,...eliteSparks,...miniSparks]){
@@ -716,10 +813,10 @@ function tick(dt){
      const primaryTier=(s.special||s.elite||s.mini)?bestTier():s.tier;
      let mult=s.special?LIMITED_DEFS[s.special].damage:1;
      if(s.elite==='rotary')mult=1.6+state.elites.rotary*.5;
-     if(s.elite==='phase')mult=(2.2+state.elites.phase*.45)*(1+(s.phaseChain||0)*(.35+(state.elites.phase-1)*.12));
+     if(s.elite==='phase')mult=(2.2+state.elites.phase*.45)*(1+(s.phaseChain||0)*(.35+(state.elites.phase-1)*.055));
      if(s.elite==='shatter')mult=2.2+state.elites.shatter*.7;
-     if(s.mini==='rotary')mult=3.2+state.elites.rotary*1.1;
-     if(s.mini==='shatter')mult=.9+state.elites.shatter*.24;
+     if(s.mini==='rotary')mult=3.2+state.elites.rotary*.82;
+     if(s.mini==='shatter')mult=.9+state.elites.shatter*.22;
      hitShard(impact.shard,tierPower(primaryTier)*mult*(powerActive('overcharge')?3+(powerState('overcharge').level-1)*.75:1),primaryTier,false,s.special?LIMITED_DEFS[s.special].earn:1);
      s.noShardFor=0; // ANY shard contact resets the anti-stall timer.
      if(s.elite==='phase')s.phaseChain=Math.min(80,(s.phaseChain||0)+1);
@@ -779,15 +876,21 @@ function draw(){ctx.clearRect(0,0,W,H);let bg=ctx.createLinearGradient(0,0,W,H);
  }ctx.globalAlpha=1;
  for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.maxLife);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
  ctx.textAlign='center';ctx.font='700 11px system-ui,sans-serif';for(const p of damagePopups){ctx.globalAlpha=Math.max(0,p.life/p.maxLife)*.9;ctx.fillStyle='#f4fbff';ctx.fillText('−'+p.value,p.x,p.y)}ctx.globalAlpha=1;
- for(const s of [...sparks,...specialSparks]){let color=s.special?LIMITED_DEFS[s.special].color:tierColors[s.tier];for(let i=1;i<s.path.length;i++){let a=s.path[i-1],b=s.path[i];ctx.globalAlpha=i/s.path.length*.32;ctx.strokeStyle=color;ctx.lineWidth=1+s.tier*.2;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}ctx.globalAlpha=1;ctx.save();ctx.translate(s.x,s.y);ctx.rotate(Math.atan2(s.vy,s.vx)+Math.PI/2);ctx.shadowBlur=s.special?30:18;ctx.shadowColor=color;ctx.fillStyle=color;const r=s.special?9.5+Math.sin(gameTime*6+s.spin)*1.2:5.2+s.tier*1.5;ctx.beginPath();ctx.moveTo(0,-r*1.5);ctx.lineTo(-r,r);ctx.lineTo(0,r*.34);ctx.lineTo(r,r);ctx.closePath();ctx.fill();if(s.special){ctx.strokeStyle='#fff6e9';ctx.lineWidth=1.8;ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*1.7,0,Math.PI*2);ctx.strokeStyle=color;ctx.globalAlpha=.5;ctx.lineWidth=1;ctx.stroke();}ctx.restore()}
- // Permanent elite sparks have unique silhouettes. Small bullets are drawn separately.
+ // Crisp vector art, matching the workshop icons. Trails preserve the existing physics.
+ for(const s of [...sparks,...specialSparks]){
+  const rare=!!s.special,color=rare?LIMITED_DEFS[s.special].color:tierColors[s.tier];
+  for(let i=1;i<s.path.length;i++){const a=s.path[i-1],b=s.path[i];ctx.globalAlpha=i/s.path.length*.34;ctx.strokeStyle=color;ctx.lineWidth=1+s.tier*.16;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}
+  ctx.globalAlpha=1;ctx.save();ctx.translate(s.x,s.y);ctx.shadowBlur=rare?20:14;ctx.shadowColor=color;
+  if(rare){ctx.strokeStyle=color;ctx.globalAlpha=.58;ctx.lineWidth=1.25;ctx.beginPath();ctx.arc(0,0,13+Math.sin(gameTime*5+s.spin)*1.4,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1}
+  drawSparkGlyph(rare?'rare':'normal',rare?s.special:s.tier,rare?23:15+s.tier*3.3,Math.atan2(s.vy,s.vx)+Math.PI/2);
+  ctx.restore();
+ }
  for(const s of eliteSparks){const def=ELITE_DEFS[s.elite];ctx.save();ctx.translate(s.x,s.y);
-  ctx.shadowBlur=24;ctx.shadowColor=def.color;ctx.strokeStyle=def.color;ctx.fillStyle='#1a2437';ctx.lineWidth=2.4;
-  ctx.beginPath();ctx.arc(0,0,10,0,Math.PI*2);ctx.fill();ctx.stroke();
-  if(s.elite==='rotary'){ctx.rotate(s.spin*2.1);for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.beginPath();ctx.moveTo(Math.cos(a)*4,Math.sin(a)*4);ctx.lineTo(Math.cos(a)*15,Math.sin(a)*15);ctx.stroke()}ctx.fillStyle=def.color;ctx.beginPath();ctx.arc(0,0,4,0,Math.PI*2);ctx.fill();}
-  else if(s.elite==='phase'){ctx.rotate(Math.PI/4);ctx.globalAlpha=.8;ctx.strokeRect(-7,-7,14,14);ctx.globalAlpha=1;ctx.fillStyle=def.color;ctx.fillRect(-3,-3,6,6);}
-  else{ctx.rotate(s.spin*.55);ctx.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4,rad=i%2?5:16;if(i)ctx.lineTo(Math.cos(a)*rad,Math.sin(a)*rad);else ctx.moveTo(Math.cos(a)*rad,Math.sin(a)*rad)}ctx.closePath();ctx.stroke();}
-  ctx.restore();}
+  ctx.shadowBlur=22;ctx.shadowColor=def.color;ctx.strokeStyle=def.color;ctx.globalAlpha=.55;
+  ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(0,0,16.5,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+  drawSparkGlyph('elite',s.elite,32,s.elite==='rotary'?s.spin*1.8:s.elite==='shatter'?s.spin*.3:Math.atan2(s.vy,s.vx));
+  ctx.restore();
+ }
  for(const s of miniSparks){const def=ELITE_DEFS[s.mini];ctx.globalAlpha=Math.min(1,Math.max(0,s.life/.25));ctx.strokeStyle=def.color;ctx.fillStyle='#fff';ctx.lineWidth=1.3;ctx.shadowBlur=13;ctx.shadowColor=def.color;ctx.beginPath();ctx.moveTo(s.x-s.vx*.027,s.y-s.vy*.027);ctx.lineTo(s.x,s.y);ctx.stroke();ctx.beginPath();ctx.arc(s.x,s.y,s.mini==='rotary'?2.7:3.5,0,Math.PI*2);ctx.fill();}ctx.shadowBlur=0;ctx.globalAlpha=1;
 }
 function loop(time){if(!lastFrame)lastFrame=time;const dt=clamp((time-lastFrame)/1000,0,.05);lastFrame=time;tick(dt);draw();if(time-lastUI>220){updateLabels();lastUI=time}if(time-lastPanel>650){renderPanel();lastPanel=time}if(time-lastSave>2000){save();lastSave=time}requestAnimationFrame(loop)}
@@ -799,10 +902,12 @@ $('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-ac
  const p=state.powers[id];if(POWER_DEFS[id]&&p&&p.level>=1&&p.level<5){let c=powerUpgradeCost(id);if(state.cash>=c){state.cash-=c;p.level++;ok=true;announce(POWER_DEFS[id].name+' Lv '+p.level)}}}else if(action==='activate-power'){
  if(activatePower(id))ok=true;
  }else if(action==='buy-elite'){
- const def=ELITE_DEFS[id];if(def&&state.elites[id]===0&&state.cash>=def.cost){state.cash-=def.cost;state.elites[id]=1;syncEliteSparks();ok=true;announce(def.name+' unlocked! ✨')}
+ const def=ELITE_DEFS[id];if(def&&state.elites[id]===0&&state.cash>=def.cost){state.cash-=def.cost;state.elites[id]=1;deployElite(id);ok=true;announce(def.name+' unlocked and deployed! ✨')}
  }else if(action==='upgrade-elite'){
- if(ELITE_DEFS[id]&&state.elites[id]>=1&&state.elites[id]<5){const c=eliteUpgradeCost(id);if(state.cash>=c){state.cash-=c;state.elites[id]++;ok=true;announce(ELITE_DEFS[id].name+' level '+state.elites[id])}}
- }else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;next.elites={...state.elites};
+ if(ELITE_DEFS[id]&&state.elites[id]>=1&&state.elites[id]<MAX_ELITE_LEVEL){const c=eliteUpgradeCost(id);if(state.cash>=c){state.cash-=c;state.elites[id]++;ok=true;announce(ELITE_DEFS[id].name+' level '+state.elites[id])}}
+ }else if(action==='deploy-elite'){
+ if(deployElite(id))ok=true;
+ }else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;next.elites={...state.elites};next.eliteTimers=Object.fromEntries(Object.entries(state.eliteTimers).map(([id,t])=>[id,{...t}]));
  // Power unlocks and their levels are permanent; clear active effects on prestige.
  next.powers=Object.fromEntries(Object.entries(state.powers).map(([id,p])=>[id,{level:p.level,activeUntil:0,cooldownUntil:p.cooldownUntil}]));
  state=next;sparks=[];specialSparks=state.specialSparks;miniSparks=[];syncSparks();syncEliteSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();menuLastPress=-1000;renderPanel();updateLabels()}});
