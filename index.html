@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0e19">
-<title>Prism Drift v1.5 — Workshop Refresh</title>
+<title>Prism Drift v1.7 — Spark Economy Update</title>
 <style>
 :root{color-scheme:dark;--bg:#0b0e19;--panel:#151927;--line:#2b3043;--ink:#f0f2ff;--muted:#9ca5bd;--purple:#ab8bff;--cyan:#6be8e5;--gold:#ffd78c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% -4%,#272047 0,transparent 36%),radial-gradient(circle at 90% 35%,#122a37 0,transparent 30%),var(--bg);font:500 14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
@@ -138,10 +138,16 @@ fmt=n=>{
  return Number(scaled.toFixed(scaled<10?2:scaled<100?1:0)).toLocaleString('en-US')+suffix;
 },rng=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 
-const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0,crit:0,bounty:0,recharge:0},powers:{},auras:0,ascensions:0,autoMerge:false,muted:true,board:null,savedAt:Date.now(),specialSparks:[],specialFinds:0,elites:{rotary:0,phase:0,shatter:0},eliteTimers:{rotary:{activeUntil:0,cooldownUntil:0},phase:{activeUntil:0,cooldownUntil:0},shatter:{activeUntil:0,cooldownUntil:0}}});
-let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})},powers:obj.powers&&typeof obj.powers==='object'&&!Array.isArray(obj.powers)?obj.powers:{},elites:obj.elites&&typeof obj.elites==='object'&&!Array.isArray(obj.elites)?obj.elites:{rotary:0,phase:0,shatter:0},eliteTimers:obj.eliteTimers&&typeof obj.eliteTimers==='object'&&!Array.isArray(obj.eliteTimers)?obj.eliteTimers:{}}}}catch(e){}
+const fresh=()=>({cash:45,earned:0,stage:1,tiers:[1,0,0,0,0],tierPurchases:[0,0,0,0,0],highestCanvas:1,levels:[0,0,0,0,0],upgrades:{damage:0,speed:0,fortune:0,crit:0,bounty:0,recharge:0},powers:{},auras:0,ascensions:0,autoMerge:false,muted:true,board:null,savedAt:Date.now(),specialSparks:[],specialFinds:0,elites:{rotary:0,phase:0,shatter:0},eliteTimers:{rotary:{activeUntil:0,cooldownUntil:0},phase:{activeUntil:0,cooldownUntil:0},shatter:{activeUntil:0,cooldownUntil:0}}});
+let state=fresh();try{let raw=localStorage.getItem(KEY);if(raw){let obj=JSON.parse(raw);state={...fresh(),...obj,tiers:Array.isArray(obj.tiers)?obj.tiers.slice(0,MAX_TIERS):fresh().tiers,tierPurchases:Array.isArray(obj.tierPurchases)?obj.tierPurchases.slice(0,MAX_TIERS):null,levels:Array.isArray(obj.levels)?obj.levels.slice(0,MAX_TIERS):fresh().levels,upgrades:{...fresh().upgrades,...(obj.upgrades||{})},powers:obj.powers&&typeof obj.powers==='object'&&!Array.isArray(obj.powers)?obj.powers:{},elites:obj.elites&&typeof obj.elites==='object'&&!Array.isArray(obj.elites)?obj.elites:{rotary:0,phase:0,shatter:0},eliteTimers:obj.eliteTimers&&typeof obj.eliteTimers==='object'&&!Array.isArray(obj.eliteTimers)?obj.eliteTimers:{}}}}catch(e){}
 for(let i=0;i<MAX_TIERS;i++){state.tiers[i]=clamp(Math.floor(Number(state.tiers[i])||0),0,MAX_SPARKS);state.levels[i]=clamp(Math.floor(Number(state.levels[i])||0),0,100000)}
-state.stage=clamp(Math.floor(Number(state.stage)||1),1,1e6);state.cash=Math.max(0,Number(state.cash)||0);state.earned=Math.max(0,Number(state.earned)||0);state.auras=Math.max(0,Math.floor(Number(state.auras)||0));state.ascensions=Math.max(0,Math.floor(Number(state.ascensions)||0));
+// Older versions only stored the number owned. Keep those sparks without
+// confiscating them; start tracking future purchases so merging never resets prices.
+if(!Array.isArray(state.tierPurchases))state.tierPurchases=state.tiers.slice();
+for(let i=0;i<MAX_TIERS;i++)state.tierPurchases[i]=clamp(Math.floor(Number(state.tierPurchases[i])||0),0,1000000);
+state.stage=clamp(Math.floor(Number(state.stage)||1),1,1e6);
+state.highestCanvas=clamp(Math.max(state.stage,Math.floor(Number(state.highestCanvas)||1)),1,1e6);
+state.cash=Math.max(0,Number(state.cash)||0);state.earned=Math.max(0,Number(state.earned)||0);state.auras=Math.max(0,Math.floor(Number(state.auras)||0));state.ascensions=Math.max(0,Math.floor(Number(state.ascensions)||0));
 for(const id of ['damage','speed','fortune','crit','bounty','recharge'])state.upgrades[id]=clamp(Math.floor(Number(state.upgrades[id])||0),0,200);
 // Restore power levels and cooldown timestamps from old or new saves safely.
 for(const id of ['overcharge','gold','chain','pulse']){
@@ -159,9 +165,9 @@ const LIMITED_DEFS={
 // Elite UPGRADES are permanent, but each deployment lasts three to four minutes.
 // Real-world expiry and cooldown deadlines prevent refresh or 3× from extending life.
 const ELITE_DEFS={
- rotary:{name:'Rotary Cannon',symbol:'✺',color:'#6cf1ee',cost:3500,desc:'Fires rotating rings of high-powered mini sparks. A mobile cannon that blankets the mosaic.'},
- phase:{name:'Phase Drifter',symbol:'◇',color:'#c4a4ff',cost:8000,desc:'Phases straight through every shard. Each shard penetrated increases its damage until its next wall bounce.'},
- shatter:{name:'Shatter Spark',symbol:'✶',color:'#ffb871',cost:15000,desc:'Every shard it destroys releases short-lived fragment sparks that ricochet and deal more damage.'}
+ rotary:{name:'Rotary Cannon',symbol:'✺',color:'#6cf1ee',cost:3500,unlockCanvas:10,desc:'Fires rotating rings of high-powered mini sparks. A mobile cannon that blankets the mosaic.'},
+ phase:{name:'Phase Drifter',symbol:'◇',color:'#c4a4ff',cost:8000,unlockCanvas:20,desc:'Phases straight through every shard. Each shard penetrated increases its damage until its next wall bounce.'},
+ shatter:{name:'Shatter Spark',symbol:'✶',color:'#ffb871',cost:15000,unlockCanvas:35,desc:'Every shard it destroys releases short-lived fragment sparks that ricochet and deal more damage.'}
 };
 const MAX_ELITE_LEVEL=20,ELITE_COOLDOWN=90;
 for(const id of Object.keys(ELITE_DEFS)){
@@ -195,8 +201,12 @@ state.specialSparks=(Array.isArray(state.specialSparks)?state.specialSparks:[]).
  seenLimitedKinds.add(s.special);return true;
 }).slice(0,MAX_LIMITED).map(s=>({...s,tier:0,path:[],spin:0,noShardFor:0}));
 const canvas=$('field'),ctx=canvas.getContext('2d',{alpha:false});let W=360,H=480,dpr=1,sparks=[],specialSparks=state.specialSparks,eliteSparks=[],miniSparks=[],shards=[],particles=[],damagePopups=[],backgroundStars=[],dead=0,total=0,queueStage=false,gameTime=0,tab='sparks',rush=false,lastFrame=0,lastUI=0,lastPanel=0,lastSave=0,recentGains=0,recentTimer=0,lastDps=0,lastTap=0,toastHandle=0,audio=null,inspected=null,spawnSites=[];
-const totalSparks=()=>state.tiers.reduce((a,b)=>a+b,0),bestTier=()=>{for(let i=MAX_TIERS-1;i>=0;i--)if(state.tiers[i]>0)return i;return 0},tierPower=i=>(1.6*Math.pow(3.4,i))*(1+state.levels[i]*.38)*(1+state.upgrades.damage*.28)*(1+state.auras*.18),sparkVelocity=i=>100*(1+state.upgrades.speed*.18)*(1+i*.07),fortune=()=>1+state.upgrades.fortune*.24+state.auras*.14;
-const buyCost=i=>Math.floor(20*Math.pow(6.2,i)*Math.pow(1.33,state.tiers[i])*Math.pow(1.11,state.stage>1?Math.min(state.stage-1,10):0));
+const totalSparks=()=>state.tiers.reduce((a,b)=>a+b,0),bestTier=()=>{for(let i=MAX_TIERS-1;i>=0;i--)if(state.tiers[i]>0)return i;return 0},tierPower=i=>([1.6,7.2,37.8,236.25,1795.5][i])*(1+state.levels[i]*.38)*(1+state.upgrades.damage*.28)*(1+state.auras*.18),sparkVelocity=i=>100*(1+state.upgrades.speed*.18)*(1+i*.07),fortune=()=>1+state.upgrades.fortune*.24+state.auras*.14;
+// No canvas gate on ordinary sparks. Stronger sparks cost much more to buy,
+// and a merge cannot reset the cost of the lower-tier sparks you've bought.
+const SPARK_BASE_COSTS=[25,900,25000,750000,25000000];
+const SPARK_PRICE_GROWTH=[1.24,1.29,1.34,1.39,1.44];
+const buyCost=i=>Math.min(1e250,Math.floor(SPARK_BASE_COSTS[i]*Math.pow(SPARK_PRICE_GROWTH[i],state.tierPurchases[i])));
 const levelCost=i=>Math.floor(20*Math.pow(5.3,i)*Math.pow(1.43,state.levels[i]));
 const upgradeCost=id=>Math.floor(({damage:90,speed:85,fortune:100,crit:190,bounty:260,recharge:360})[id]*Math.pow(1.78,state.upgrades[id]));
 // An unlocked power can be activated free, then recharged by playing/waiting.
@@ -262,27 +272,30 @@ function drawSparkGlyph(group,key,size,rotation=0){const img=sparkImage(group,ke
  else{ctx.fillStyle=group==='normal'?tierColors[key]:group==='rare'?LIMITED_DEFS[key].color:ELITE_DEFS[key].color;ctx.beginPath();ctx.moveTo(0,-size*.48);ctx.lineTo(size*.35,0);ctx.lineTo(0,size*.48);ctx.lineTo(-size*.35,0);ctx.closePath();ctx.fill()}
  ctx.restore();}
 
-const mergeNeed=2;
+// More input sparks for each successive tier. Merge payoff remains positive:
+// upgraded spark strength exceeds the combined strength of its ingredients.
+const MERGE_REQUIREMENTS=[3,4,5,6];
+const mergeNeedFor=i=>MERGE_REQUIREMENTS[i]??Infinity;
 function renderPanel(){let html='';if(tab==='sparks'){
- html='<h2 class="section-title">Build your constellation</h2><p class="section-sub">Buy and merge sparks for more damage. Every spark can damage any shard; tougher shards simply take more hits.</p>';
- const active=totalSparks();for(let i=0;i<MAX_TIERS;i++){let owned=state.tiers[i],prior=i===0||state.tiers.slice(i).some(n=>n>0)||state.levels[i]>0||state.earned>200*Math.pow(6,i);if(!prior)continue;let buy=buyCost(i),level=levelCost(i),canBuy=state.cash>=buy&&active<MAX_SPARKS,canLevel=state.cash>=level&&owned>0,canMerge=owned>=mergeNeed&&i<MAX_TIERS-1;
- html+=`<div class="tier" data-card-tier="${i}"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem" style="--spark-glow:${tierColors[i]}">${sparkIconSvg('normal',i)}</div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1} · hits all shard levels</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button type="button" class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>+ BUY ONE<b>${fmt(buy)} ✧</b></button><button type="button" class="btn" data-act="buy-max" data-tier="${i}" ${canBuy?'':'disabled'}>BUY MAX<b>Fill available slots</b></button><button type="button" class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>↑ LEVEL UP<b>${fmt(level)} ✧</b></button><button type="button" class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>◇ MERGE ×2<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need 2'}</b></button></div></div>`;
+ html='<h2 class="section-title">Build your constellation</h2><p class="section-sub">All five normal sparks are available from the start: higher tiers cost far more, and every purchase increases that tier’s price. Merging consumes more sparks at each tier.</p>';
+ const active=totalSparks();for(let i=0;i<MAX_TIERS;i++){let owned=state.tiers[i],need=mergeNeedFor(i),buy=buyCost(i),level=levelCost(i),canBuy=state.cash>=buy&&active<MAX_SPARKS,canLevel=state.cash>=level&&owned>0,canMerge=owned>=need&&i<MAX_TIERS-1;
+ html+=`<div class="tier" data-card-tier="${i}"><div class="tier-heading"><div class="tier-name"><div class="spark-emblem" style="--spark-glow:${tierColors[i]}">${sparkIconSvg('normal',i)}</div><div class="tier-info"><strong>${tierNames[i]}</strong><small>${fmt(tierPower(i))} power · level ${state.levels[i]+1} · hits all shard levels</small></div></div><div class="tier-count">${owned}<small>in flight</small></div></div><div class="buttons"><button type="button" class="btn primary" data-act="buy" data-tier="${i}" ${canBuy?'':'disabled'}>+ BUY ONE<b>${fmt(buy)} ✧</b></button><button type="button" class="btn" data-act="buy-max" data-tier="${i}" ${canBuy?'':'disabled'}>BUY MAX<b>Fill available slots</b></button><button type="button" class="btn" data-act="level" data-tier="${i}" ${canLevel?'':'disabled'}>↑ LEVEL UP<b>${fmt(level)} ✧</b></button><button type="button" class="btn gold" data-act="merge" data-tier="${i}" ${canMerge?'':'disabled'}>◇ ${i===MAX_TIERS-1?'TOP TIER':'MERGE ×'+need}<b>${i===MAX_TIERS-1?'MAX TIER':canMerge?'READY':'Need '+need}</b></button></div></div>`;
  }
- html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Merge two matching sparks for a stronger one. Every spark deals damage to every shard, no matter its level.</p>`;
+ html+=`<p class="note">Spark limit: ${totalSparks()} / ${MAX_SPARKS}. Merge costs: 3 Breeze → Glimmer, 4 Glimmer → Nova, 5 Nova → Comet, 6 Comet → Supernova. Buying and merging never reduce future shop prices. Only elites have canvas unlocks.</p>`;
  html+=`<details class="limited-card"><summary>✦ About rare sparks</summary><p>Destroyed shards have a 1% chance to release a special spark for <b>3 real-world minutes</b>. Only one of each kind can be active at once.</p><div class="limited-row"><span class="limited-pill">${sparkIconSvg('rare','ember')} Ember · ×9 damage</span><span class="limited-pill">${sparkIconSvg('rare','gilded')} Gilded · ×5 damage & ×3 earnings</span><span class="limited-pill">${sparkIconSvg('rare','singularity')} Singularity · ×22 damage</span></div><p style="margin-bottom:0">Active: <b>${specialSparks.length}</b> · Found: <b>${fmt(state.specialFinds||0)}</b></p></details>`;
  }else if(tab==='elites'){
- html='<h2 class="section-title">Elite spark hangar</h2><p class="section-sub">Unlock permanently, then deploy for 3–4 real-world minutes. Upgrade to level 20 to strengthen attacks and extend each mission. After a deployment, recharge for 90 seconds.</p>';
+ html='<h2 class="section-title">Elite spark hangar</h2><p class="section-sub">Elites unlock at lifetime Canvas 10 / 20 / 35. Once purchased, they stay unlocked through ascension. Deploy for 3–4 minutes; recharge for 90 seconds.</p>';
  const now=Date.now();
  for(const [id,d] of Object.entries(ELITE_DEFS)){
-  const lv=state.elites[id],timer=state.eliteTimers[id],active=eliteActive(id,now),ready=eliteReady(id,now);
+  const lv=state.elites[id],timer=state.eliteTimers[id],active=eliteActive(id,now),ready=eliteReady(id,now),milestoneMet=state.highestCanvas>=d.unlockCanvas;
   const cost=lv?eliteUpgradeCost(id):d.cost;
   const remaining=Math.max(0,Math.ceil((active?timer.activeUntil:timer.cooldownUntil)-now)/1000);
-  const status=active?'ACTIVE · '+secondsFmt(remaining):ready?'READY TO DEPLOY':lv?'RECHARGING · '+secondsFmt(remaining):'LOCKED';
+  const status=active?'ACTIVE · '+secondsFmt(remaining):ready?'READY TO DEPLOY':lv?'RECHARGING · '+secondsFmt(remaining):milestoneMet?'UNLOCK AVAILABLE':'REACH CANVAS '+d.unlockCanvas+' · BEST '+state.highestCanvas;
   const detail=id==='rotary'?`Lv ${lv||1}: ${rotaryCount(lv||1)} radial shots per volley · every ${rotaryInterval(lv||1).toFixed(2)}s`:
     id==='phase'?`Lv ${lv||1}: +${Math.round((.35+((lv||1)-1)*.055)*100)}% damage per shard crossed · charge resets at walls`:
     `Lv ${lv||1}: ${shatterCount(lv||1)} fragments each time it destroys a shard`;
   const progress=active?Math.max(0,Math.min(100,remaining/eliteDuration(id)*100)):lv&&!ready?Math.max(0,Math.min(100,100*(1-remaining/ELITE_COOLDOWN))):0;
-  html+=`<div class="elite-card" data-card-elite="${id}" style="--elite-color:${d.color}"><div class="elite-title"><span class="elite-orb">${sparkIconSvg('elite',id)}</span><div><h3>${d.name}</h3><p>${d.desc}</p></div><span class="elite-level">${lv?'LV '+lv+' / '+MAX_ELITE_LEVEL:'LOCKED'}</span></div><div class="elite-detail">${detail}</div><div class="elite-timer"><span class="elite-status ${active?'live':ready?'ready':''}">${status}</span><span>${lv?secondsFmt(eliteDuration(id))+' duration · '+ELITE_COOLDOWN+'s cooldown':'Permanent unlock'}</span></div><div class="elite-timer-track"><span style="width:${progress.toFixed(1)}%;background:${d.color}"></span></div><div class="elite-bottom"><button type="button" class="btn primary" data-act="${lv?'upgrade-elite':'buy-elite'}" data-id="${id}" ${lv>=MAX_ELITE_LEVEL||state.cash<cost?'disabled':''}>${lv>=MAX_ELITE_LEVEL?'MAX LEVEL':lv?'↑ UPGRADE':'UNLOCK + DEPLOY'}<b>${lv>=MAX_ELITE_LEVEL?'✓':fmt(cost)+' ✧'}</b></button><button type="button" class="btn deploy-btn" data-act="deploy-elite" data-id="${id}" ${ready?'':'disabled'}>${active?'DEPLOYED':lv&&!ready?'RECHARGING':lv?'▶ DEPLOY':'LOCKED'}<b>${active?secondsFmt(remaining):lv&&!ready?secondsFmt(remaining):ready?'FREE · '+secondsFmt(eliteDuration(id)):'Unlock first'}</b></button></div></div>`;
+  html+=`<div class="elite-card" data-card-elite="${id}" style="--elite-color:${d.color}"><div class="elite-title"><span class="elite-orb">${sparkIconSvg('elite',id)}</span><div><h3>${d.name}</h3><p>${d.desc}</p></div><span class="elite-level">${lv?'LV '+lv+' / '+MAX_ELITE_LEVEL:milestoneMet?'READY TO UNLOCK':'CANVAS '+d.unlockCanvas}</span></div><div class="elite-detail">${detail}</div><div class="elite-timer"><span class="elite-status ${active?'live':ready?'ready':''}">${status}</span><span>${lv?secondsFmt(eliteDuration(id))+' duration · '+ELITE_COOLDOWN+'s cooldown':'Permanent unlock'}</span></div><div class="elite-timer-track"><span style="width:${progress.toFixed(1)}%;background:${d.color}"></span></div><div class="elite-bottom"><button type="button" class="btn primary" data-act="${lv?'upgrade-elite':'buy-elite'}" data-id="${id}" ${lv>=MAX_ELITE_LEVEL||state.cash<cost||(!lv&&!milestoneMet)?'disabled':''}>${lv>=MAX_ELITE_LEVEL?'MAX LEVEL':lv?'↑ UPGRADE':milestoneMet?'UNLOCK + DEPLOY':'REACH CANVAS '+d.unlockCanvas}<b>${lv>=MAX_ELITE_LEVEL?'✓':!lv&&!milestoneMet?'BEST '+state.highestCanvas+' · '+fmt(cost)+' ✧':fmt(cost)+' ✧'}</b></button><button type="button" class="btn deploy-btn" data-act="deploy-elite" data-id="${id}" ${ready?'':'disabled'}>${active?'DEPLOYED':lv&&!ready?'RECHARGING':lv?'▶ DEPLOY':'LOCKED'}<b>${active?secondsFmt(remaining):lv&&!ready?secondsFmt(remaining):ready?'FREE · '+secondsFmt(eliteDuration(id)):'Unlock first'}</b></button></div></div>`;
  }
  html+='<p class="note">Level upgrades and unlocks are permanent—even after ascension. Active deployments and cooldowns use the real clock, so refreshing or using 3× speed will not extend them. Leveling up changes your next deployment duration.</p>';
  }else if(tab==='upgrades'){
@@ -856,8 +869,8 @@ function tick(dt){
  for(const t of shards)if(t.flash>0)t.flash=Math.max(0,t.flash-elapsed);
  for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*elapsed;p.y+=p.vy*elapsed;p.vx*=.985;p.vy*=.985;p.life-=elapsed;if(p.life<=0)particles.splice(i,1)}
  for(let i=damagePopups.length-1;i>=0;i--){const p=damagePopups[i];p.life-=elapsed;p.y-=20*elapsed;if(p.life<=0)damagePopups.splice(i,1)}
- if(queueStage){queueStage=false;const bonus=Math.floor(16*Math.pow(state.stage,1.42)*fortune());state.cash+=bonus;state.earned+=bonus;state.stage++;createStage();announce('Canvas cleared! +' +fmt(bonus)+' prisms ✧ · Next: Lv '+shardLevelAtStage(state.stage));save()}
- if(state.autoMerge){for(let i=0;i<MAX_TIERS-1;i++)if(state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();renderPanel()}}
+ if(queueStage){queueStage=false;const bonus=Math.floor(16*Math.pow(state.stage,1.42)*fortune());state.cash+=bonus;state.earned+=bonus;state.stage++;state.highestCanvas=Math.max(state.highestCanvas,state.stage);createStage();announce('Canvas cleared! +' +fmt(bonus)+' prisms ✧ · Next: Lv '+shardLevelAtStage(state.stage));save()}
+ if(state.autoMerge){let merged=false;for(let i=0;i<MAX_TIERS-1;i++){const need=mergeNeedFor(i);while(state.tiers[i]>=need){state.tiers[i]-=need;state.tiers[i+1]++;merged=true}}if(merged){syncSparks();renderPanel()}}
  recentTimer+=dt;if(recentTimer>=1){lastDps=recentGains/recentTimer;recentGains=0;recentTimer=0}
 }
 function draw(){ctx.clearRect(0,0,W,H);let bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#161a31');bg.addColorStop(.55,'#111c2c');bg.addColorStop(1,'#1b1830');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
@@ -897,17 +910,17 @@ function loop(time){if(!lastFrame)lastFrame=time;const dt=clamp((time-lastFrame)
 $('panel').addEventListener('pointerdown',()=>{menuPressing=true;menuLastPress=performance.now()});
 for(const ev of ['pointerup','pointercancel'])$('panel').addEventListener(ev,()=>{menuPressing=false;menuLastPress=performance.now()});
 window.addEventListener('pointerup',()=>{menuPressing=false});
-$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;syncSparks();ok=true}}else if(action==='buy-max'){let n=0;while(n<MAX_SPARKS&&totalSparks()<MAX_SPARKS){let c=buyCost(i);if(state.cash<c)break;state.cash-=c;state.tiers[i]++;n++}if(n){syncSparks();ok=true;announce('Added '+n+' '+tierNames[i]+' spark'+(n===1?'':'s'))}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=2){state.tiers[i]-=2;state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='unlock-power'){
+$('panel').addEventListener('click',e=>{let btn=e.target.closest('button[data-act]');if(!btn)return;let action=btn.dataset.act,i=Number(btn.dataset.tier),id=btn.dataset.id;let ok=false;if(action==='buy'){let c=buyCost(i);if(state.cash>=c&&totalSparks()<MAX_SPARKS){state.cash-=c;state.tiers[i]++;state.tierPurchases[i]++;syncSparks();ok=true}}else if(action==='buy-max'){let n=0;while(n<MAX_SPARKS&&totalSparks()<MAX_SPARKS){let c=buyCost(i);if(state.cash<c)break;state.cash-=c;state.tiers[i]++;state.tierPurchases[i]++;n++}if(n){syncSparks();ok=true;announce('Added '+n+' '+tierNames[i]+' spark'+(n===1?'':'s'))}}else if(action==='level'){let c=levelCost(i);if(state.tiers[i]>0&&state.cash>=c){state.cash-=c;state.levels[i]++;ok=true}}else if(action==='merge'){if(i<MAX_TIERS-1&&state.tiers[i]>=mergeNeedFor(i)){state.tiers[i]-=mergeNeedFor(i);state.tiers[i+1]++;syncSparks();announce(tierNames[i+1]+' unlocked ✨');ok=true}}else if(action==='upgrade'){let c=upgradeCost(id);if(c&&state.cash>=c){state.cash-=c;state.upgrades[id]++;ok=true}}else if(action==='auto'){if(!state.autoMerge&&state.cash>=3500){state.cash-=3500;state.autoMerge=true;ok=true;announce('Auto Merge unlocked')}}else if(action==='unlock-power'){
  const def=POWER_DEFS[id],p=state.powers[id];if(def&&p&&p.level===0&&state.cash>=def.unlock){state.cash-=def.unlock;p.level=1;ok=true;announce(def.name+' unlocked!')}}else if(action==='upgrade-power'){
  const p=state.powers[id];if(POWER_DEFS[id]&&p&&p.level>=1&&p.level<5){let c=powerUpgradeCost(id);if(state.cash>=c){state.cash-=c;p.level++;ok=true;announce(POWER_DEFS[id].name+' Lv '+p.level)}}}else if(action==='activate-power'){
  if(activatePower(id))ok=true;
  }else if(action==='buy-elite'){
- const def=ELITE_DEFS[id];if(def&&state.elites[id]===0&&state.cash>=def.cost){state.cash-=def.cost;state.elites[id]=1;deployElite(id);ok=true;announce(def.name+' unlocked and deployed! ✨')}
+ const def=ELITE_DEFS[id];if(def&&state.elites[id]===0&&state.highestCanvas>=def.unlockCanvas&&state.cash>=def.cost){state.cash-=def.cost;state.elites[id]=1;deployElite(id);ok=true;announce(def.name+' unlocked and deployed! ✨')}
  }else if(action==='upgrade-elite'){
  if(ELITE_DEFS[id]&&state.elites[id]>=1&&state.elites[id]<MAX_ELITE_LEVEL){const c=eliteUpgradeCost(id);if(state.cash>=c){state.cash-=c;state.elites[id]++;ok=true;announce(ELITE_DEFS[id].name+' level '+state.elites[id])}}
  }else if(action==='deploy-elite'){
  if(deployElite(id))ok=true;
- }else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.muted=state.muted;next.elites={...state.elites};next.eliteTimers=Object.fromEntries(Object.entries(state.eliteTimers).map(([id,t])=>[id,{...t}]));
+ }else if(action==='ascend'){let gain=Math.floor(Math.sqrt(Math.max(0,state.earned)/17000));if(state.stage>=5&&gain>0&&confirm('Ascend for +'+gain+' permanent auras? Your canvases, sparks and temporary upgrades will reset.')){let next=fresh();next.auras=state.auras+gain;next.ascensions=state.ascensions+1;next.autoMerge=state.autoMerge;next.highestCanvas=state.highestCanvas;next.muted=state.muted;next.elites={...state.elites};next.eliteTimers=Object.fromEntries(Object.entries(state.eliteTimers).map(([id,t])=>[id,{...t}]));
  // Power unlocks and their levels are permanent; clear active effects on prestige.
  next.powers=Object.fromEntries(Object.entries(state.powers).map(([id,p])=>[id,{level:p.level,activeUntil:0,cooldownUntil:p.cooldownUntil}]));
  state=next;sparks=[];specialSparks=state.specialSparks;miniSparks=[];syncSparks();syncEliteSparks();createStage();ok=true;announce('A new dawn! +'+gain+' auras')}}if(ok){save();menuLastPress=-1000;renderPanel();updateLabels()}});
